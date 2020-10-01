@@ -59,6 +59,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
         {
             //
             var app = WebApplication.Create();
+            app.Listen($"https://localhost:{Selected.PortaPadrao}");
+           
             foreach (var endpoint in Selected.Items)
             {
                 if (endpoint.Metodo == Core.MetodoHttp.MhGet)

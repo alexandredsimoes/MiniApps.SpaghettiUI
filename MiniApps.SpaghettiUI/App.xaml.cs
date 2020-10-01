@@ -108,6 +108,7 @@ namespace MiniApps.SpaghettiUI
             {
                 Id = projetoId,
                 Nome = "Servidor BACEN PIX",
+                PortaPadrao = 5002,
                 Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
@@ -126,6 +127,7 @@ namespace MiniApps.SpaghettiUI
             {
                 Id = projetoId,
                 Nome = "Gestão Conta PI",
+                PortaPadrao = 5001,
                 Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
@@ -139,7 +141,7 @@ namespace MiniApps.SpaghettiUI
                                             ",
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/12345678/conta/api/v1/aporte/rbcl"
+                        Endpoint = "/jdpi/conta/api/v1/aporte/rbcl"
                     },
                     new ProjetoItem()
                     {
@@ -152,7 +154,31 @@ namespace MiniApps.SpaghettiUI
                                             ",
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/12345678/conta/api/v1/aporte/ccme"
+                        Endpoint = "/jdpi/conta/api/v1/aporte/ccme"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Consulta situação Aporte RCBL",
+                        RespostaPadrao =@"{
+	                                        ""idRequisicao"":""69F963C6-7487-4363-9406-A1DE2A9636D4"",
+	                                        ""tpRequisicao"":0,
+	                                        ""aporteRBCL"": {
+		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                        ""situacao"":0,
+		                                        ""descSituacao"":"""",
+		                                        ""numCtrlIF"":""PIX20200124000000001"",
+		                                        ""ispbIF"":4358798,
+		                                        ""numCtrlSTR"":""STR20200124000000001"",
+		                                        ""sitLancSTR"":1,
+		                                        ""valor"":50000.25,
+		                                        ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                        ""dtMovimento"":""2020-01-24""
+	                                        }
+                                        } ",
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhGet,
+                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq"
                     }
                 }
             });
