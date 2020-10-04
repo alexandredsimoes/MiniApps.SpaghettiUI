@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApps.SpaghettiUI.Core.Services
+namespace MiniApps.SpaghettiUI.Core.Contracts.Services
 {
     public interface IProjetoService
     {

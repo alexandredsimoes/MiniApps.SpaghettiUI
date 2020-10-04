@@ -1,11 +1,9 @@
-﻿using MiniApps.SpaghettiUI.Core.Models;
-using MiniApps.SpaghettiUI.Core.Services;
+﻿using MiniApps.SpaghettiUI.Core.Contracts.Services;
+using MiniApps.SpaghettiUI.Core.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MiniApps.SpaghettiUI.ViewModels

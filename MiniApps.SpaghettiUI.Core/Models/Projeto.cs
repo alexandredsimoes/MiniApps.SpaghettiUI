@@ -17,6 +17,8 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public string Nome { get; set; }
         public int PortaPadrao { get; set; }
         public ICollection<ProjetoItem> Items { get; set; }
+        public bool ExibirLog { get; set; }
+
         public Projeto()
         {
             

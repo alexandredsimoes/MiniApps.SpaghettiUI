@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MiniApps.SpaghettiUI.Core.Contracts;
+using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
-using MiniApps.SpaghettiUI.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniApps.SpaghettiUI.Core.Contracts.Services
+namespace MiniApps.SpaghettiUI.Core.Services
 {
     public class ProjetoService : IProjetoService
     {

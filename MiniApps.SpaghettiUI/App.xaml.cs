@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -85,6 +86,10 @@ namespace MiniApps.SpaghettiUI
             containerRegistry.RegisterForNavigation<ShellWindow, ShellViewModel>();
             containerRegistry.RegisterForNavigation<ProjetoPage, ProjetoViewModel>(PageKeys.Projeto);
 
+
+            //
+            containerRegistry.RegisterSingleton<AppState>();
+
             // Configuration
             var configuration = BuildConfiguration();
             var appConfig = configuration
@@ -110,11 +115,12 @@ namespace MiniApps.SpaghettiUI
 	                                            ""idRequisicao"":""#guid#"",
 	                                            ""dtHrRequisicao"":""#datenowutc#""
                                             }";
-            db.Projetos.Add(new Projeto()
+            db.Projetos.AddRange(new Projeto()
             {
                 Id = projetoId,
                 Nome = "Gestão Conta PI",
                 PortaPadrao = 5001,
+                ExibirLog = true,
                 Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
@@ -186,7 +192,7 @@ namespace MiniApps.SpaghettiUI
                         Descricao = "Consulta situação Aporte RCBL",
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhGet,
-                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq",                        
+                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq",
                         Respostas = new List<ProjetoItemResposta>()
                         {
                             new ProjetoItemResposta()
@@ -348,6 +354,23 @@ namespace MiniApps.SpaghettiUI
                         }
                     }
                 }
+            },
+            new Projeto()
+            {
+                Nome = "Bacen Messages" ,
+                PortaPadrao = 5002,
+                ExibirLog = true,
+                Items = new List<ProjetoItem>()
+                {
+                    new ProjetoItem()
+                    {
+                        Metodo = MetodoHttp.MhGet,
+                        CodigoHttpPadrao = 200,
+                        Descricao = "Mensagens Pacs,Admi,Reda" ,
+                        Endpoint ="/consulta/{ispb}/msgs",
+                        RespostaPadrao = "Pacs008"
+                    }
+                }
             });
             db.SaveChanges();
 #endif
@@ -365,6 +388,12 @@ namespace MiniApps.SpaghettiUI
 
         private void OnExit(object sender, ExitEventArgs e)
         {
+            var appState = Container.Resolve<AppState>();
+            foreach (var item in appState.Applications)
+            {
+                item.Item2.StopAsync().ConfigureAwait(false);
+                item.Item2.Dispose();
+            }
             var persistAndRestoreService = Container.Resolve<IPersistAndRestoreService>();
             persistAndRestoreService.PersistData();
         }

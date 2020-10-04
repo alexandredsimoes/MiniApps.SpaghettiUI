@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using MahApps.Metro.Controls;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using MiniApps.SpaghettiUI.Constants;
+using MiniApps.SpaghettiUI.Core;
 using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
 using MiniApps.SpaghettiUI.Core.Services;
+using MiniApps.SpaghettiUI.Services;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -16,12 +24,15 @@ namespace MiniApps.SpaghettiUI.ViewModels
 {
     public class MasterDetailViewModel : BindableBase, INavigationAware
     {
+        private readonly AppState _appState;
         private readonly IProjetoService _projetoService;
         private readonly IRegionNavigationService _navigationService;
         private Projeto _selected;
 
         private DelegateCommand _subirServidorCommand;
         private DelegateCommand _modificarProjetoCommand;
+        private string _logs;
+        private CancellationToken _cancellationToken;
 
         public Projeto Selected
         {
@@ -30,8 +41,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
         }
         public ObservableCollection<Projeto> Projetos { get; private set; } = new ObservableCollection<Projeto>();
 
-        public MasterDetailViewModel(IProjetoService projetoService, IRegionManager regionManager)
+        public MasterDetailViewModel(IProjetoService projetoService,
+                                     AppState appState,
+                                     IRegionManager regionManager)
         {
+            _appState = appState;
             _projetoService = projetoService;
             _navigationService = regionManager.Regions[Regions.Main].NavigationService;
         }
@@ -53,6 +67,14 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            
+        }
+
+        
+        public string Logs
+        {
+            get { return _logs; }
+            set { SetProperty(ref _logs, value); }
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext) => true;
@@ -72,8 +94,14 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         async void ExecuteSubirServidorCommand()
         {
+            if(_appState.Applications.Select(x=>x.Item1).Any(x=>x == Selected.Id))
+            {
+                return;
+            }
+
             //
             var app = WebApplication.Create();
+            
             app.Listen($"https://localhost:{Selected.PortaPadrao}");
 
             foreach (var endpoint in Selected.Items)
@@ -81,7 +109,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 if (endpoint.Metodo == Core.MetodoHttp.MhGet)
                 {
                     app.MapGet(endpoint.Endpoint, async (context) =>
-                    {
+                    {                       
                         await ProcessarRequisicao(context, endpoint);
 
                     });
@@ -96,7 +124,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 }
 
             }
-            await app.RunAsync();
+
+            _appState.Applications.Add((Selected.Id, app));
+            //await app.RunAsync(_cancellationToken);
         }
 
         private async Task ProcessarRequisicao(HttpContext context, ProjetoItem endpoint)
@@ -162,6 +192,62 @@ namespace MiniApps.SpaghettiUI.ViewModels
             {
                 context.Response.StatusCode = endpoint.CodigoHttpPadrao;
                 await context.Response.WriteAsync(ProcessarResposta(context, endpoint.RespostaPadrao));
+            }
+
+            if (endpoint.Projeto.ExibirLog)
+            {
+                var sb = new StringBuilder();
+                using var stream = new StreamReader(context.Request.Body);
+
+
+                var metodo = endpoint.Metodo switch
+                {
+                    MetodoHttp.MhDelete => "DELETE",
+                    MetodoHttp.MhGet => "GET",
+                    MetodoHttp.MhPatch => "PATCH",
+                    MetodoHttp.MhPost => "POST",
+                    MetodoHttp.MhPut => "PUT",
+                    _ => "MÉTODO DESCONHECIDO"
+                };
+
+                sb.AppendLine($"{metodo} {context.Request.GetEncodedUrl()}");
+                sb.AppendLine("---------------------------------------------");
+               
+
+                var body = await stream.ReadToEndAsync();
+                if (!string.IsNullOrWhiteSpace(body))
+                {
+                    sb.AppendLine("Body content");
+                    sb.AppendLine("---------------------------------------------");
+                    sb.AppendLine(await stream.ReadToEndAsync());
+                    sb.AppendLine("---------------------------------------------");
+                }
+
+                var headers = context.Request.Headers;
+                if (headers?.Count > 0) {
+                    sb.AppendLine("Header content");
+                    sb.AppendLine("---------------------------------------------");
+                    foreach (var item in context.Request.Headers)
+                    {
+                        sb.AppendLine($"{item.Key} = {item.Value}");
+                    }
+                    sb.AppendLine("---------------------------------------------");
+                }
+
+                var queries = context.Request.Query;
+
+                if(queries?.Count > 0)
+                {
+                    sb.AppendLine("Query content");
+                    sb.AppendLine("---------------------------------------------");
+                    foreach (var item in context.Request.Query)
+                    {
+                        sb.AppendLine($"{item.Key} = {item.Value}");
+                    }
+                    sb.AppendLine("---------------------------------------------");
+                }
+               
+                Logs += sb.ToString();
             }
         }
 

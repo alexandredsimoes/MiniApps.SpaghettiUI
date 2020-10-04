@@ -35,6 +35,10 @@
                     Margin="{StaticResource SmallLeftMargin}"
                     VerticalAlignment="Center">
                     <TextBlock Style="{StaticResource ListTitleStyle}" Text="{Binding Nome}" />
+                    <TextBlock Style="{StaticResource BaseTextBlockStyle}">
+                        <Run  Text="Porta padrão"/>
+                        <Run  Text="{Binding PortaPadrao}"/>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -44,7 +48,7 @@
                 Name="ForegroundElement"
                 IsTabStop="True"
                 HorizontalAlignment="Stretch">
-                <StackPanel HorizontalAlignment="Left" Margin="{StaticResource MediumLeftTopRightBottomMargin}">
+                <StackPanel HorizontalAlignment="Stretch" Margin="{StaticResource MediumLeftTopRightBottomMargin}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                         <TextBlock
                     Text="{Binding Icone}"
@@ -61,7 +65,7 @@
                     <TextBlock
                             Style="{StaticResource SubtitleTextStyle}"
                             Text="Endpoints" />
-                    <ListView ItemsSource="{Binding Items}" Margin="{StaticResource SmallTopMargin}" >
+                    <ListView ItemsSource="{Binding Items}" Margin="{StaticResource MediumBottomMargin}" >
                         <d:ListView.ItemsSource>
                             <x:Array Type="{x:Type models:ProjetoItem}">
                                 <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhPost" Descricao="Teste" Endpoint="/api/enviar"></models:ProjetoItem>
@@ -85,63 +89,10 @@
                         <Button Content="Subir servidor" Command="{Binding ElementName=TheControl, Path=DataContext.SubirServidorCommand}" />
                         <Button Content="Modificar projeto" Command="{Binding ElementName=TheControl, Path=DataContext.ModificarProjetoCommand}" />
                     </StackPanel>
-                    <!--<StackPanel Margin="{StaticResource SmallTopMargin}">
-                        <TextBlock
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Status" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{Binding Status, Mode=OneWay}" />
-                        <TextBlock
-                            Margin="{StaticResource SmallTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Order date" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{Binding OrderDate, Mode=OneWay}" />
-                        <TextBlock
-                            Margin="{StaticResource SmallTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Company" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{Binding Company, Mode=OneWay}" />
-                        <TextBlock
-                            Margin="{StaticResource SmallTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Ship to" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{Binding ShipTo, Mode=OneWay}" />
-                        <TextBlock
-                            Margin="{StaticResource SmallTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Order total" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="{Binding OrderTotal, Mode=OneWay}" />
-
-                        <TextBlock
-                            Margin="{StaticResource MediumTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Note 1" />
-                        <TextBlock
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;"
-                            AutomationProperties.Name="Detail note 1"
-                            AutomationProperties.HelpText="{Binding Text, RelativeSource={RelativeSource Self}}" />
-
-                        <TextBlock
-                            Margin="{StaticResource SmallTopMargin}"
-                            Style="{StaticResource SubtitleTextStyle}"
-                            Text="Note 2" />
-                        <TextBlock
-                            Margin="{StaticResource MediumBottomMargin}"
-                            Style="{StaticResource BodyTextStyle}"
-                            Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis quis hendrerit nulla, vel molestie libero. In nec ultricies magna, ultricies molestie ipsum. Mauris non dignissim velit. Etiam malesuada blandit mauris eu maximus. Quisque ornare, felis nec scelerisque mollis, risus dolor posuere magna, in gravida quam mi id nisi. Nullam mattis consequat ex. Cras nulla neque, dictum ac urna et, vestibulum feugiat ex. Pellentesque malesuada accumsan ligula, vel fringilla lacus facilisis sit amet. Proin convallis tempor arcu, ac placerat libero pretium ut. Praesent hendrerit nisl at lobortis viverra. Fusce vitae velit odio. Nam ut tortor sed purus finibus sollicitudin quis at ante. Ut sodales dolor vel eros mollis suscipit. Donec eu nulla id urna ultricies consequat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;"
-                            AutomationProperties.Name="Detail note 2"
-                            AutomationProperties.HelpText="{Binding Text, RelativeSource={RelativeSource Self}}" />
-                    </StackPanel>-->
+                    <TextBlock Text="Log" Style="{StaticResource SubtitleTextStyle}"/>
+                    <TextBox Text="{Binding ElementName=TheControl, Path=DataContext.Logs}" TextWrapping="Wrap" Height="Auto" IsReadOnly="True" 
+                             HorizontalContentAlignment="Stretch" 
+                             VerticalContentAlignment="Stretch"/>
                 </StackPanel>
             </ScrollViewer>
         </DataTemplate>
@@ -164,9 +115,17 @@
                 Grid.Row="1"
                 ItemsSource="{Binding Projetos}"
                 ItemTemplate="{StaticResource ItemTemplate}"
-                SelectedItem="{Binding Selected, Mode=TwoWay}" />
+                SelectedItem="{Binding Selected, Mode=TwoWay}">
+                <d:ListView.ItemsSource>
+                    <x:Array Type="{x:Type models:Projeto}">
+                        <models:Projeto Nome="Projeto 1" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
+                        <models:Projeto Nome="Projeto 2" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
+                        <models:Projeto Nome="Projeto 3" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
+                    </x:Array>
+                </d:ListView.ItemsSource>
+            </ListView>
         </Grid>
-        <ContentControl
+        <ContentControl 
             Grid.Column="1"
             IsTabStop="False"
             Content="{Binding Selected}"
