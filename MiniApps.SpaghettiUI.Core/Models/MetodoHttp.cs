@@ -2,10 +2,10 @@
 {
     public enum MetodoHttp
     {
-        MhPost = 1,
-        MhGet = 2,
-        MhPut = 3,
-        MhDelete = 4,
-        MhPatch = 5
+        MhPost = 0,
+        MhGet = 1,
+        MhPut = 2,
+        MhDelete = 3,
+        MhPatch = 4
     }
 }

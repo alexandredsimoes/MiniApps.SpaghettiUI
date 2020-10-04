@@ -20,7 +20,13 @@ namespace MiniApps.SpaghettiUI.Core.Contracts.Services
 
         public async Task<IList<Projeto>> ListarProjetos()
         {
-            return await _context.Projetos.Include(x=>x.Items).ToListAsync();
+            return await _context.Projetos.Include(x=>x.Items).ThenInclude(x=>x.Respostas).ToListAsync();
+        }
+
+        public async Task<Projeto> ObterProjeto(Guid id)
+        {
+            var entity = await _context.Projetos.FirstOrDefaultAsync(x => x.Id == id);
+            return entity;
         }
     }
 }

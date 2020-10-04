@@ -10,5 +10,6 @@ namespace MiniApps.SpaghettiUI.Core.Services
     public interface IProjetoService
     {
         Task<IList<Projeto>> ListarProjetos();
+        Task<Projeto> ObterProjeto(Guid id);
     }
 }

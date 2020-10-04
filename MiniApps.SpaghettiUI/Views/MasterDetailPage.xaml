@@ -8,11 +8,15 @@
     xmlns:prism="http://prismlibrary.com/" 
     xmlns:controls="clr-namespace:Windows.UI.Xaml.Controls;assembly=Windows"
     prism:ViewModelLocator.AutoWireViewModel="True"
+    xmlns:models="clr-namespace:MiniApps.SpaghettiUI.Core.Models;assembly=MiniApps.SpaghettiUI.Core" xmlns:converters="clr-namespace:MiniApps.SpaghettiUI.Converters"
     Style="{StaticResource BaseUserControlStyle}"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800" x:Name="TheControl">
 
     <UserControl.Resources>
+
+        <converters:MetodoToStringConverter x:Key="MetodoToStringConverter"/>
+
         <DataTemplate x:Key="ItemTemplate">
             <Grid Height="60">
                 <Grid.ColumnDefinitions>
@@ -57,18 +61,30 @@
                     <TextBlock
                             Style="{StaticResource SubtitleTextStyle}"
                             Text="Endpoints" />
-                    <ListView ItemsSource="{Binding Items}" Margin="{StaticResource SmallTopMargin}">
+                    <ListView ItemsSource="{Binding Items}" Margin="{StaticResource SmallTopMargin}" >
+                        <d:ListView.ItemsSource>
+                            <x:Array Type="{x:Type models:ProjetoItem}">
+                                <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhPost" Descricao="Teste" Endpoint="/api/enviar"></models:ProjetoItem>
+                                <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhGet" Descricao="Teste" Endpoint="/api/pegar?Id=1"></models:ProjetoItem>
+                                <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhGet" Descricao="Teste" Endpoint="/api"></models:ProjetoItem>
+                            </x:Array>
+                        </d:ListView.ItemsSource>
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <TextBlock
-                                        Style="{StaticResource BodyTextStyle}"
-                                        Text="{Binding Endpoint}" />
+                                        Style="{StaticResource BodyTextStyle}">
+                                <Run Text="{Binding Metodo, Converter={StaticResource MetodoToStringConverter}}" FontSize="20"/>
+                                <Run Text="{Binding Endpoint}"/>
+                                    </TextBlock>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Button Content="Subir servidor" Command="{Binding ElementName=TheControl, Path=DataContext.SubirServidorCommand}" />
+                    <StackPanel Orientation="Horizontal" Margin="{StaticResource MediumBottomMargin}">
+                        <Button Content="Subir servidor" Command="{Binding ElementName=TheControl, Path=DataContext.SubirServidorCommand}" />
+                        <Button Content="Modificar projeto" Command="{Binding ElementName=TheControl, Path=DataContext.ModificarProjetoCommand}" />
+                    </StackPanel>
                     <!--<StackPanel Margin="{StaticResource SmallTopMargin}">
                         <TextBlock
                             Style="{StaticResource SubtitleTextStyle}"

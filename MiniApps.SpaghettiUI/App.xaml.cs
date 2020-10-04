@@ -83,6 +83,7 @@ namespace MiniApps.SpaghettiUI
             containerRegistry.RegisterForNavigation<MasterDetailPage, MasterDetailViewModel>(PageKeys.MasterDetail);
             containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(PageKeys.Main);
             containerRegistry.RegisterForNavigation<ShellWindow, ShellViewModel>();
+            containerRegistry.RegisterForNavigation<ProjetoPage, ProjetoViewModel>(PageKeys.Projeto);
 
             // Configuration
             var configuration = BuildConfiguration();
@@ -103,26 +104,12 @@ namespace MiniApps.SpaghettiUI
 
 
 #if DEBUG
-            var projetoId = Guid.NewGuid();            
-            db.Projetos.Add(new Projeto()
-            {
-                Id = projetoId,
-                Nome = "Servidor BACEN PIX",
-                PortaPadrao = 5002,
-                Items = new List<ProjetoItem>()
-                {
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Admi002",
-                        RespostaPadrao = "<xml/>",
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhGet,                        
-                        Endpoint = "/api/bla"
-                    }
-                }
-            });
-            projetoId = Guid.NewGuid();
+            //""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
+            var projetoId = Guid.NewGuid();
+            var respostaAporte = @"{
+	                                            ""idRequisicao"":""#guid#"",
+	                                            ""dtHrRequisicao"":""#datenowutc#""
+                                            }";
             db.Projetos.Add(new Projeto()
             {
                 Id = projetoId,
@@ -134,11 +121,7 @@ namespace MiniApps.SpaghettiUI
                     {
                         ProjetoId = projetoId,
                         Descricao = "Aporte RB ou CL",
-                        RespostaPadrao = @"{
-	                                            ""idRequisicao"":""69F963C6-7487-4363-9406-A1DE2A9636D4"",
-	                                            ""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
-                                            }
-                                            ",
+                        RespostaPadrao = respostaAporte,
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhPost,
                         Endpoint = "/jdpi/conta/api/v1/aporte/rbcl"
@@ -147,11 +130,7 @@ namespace MiniApps.SpaghettiUI
                     {
                         ProjetoId = projetoId,
                         Descricao = "Aporte CCME",
-                        RespostaPadrao = @"{
-	                                            ""idRequisicao"":""69F963C6-7487-4363-9406-A1DE2A9636D4"",
-	                                            ""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
-                                            }
-                                            ",
+                        RespostaPadrao = respostaAporte,
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhPost,
                         Endpoint = "/jdpi/conta/api/v1/aporte/ccme"
@@ -159,10 +138,64 @@ namespace MiniApps.SpaghettiUI
                     new ProjetoItem()
                     {
                         ProjetoId = projetoId,
+                        Descricao = "Aporte TPF",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdpi/conta/api/v1/aporte/tpf"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Aporte Automatico",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdpi/conta/api/v1/aporte/automatico"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Saque RbCl",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdpi/conta/api/v1/saque/rbcl"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Saque CcMe",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdpi/conta/api/v1/saque/ccme"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Saque Tpf",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdpi/conta/api/v1/saque/tpf"
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
                         Descricao = "Consulta situação Aporte RCBL",
-                        RespostaPadrao =@"{
-	                                        ""idRequisicao"":""69F963C6-7487-4363-9406-A1DE2A9636D4"",
-	                                        ""tpRequisicao"":0,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhGet,
+                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq",                        
+                        Respostas = new List<ProjetoItemResposta>()
+                        {
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=0",
+                                CodigoHttp = 200,
+                                Resposta =  @"{
+	                                        ""idRequisicao"":""#query-idRequisicao#"",
+	                                        ""tpRequisicao"":#query-tpRequisicao#,
 	                                        ""aporteRBCL"": {
 		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
 		                                        ""situacao"":0,
@@ -176,9 +209,143 @@ namespace MiniApps.SpaghettiUI
 		                                        ""dtMovimento"":""2020-01-24""
 	                                        }
                                         } ",
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhGet,
-                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq"
+                            },
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=1",
+                                CodigoHttp = 200,
+                                Resposta =  @"{
+	                                        ""idRequisicao"":""#query-idRequisicao#"",
+	                                        ""tpRequisicao"":#query-tpRequisicao#,
+	                                        ""aporteCCME"": {
+		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                        ""situacao"":0,
+		                                        ""descSituacao"":"""",
+		                                        ""numCtrlIEME"":""PIX20200124000000001"",
+		                                        ""ispbIEME"":4358798,
+		                                        ""numCtrlSTR"":""STR20200124000000001"",
+		                                        ""sitLancSTR"":1,
+		                                        ""valor"":50000.25,
+		                                        ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                        ""dtMovimento"":""2020-01-24""
+	                                        }
+                                        }",
+                            },
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=2",
+                                CodigoHttp = 200,
+                                Resposta = @"{
+	                                            ""idRequisicao"":""#query-idRequisicao#"",
+	                                            ""tpRequisicao"":#query-tpRequisicao#,
+	                                            ""aporteTPF"": {
+		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
+		                                            ""numCtrlIF"":""PIX20200124000000001"",
+		                                            ""ispbIF"":4358798,
+		                                            ""numOperacao"":123456,
+		                                            ""numOperacaoRet"":234567,
+		                                            ""numCtrlSTR"":""STR20200124000000001"",
+		                                            ""sitOpSEL"":""ATU"",
+		                                            ""valor"":50000.25,
+		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                            ""dtMovimento"":""2020-01-24""
+	                                            }
+                                            }
+                                            "
+                            },
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=3",
+                                CodigoHttp = 200,
+                                Resposta = @"{
+	                                            ""idRequisicao"":""#query-idRequisicao#"",
+	                                            ""tpRequisicao"":#query-tpRequisicao#,
+	                                            ""saqueRBCL"": {
+		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
+		                                            ""numCtrlPSPI"":""PIX20200124000000001"",
+		                                            ""ispbPSPI"":4358798,
+		                                            ""numCtrlSTR"":""STR20200124000000001"",
+		                                            ""sitLancSTR"":1,
+		                                            ""valor"":50000.25,
+		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                            ""dtMovimento"":""2020-01-24""
+	                                            }
+                                            }
+                                            "
+                            },
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=4",
+                                CodigoHttp = 200,
+                                Resposta = @"{
+	                                            ""idRequisicao"":""#query-idRequisicao#"",
+	                                            ""tpRequisicao"":#query-tpRequisicao#,
+	                                            ""saqueCCME"": {
+		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
+		                                            ""numCtrlPSPI"":""PIX20200124000000001"",
+		                                            ""ispbPSPI"":4358798,
+		                                            ""numCtrlSTR"":""STR20200124000000001"",
+		                                            ""sitLancSTR"":1,
+		                                            ""valor"":50000.25,
+		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                            ""dtMovimento"":""2020-01-24""
+	                                            }
+                                            }
+                                            "
+                            } ,
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=5",
+                                CodigoHttp = 200,
+                                Resposta = @"{
+	                                            ""idRequisicao"":""#query-idRequisicao#"",
+	                                            ""tpRequisicao"":#query-tpRequisicao#,
+	                                            ""saqueTPF"": {
+		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
+		                                            ""numCtrlIF"":""PIX20200124000000001"",
+		                                            ""ispbIF"":4358798,
+		                                            ""numOperacao"":123456,
+		                                            ""numCtrlSTR"":""STR20200124000000001"",
+		                                            ""sitOpSEL"":""CON"",
+		                                            ""valor"":50000.25,
+		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                            ""dtMovimento"":""2020-01-24""
+	                                            }
+                                            }
+                                            "
+                            },
+                            new ProjetoItemResposta()
+                            {
+                                Condicao = "#query-tpRequisicao#=6",
+                                CodigoHttp = 200,
+                                Resposta = @"{
+	                                            ""idRequisicao"":""#query-idRequisicao#"",
+	                                            ""tpRequisicao"":#query-tpRequisicao#,
+	                                            ""configAporteAuto"": {
+		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
+		                                            ""numCtrlPSPI"":""PIX20200124000000001"",
+		                                            ""ispbPSPI"":4358798,
+		                                            ""percSaldoRBCL"":20.75,
+		                                            ""valorRBCL"":0,
+		                                            ""percSaldoCCME"":0,
+		                                            ""valorCCME"":570000.50,
+		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
+		                                            ""dtMovimento"":""2020-01-24""
+	                                            }
+                                            }
+                                            "
+                            }
+                        }
                     }
                 }
             });
