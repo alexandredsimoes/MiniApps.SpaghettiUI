@@ -34,10 +34,19 @@ namespace MiniApps.SpaghettiUI.ViewModels
         private DelegateCommand _modificarProjetoCommand;
         private string _logs;
 
+
+        public bool IsActive
+        {
+            get
+            {
+                return _appState.Applications.Any(x => x.Item1 == _selected?.Id);
+            }
+        }
+
         public ProjetoDto Selected
         {
             get { return _selected; }
-            set { SetProperty(ref _selected, value); }
+            set { SetProperty(ref _selected, value); RaisePropertyChanged(nameof(IsActive)); }
         }
         public ObservableCollection<ProjetoDto> Projetos { get; private set; } = new ObservableCollection<ProjetoDto>();
 
@@ -52,7 +61,6 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-
             Projetos.Clear();
 
             var projetos = await _projetoService.ListarProjetos();
@@ -85,11 +93,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     RespostaPadrao = x.RespostaPadrao,
                     Projeto = new ProjetoDto()
                     {
-                      ExibirLog = x.Projeto.ExibirLog,
-                      Icone = x.Projeto.Icone,
-                      Id = x.Projeto.Id,
-                      Nome = x.Projeto.Nome,
-                      PortaPadrao = x.Projeto.PortaPadrao
+                        ExibirLog = x.Projeto.ExibirLog,
+                        Icone = x.Projeto.Icone,
+                        Id = x.Projeto.Id,
+                        Nome = x.Projeto.Nome,
+                        PortaPadrao = x.Projeto.PortaPadrao
                     },
                     Respostas = new ObservableCollection<ProjetoItemRespostaDto>(x.Respostas.Select(x => new ProjetoItemRespostaDto()
                     {
@@ -164,6 +172,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             }
 
             _appState.Applications.Add((Selected.Id, app));
+            RaisePropertyChanged(nameof(IsActive));
             //await app.RunAsync(_cancellationToken);
         }
 
