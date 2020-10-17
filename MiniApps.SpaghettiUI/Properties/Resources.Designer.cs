@@ -203,5 +203,23 @@ namespace MiniApps.SpaghettiUI.Properties {
                 return ResourceManager.GetString("ShellSettingsPage", resourceCulture);
             }
         }
+    
+        /// <summary>
+        ///   Looks up a localized string similar to QueueManager.
+        /// </summary>
+        public static string QueueManagerPageTitle {
+            get {
+                return ResourceManager.GetString("QueueManagerPageTitle", resourceCulture);
+            }
+        }
+    
+        /// <summary>
+        ///   Looks up a localized string similar to QueueManager.
+        /// </summary>
+        public static string ShellQueueManagerPage {
+            get {
+                return ResourceManager.GetString("ShellQueueManagerPage", resourceCulture);
+            }
+        }
     }
 }

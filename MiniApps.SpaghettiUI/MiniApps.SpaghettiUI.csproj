@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="FeatherHttp" Version="0.1.69-alpha.g012a8b3bdb" />
     <PackageReference Include="MahApps.Metro" Version="2.2.0" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="7.0.5-develop.2983" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.8" />
@@ -20,6 +21,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniApps.SpaghettiUI.Core\MiniApps.SpaghettiUI.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="JD.PI.GestaoContaPI.Worker.Contracts">
+      <HintPath>..\..\JDPix\GestaoContaPI\src\02 - Workers Services\01 - Services\JD.PI.GestaoPI.Send.Worker\bin\Debug\netcoreapp3.1\JD.PI.GestaoContaPI.Worker.Contracts.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

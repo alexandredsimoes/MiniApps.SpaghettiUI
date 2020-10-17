@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -27,6 +28,7 @@ using MiniApps.SpaghettiUI.Views;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Unity;
+
 using Unity;
 
 namespace MiniApps.SpaghettiUI
@@ -80,6 +82,7 @@ namespace MiniApps.SpaghettiUI
             containerRegistry.Register<IProjetoService, ProjetoService>();
 
             // Views
+            containerRegistry.RegisterForNavigation<QueueManagerPage, QueueManagerViewModel>(PageKeys.QueueManager);
             containerRegistry.RegisterForNavigation<SettingsPage, SettingsViewModel>(PageKeys.Settings);
             containerRegistry.RegisterForNavigation<MasterDetailPage, MasterDetailViewModel>(PageKeys.MasterDetail);
             containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(PageKeys.Main);
@@ -225,7 +228,7 @@ namespace MiniApps.SpaghettiUI
 	                                        ""tpRequisicao"":#query-tpRequisicao#,
 	                                        ""aporteCCME"": {
 		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                        ""situacao"":0,
+		                                        ""situacao"":1,
 		                                        ""descSituacao"":"""",
 		                                        ""numCtrlIEME"":""PIX20200124000000001"",
 		                                        ""ispbIEME"":4358798,
@@ -246,7 +249,7 @@ namespace MiniApps.SpaghettiUI
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""aporteTPF"": {
 		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                            ""situacao"":0,
+		                                            ""situacao"":2,
 		                                            ""descSituacao"":"""",
 		                                            ""numCtrlIF"":""PIX20200124000000001"",
 		                                            ""ispbIF"":4358798,

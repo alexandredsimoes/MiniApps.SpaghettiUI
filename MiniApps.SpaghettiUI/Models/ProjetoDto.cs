@@ -24,6 +24,7 @@ namespace MiniApps.SpaghettiUI.Models
         public string Nome { get => nome; set => SetProperty(ref nome, value); }
         public int PortaPadrao { get => portaPadrao; set => SetProperty(ref portaPadrao, value); }
         public ObservableCollection<ProjetoItemDto> Items { get => items; set => SetProperty(ref items, value); }
+        public bool ExibirLog { get; internal set; }
     }
 
     public class ProjetoItemDto : BindableBase
@@ -36,7 +37,7 @@ namespace MiniApps.SpaghettiUI.Models
         private int codigoHttpPadrao;
         private ProjetoDto projeto;
         private string descricao;
-        private ICollection<ProjetoItemRespostaDto> respostas;
+        private ObservableCollection<ProjetoItemRespostaDto> respostas;
 
         public Guid Id { get => id; set => SetProperty(ref id, value); }
         public Guid ProjetoId { get => projetoId; set => SetProperty(ref projetoId, value); }
@@ -47,10 +48,13 @@ namespace MiniApps.SpaghettiUI.Models
         public ProjetoDto Projeto { get => projeto; set => SetProperty(ref projeto, value); }
         public string Descricao { get => descricao; set => SetProperty(ref descricao, value); }
 
-        public ICollection<ProjetoItemRespostaDto> Respostas { get => respostas; set => SetProperty(ref respostas, value); }
+        public ObservableCollection<ProjetoItemRespostaDto> Respostas { get => respostas; set => SetProperty(ref respostas, value); }
     }
 
     public class ProjetoItemRespostaDto
     {
+        public int CodigoHttp { get; internal set; }
+        public object Condicao { get; internal set; }
+        public string Resposta { get; internal set; }
     }
 }

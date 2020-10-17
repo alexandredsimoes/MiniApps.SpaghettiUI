@@ -43,6 +43,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
         {
             new HamburgerMenuGlyphItem() { Label = Resources.ShellMainPage, Glyph = "\uE8A5", Tag = PageKeys.Main },
             new HamburgerMenuGlyphItem() { Label = Resources.ShellMasterDetailPage, Glyph = "\uE12B", Tag = PageKeys.MasterDetail },
+            new HamburgerMenuGlyphItem() { Label = Resources.ShellQueueManagerPage, Glyph = "\uE8A5", Tag = PageKeys.QueueManager },
         };
 
         public ObservableCollection<HamburgerMenuItem> OptionMenuItems { get; } = new ObservableCollection<HamburgerMenuItem>()

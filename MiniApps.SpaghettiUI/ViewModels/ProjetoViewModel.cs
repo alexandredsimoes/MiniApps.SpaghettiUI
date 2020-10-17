@@ -1,9 +1,12 @@
 ﻿using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
+using MiniApps.SpaghettiUI.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MiniApps.SpaghettiUI.ViewModels
@@ -14,8 +17,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
         
         private DelegateCommand<string> _endpointCommand;
 
-        private Projeto _selecionado;
-        public Projeto Selecionado
+        private ProjetoDto _selecionado;
+        public ProjetoDto Selecionado
         {
             get { return _selecionado; }
             set { SetProperty(ref _selecionado, value); }
@@ -36,8 +39,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
         {
             if(acao == "+")
             {
-                Selecionado.Items.Add(new ProjetoItem()
+                Selecionado.Items.Insert(0, new ProjetoItemDto()
                 {
+                    CodigoHttpPadrao = 200,
                     Endpoint = "/",
                     Metodo = Core.MetodoHttp.MhPost,
                 });
@@ -56,7 +60,35 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         private async Task CarregarDados(Guid id)
         {
-            Selecionado = await _projetoService.ObterProjeto(id);
+            Selecionado = ToDto(await _projetoService.ObterProjeto(id));
+        }
+
+        private ProjetoDto ToDto(Projeto x)
+        {
+            return new ProjetoDto()
+            {
+                Icone = x.Icone,
+                Id = x.Id,
+                Nome = x.Nome,
+                PortaPadrao = x.PortaPadrao,
+                ExibirLog = x.ExibirLog,
+                Items = new ObservableCollection<ProjetoItemDto>(x.Items.Select(x => new ProjetoItemDto()
+                {
+                    Id = x.Id,
+                    Metodo = x.Metodo,
+                    ProjetoId = x.ProjetoId,
+                    CodigoHttpPadrao = x.CodigoHttpPadrao,
+                    Descricao = x.Descricao,
+                    Endpoint = x.Endpoint,
+                    RespostaPadrao = x.RespostaPadrao,
+                    Respostas = new ObservableCollection<ProjetoItemRespostaDto>(x.Respostas.Select(x => new ProjetoItemRespostaDto()
+                    {
+                        CodigoHttp = x.CodigoHttp,
+                        Condicao = x.Condicao,
+                        Resposta = x.Resposta,
+                    }))
+                }))
+            };
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)

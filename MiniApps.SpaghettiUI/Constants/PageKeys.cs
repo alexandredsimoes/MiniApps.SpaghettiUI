@@ -6,5 +6,6 @@
         public const string MasterDetail = "Projetos";
         public const string Settings = "Settings";
         public const string Projeto = "Projeto";
+        public const string QueueManager = "QueueManager";
     }
 }

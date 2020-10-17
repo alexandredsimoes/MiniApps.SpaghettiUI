@@ -15,6 +15,7 @@ using MiniApps.SpaghettiUI.Core;
 using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
 using MiniApps.SpaghettiUI.Core.Services;
+using MiniApps.SpaghettiUI.Models;
 using MiniApps.SpaghettiUI.Services;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -27,19 +28,18 @@ namespace MiniApps.SpaghettiUI.ViewModels
         private readonly AppState _appState;
         private readonly IProjetoService _projetoService;
         private readonly IRegionNavigationService _navigationService;
-        private Projeto _selected;
+        private ProjetoDto _selected;
 
         private DelegateCommand _subirServidorCommand;
         private DelegateCommand _modificarProjetoCommand;
         private string _logs;
-        private CancellationToken _cancellationToken;
 
-        public Projeto Selected
+        public ProjetoDto Selected
         {
             get { return _selected; }
             set { SetProperty(ref _selected, value); }
         }
-        public ObservableCollection<Projeto> Projetos { get; private set; } = new ObservableCollection<Projeto>();
+        public ObservableCollection<ProjetoDto> Projetos { get; private set; } = new ObservableCollection<ProjetoDto>();
 
         public MasterDetailViewModel(IProjetoService projetoService,
                                      AppState appState,
@@ -57,7 +57,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
             var projetos = await _projetoService.ListarProjetos();
 
-            foreach (var projeto in projetos)
+            foreach (var projeto in projetos.Select(x => ToDto(x)).ToList())
             {
                 Projetos.Add(projeto);
             }
@@ -65,12 +65,50 @@ namespace MiniApps.SpaghettiUI.ViewModels
             Selected = Projetos.First();
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        private ProjetoDto ToDto(Projeto x)
         {
-            
+            return new ProjetoDto()
+            {
+                Icone = x.Icone,
+                Id = x.Id,
+                Nome = x.Nome,
+                PortaPadrao = x.PortaPadrao,
+                ExibirLog = x.ExibirLog,
+                Items = new ObservableCollection<ProjetoItemDto>(x.Items.Select(x => new ProjetoItemDto()
+                {
+                    Id = x.Id,
+                    Metodo = x.Metodo,
+                    ProjetoId = x.ProjetoId,
+                    CodigoHttpPadrao = x.CodigoHttpPadrao,
+                    Descricao = x.Descricao,
+                    Endpoint = x.Endpoint,
+                    RespostaPadrao = x.RespostaPadrao,
+                    Projeto = new ProjetoDto()
+                    {
+                      ExibirLog = x.Projeto.ExibirLog,
+                      Icone = x.Projeto.Icone,
+                      Id = x.Projeto.Id,
+                      Nome = x.Projeto.Nome,
+                      PortaPadrao = x.Projeto.PortaPadrao
+                    },
+                    Respostas = new ObservableCollection<ProjetoItemRespostaDto>(x.Respostas.Select(x => new ProjetoItemRespostaDto()
+                    {
+                        CodigoHttp = x.CodigoHttp,
+                        Condicao = x.Condicao,
+                        Resposta = x.Resposta,
+                    }))
+                }))
+            };
         }
 
-        
+
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
+        }
+
+
         public string Logs
         {
             get { return _logs; }
@@ -94,14 +132,14 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         async void ExecuteSubirServidorCommand()
         {
-            if(_appState.Applications.Select(x=>x.Item1).Any(x=>x == Selected.Id))
+            if (_appState.Applications.Select(x => x.Item1).Any(x => x == Selected.Id))
             {
                 return;
             }
 
             //
             var app = WebApplication.Create();
-            
+
             app.Listen($"https://localhost:{Selected.PortaPadrao}");
 
             foreach (var endpoint in Selected.Items)
@@ -109,7 +147,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 if (endpoint.Metodo == Core.MetodoHttp.MhGet)
                 {
                     app.MapGet(endpoint.Endpoint, async (context) =>
-                    {                       
+                    {
                         await ProcessarRequisicao(context, endpoint);
 
                     });
@@ -129,11 +167,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
             //await app.RunAsync(_cancellationToken);
         }
 
-        private async Task ProcessarRequisicao(HttpContext context, ProjetoItem endpoint)
+        private async Task ProcessarRequisicao(HttpContext context, ProjetoItemDto endpoint)
         {
             if (endpoint.Respostas?.Count > 0)
             {
-                
+
                 var respostasComCondicoes = endpoint.Respostas.Where(x => x.Condicao != null);
                 if (respostasComCondicoes.Count() == 0)
                 {
@@ -150,9 +188,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     //Condicoes
                     //#query-tpRequisicao#=6
                     var resposta = endpoint.Respostas.Where(x => query.Contains(x.Condicao)).FirstOrDefault();
-                    
+
                     //Achamos na query
-                    if(resposta != null)
+                    if (resposta != null)
                     {
                         context.Response.StatusCode = resposta.CodigoHttp;
                         await context.Response.WriteAsync(ProcessarResposta(context, resposta));
@@ -163,7 +201,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         var header = context.Request.Headers.Select(x => $"#header-{x.Key}#={x.Value}").ToList();
                         var respostaHeader = endpoint.Respostas.Where(x => header.Contains(x.Condicao)).FirstOrDefault();
 
-                        if(respostaHeader != null)
+                        if (respostaHeader != null)
                         {
                             context.Response.StatusCode = resposta.CodigoHttp;
                             await context.Response.WriteAsync(ProcessarResposta(context, resposta));
@@ -171,7 +209,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         else
                         {
                             var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
-                            if(respostasComCondicoes == null)
+                            if (respostasComCondicoes == null)
                             {
                                 context.Response.StatusCode = resposta.CodigoHttp;
                                 await context.Response.WriteAsync(ProcessarResposta(context, respostaSemCondicoes));
@@ -181,7 +219,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                 context.Response.StatusCode = 500;
                                 await context.Response.WriteAsync("Falhamos miseravelmente em processar sua requisição.");
                             }
-                            
+
                         }
                     }
                 }
@@ -212,7 +250,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                 sb.AppendLine($"{metodo} {context.Request.GetEncodedUrl()}");
                 sb.AppendLine("---------------------------------------------");
-               
+
 
                 var body = await stream.ReadToEndAsync();
                 if (!string.IsNullOrWhiteSpace(body))
@@ -224,7 +262,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 }
 
                 var headers = context.Request.Headers;
-                if (headers?.Count > 0) {
+                if (headers?.Count > 0)
+                {
                     sb.AppendLine("Header content");
                     sb.AppendLine("---------------------------------------------");
                     foreach (var item in context.Request.Headers)
@@ -236,7 +275,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                 var queries = context.Request.Query;
 
-                if(queries?.Count > 0)
+                if (queries?.Count > 0)
                 {
                     sb.AppendLine("Query content");
                     sb.AppendLine("---------------------------------------------");
@@ -246,7 +285,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     }
                     sb.AppendLine("---------------------------------------------");
                 }
-               
+
                 Logs += sb.ToString();
             }
         }
@@ -275,7 +314,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             return result;
         }
 
-        private string ProcessarResposta(HttpContext context, ProjetoItemResposta resposta)
+        private string ProcessarResposta(HttpContext context, ProjetoItemRespostaDto resposta)
         {
             return ProcessarResposta(context, resposta.Resposta);
         }
