@@ -29,11 +29,14 @@ namespace MiniApps.SpaghettiUI.ViewModels
         private readonly IProjetoService _projetoService;
         private readonly IRegionNavigationService _navigationService;
         private ProjetoDto _selected;
+        private string _logs;
+
 
         private DelegateCommand _subirServidorCommand;
         private DelegateCommand _modificarProjetoCommand;
-        private string _logs;
-
+        private DelegateCommand _pararServidorCommand;
+        
+        
 
         public bool IsActive
         {
@@ -111,9 +114,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
 
 
-        public void OnNavigatedFrom(NavigationContext navigationContext)
+        public async void OnNavigatedFrom(NavigationContext navigationContext)
         {
-
+           
         }
 
 
@@ -126,10 +129,24 @@ namespace MiniApps.SpaghettiUI.ViewModels
         public bool IsNavigationTarget(NavigationContext navigationContext) => true;
 
 
+        public DelegateCommand PararServidorCommand => _pararServidorCommand ?? (_pararServidorCommand = new DelegateCommand(ExecutePararServidorCommand));
+        
         public DelegateCommand SubirServidorCommand => _subirServidorCommand ?? (_subirServidorCommand = new DelegateCommand(ExecuteSubirServidorCommand));
 
         public DelegateCommand ModificarProjetoCommand =>
             _modificarProjetoCommand ?? (_modificarProjetoCommand = new DelegateCommand(ExecuteModificarProjetoCommand));
+
+
+        private async void ExecutePararServidorCommand()
+        {
+            if (_selected == null || _appState.Applications.Count == 0) return;
+
+            var webApp = _appState.Applications.FirstOrDefault(x => x.Item1 == Selected.Id);
+            await webApp.Item2.StopAsync();
+
+            _appState.Applications.Remove(webApp);
+            RaisePropertyChanged(nameof(IsActive));
+        }
 
         void ExecuteModificarProjetoCommand()
         {

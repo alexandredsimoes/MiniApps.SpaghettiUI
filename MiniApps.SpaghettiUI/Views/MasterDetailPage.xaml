@@ -89,14 +89,15 @@
                         </ListView.ItemTemplate>
                     </ListView>
                     <StackPanel Orientation="Horizontal" Margin="{StaticResource MediumBottomMargin}">
-                        <Button Content="Subir servidor" Command="{Binding ElementName=TheControl, Path=DataContext.SubirServidorCommand}" />
+                        <Button Visibility="{Binding ElementName=TheControl, Path=DataContext.IsActive, Converter={StaticResource BooleanToVisibilityInverterConverter}}"  Content="Subir servidor" Command="{Binding ElementName=TheControl, Path=DataContext.SubirServidorCommand}" />
+                        <Button Visibility="{Binding ElementName=TheControl, Path=DataContext.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Parar servidor" Command="{Binding ElementName=TheControl, Path=DataContext.PararServidorCommand}" />
                         <Button Content="Modificar projeto" Command="{Binding ElementName=TheControl, Path=DataContext.ModificarProjetoCommand}" />
                         <TextBlock Visibility="{Binding ElementName=TheControl, Path=DataContext.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Text="&#xF5B0;" Margin="{StaticResource SmallLeftMargin}" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#FF00B028" />
                         <TextBlock Visibility="{Binding ElementName=TheControl, Path=DataContext.IsActive, Converter={StaticResource BooleanToVisibilityInverterConverter}}" Text="&#xE978;" Margin="{StaticResource SmallLeftMargin}" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#FFE00000" />
                         
                     </StackPanel>
                     <TextBlock Text="Log" Style="{StaticResource SubtitleTextStyle}"/>
-                    <TextBox Text="{Binding ElementName=TheControl, Path=DataContext.Logs}" TextWrapping="Wrap" Height="Auto" IsReadOnly="True" 
+                    <TextBox BorderThickness="0" Text="{Binding ElementName=TheControl, Path=DataContext.Logs}" TextWrapping="Wrap" Height="Auto" IsReadOnly="True" 
                              HorizontalContentAlignment="Stretch" 
                              VerticalContentAlignment="Stretch"/>
                 </StackPanel>
