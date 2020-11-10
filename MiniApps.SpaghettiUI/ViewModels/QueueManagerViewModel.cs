@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GreenPipes;
-using JD.PI.GestaoContaPI.Worker.Contracts;
+using JD.PI.GestaoContaPI.Contracts;
 using MassTransit;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -10,7 +10,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 {
     public class QueueManagerViewModel : BindableBase
     {
-        private DelegateCommand _postarFilaCommand;
+        private DelegateCommand<string> _postarFilaCommand;
         private string nomeFila = "";
         private string servidor = "10.10.20.36";
         private string usuario = "jdpi";
@@ -47,9 +47,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
 
 
-        public DelegateCommand PostarFilaCommand => _postarFilaCommand ?? (_postarFilaCommand = new DelegateCommand(ExecutePostarFilaCommandAsync));
+        public DelegateCommand<string> PostarFilaCommand => _postarFilaCommand ?? (_postarFilaCommand = new DelegateCommand<string>(ExecutePostarFilaCommandAsync));
 
-        async void ExecutePostarFilaCommandAsync()
+        async void ExecutePostarFilaCommandAsync(string tipo)
         {
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
@@ -62,26 +62,137 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     });
                 });
 
-                
+
                 sbc.Message<AporteRbCLCommand>(config =>
                 {
                     config.SetEntityName(AporteRbCLCommand.EntityName);
+                });
+
+                sbc.Message<AporteCcMeCommand>(config =>
+                {
+                    config.SetEntityName(AporteCcMeCommand.EntityName);
+                });
+
+                sbc.Message<SaqueCcMeCommand>(config =>
+                {
+                    config.SetEntityName(SaqueCcMeCommand.EntityName);
+                });
+
+                sbc.Message<SaqueRbClCommand>(config =>
+                {
+                    config.SetEntityName(SaqueRbClCommand.EntityName);
                 });
 
             });
 
             await bus.StartAsync(); // This is important!
 
-            var aporte = new AporteRbCLCommand()
+            //var numCtrlIF = "JDPI20out30110751841";
+            var numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+
+            var aporteRbCl = new AporteRbCLCommand()
             {
-                NumCtrlIf = $"JDPI{DateTime.Now:yyMMMddHHmmssfff}",
+                NumCtrlIf = numCtrlIF,
                 DtMovimento = DateTime.Now,
-                IspbIf = 12345678,
-                IspbPspi = 87654321,
+                IspbIf = 04358798,
+                IspbPspi = 04358798,
                 Valor = 50000
             };
 
-            await bus.Publish(aporte);
+            var aporteRbClManual = AporteRbCLCommand.CriarAporteManual(32997490,
+                                                                       32997490,
+                                                                       50_000,
+                                                                       DateTime.Now,
+                                                                       numCtrlIF,
+                                                                       "123456",
+                                                                       DateTime.Now.AddMinutes(10));
+            
+            var aporteCcMe = new AporteCcMeCommand()
+            {
+                NumCtrlIEME = numCtrlIF,
+                DtMovimento = DateTime.Now,
+                IspbIeme = 04358798,
+                Valor = 100_000_000,
+            };
+
+            var aporteCcMeManual = AporteCcMeCommand.CriarAporteManual(32997490,
+                                                                       50_000,
+                                                                       DateTime.Now,
+                                                                       numCtrlIF,
+                                                                       "12345678",
+                                                                       DateTime.Now);
+
+            var saqueRbCl = new SaqueRbClCommand()
+            {
+                NumCtrlPSPI = numCtrlIF,
+                DtMovimento = DateTime.Now,
+                IspbIfCreditada = 32997490,
+                IspbPspi = 32997490,
+                FinalidadeLpi = JD.PI.GestaoContaPI.Contracts.Common.Enum.FinalidadeLpi.FlMovimentacaoLiquidanteStr,
+                ClienteCreditado = new ClienteCreditado()
+                {
+                    //AgCreditada = "8510",
+                    //CnpjCliCreditado = "76330826000180",
+                    //CtCreditada = "18982",
+                },
+                Valor = 10_000
+            };
+
+            var saqueRbClManual = SaqueRbClCommand.CriarAporteManual(32997490,
+                                                                     numCtrlIF,
+                                                                     32997490,
+                                                                     JD.PI.GestaoContaPI.Contracts.Common.Enum.FinalidadeLpi.FlMovimentacaoLiquidanteStr,
+                                                                     "",
+                                                                     10_000,
+                                                                     DateTime.Now,
+                                                                     "123456789",
+                                                                     DateTime.Now);
+
+            var saqueCcMe = new SaqueCcMeCommand()
+            {
+                NumCtrlPSPI = numCtrlIF,
+                DtMovimento = DateTime.Now,
+                IspbPspi = 32997490,
+                Valor = 40_000,
+            };
+
+            var saqueCcMeManual = SaqueCcMeCommand.CriarAporteManual(32997490,
+                                                                     40_000,
+                                                                     DateTime.Now,
+                                                                     numCtrlIF,
+                                                                     "123456789",
+                                                                     DateTime.Now);
+
+            if (tipo == "aporteccme")
+                await bus.Publish(aporteCcMe);
+
+            await Task.Delay(1000);
+
+            if (tipo == "saqueccme")
+                await bus.Publish(saqueCcMe);
+
+
+
+            if (tipo == "aporterbcl")
+                await bus.Publish(aporteRbCl);
+
+            if (tipo == "saquerbcl")
+                await bus.Publish(saqueRbCl);
+
+            
+            if (tipo == "aporterbcl-manual")
+                await bus.Publish(aporteRbClManual);
+
+            if (tipo == "aporteccme-manual")
+                await bus.Publish(aporteCcMeManual);
+
+            if (tipo == "saquerbcl-manual")
+                await bus.Publish(saqueRbClManual);
+
+            if (tipo == "saqueccme-manual")
+                await bus.Publish(saqueCcMeManual);
+
+
 
             //await bus.Send<AporteRbCLCommand>(aporte);
 

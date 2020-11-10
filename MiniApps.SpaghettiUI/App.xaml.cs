@@ -115,14 +115,14 @@ namespace MiniApps.SpaghettiUI
             //""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
             var projetoId = Guid.NewGuid();
             var respostaAporte = @"{
-	                                            ""idRequisicao"":""#guid#"",
-	                                            ""dtHrRequisicao"":""#datenowutc#""
+	                                            ""idRequisicao"":""#json-numCtrlIf#"",
+	                                            ""dtHrRequisicao"":""#datenowutc#"",
                                             }";
             db.Projetos.AddRange(new Projeto()
             {
                 Id = projetoId,
                 Nome = "Gestão Conta PI",
-                PortaPadrao = 5001,
+                PortaPadrao = 5082,
                 ExibirLog = true,
                 Items = new List<ProjetoItem>()
                 {
@@ -200,156 +200,173 @@ namespace MiniApps.SpaghettiUI
                         {
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Aporte RBCL com sucesso",
                                 Condicao = "#query-tpRequisicao#=0",
                                 CodigoHttp = 200,
                                 Resposta =  @"{
 	                                        ""idRequisicao"":""#query-idRequisicao#"",
 	                                        ""tpRequisicao"":#query-tpRequisicao#,
 	                                        ""aporteRBCL"": {
-		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                        ""situacao"":0,
-		                                        ""descSituacao"":"""",
+		                                        ""dtHrSituacao"":""#datenow#"",
+		                                        ""situacao"":3,
+		                                        ""descSituacao"":""Cancelado"",
 		                                        ""numCtrlIF"":""#query-idRequisicao#"",
-		                                        ""ispbIF"":4358798,
-		                                        ""numCtrlSTR"":""#query-idRequisicao#"",
-		                                        ""sitLancSTR"":1,
+		                                        ""ispbIF"":32997490,		                                        
 		                                        ""valor"":50000.25,
-		                                        ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                        ""dtMovimento"":""2020-01-24""
+                                                ""sitLancSTR"":14,
 	                                        }
                                         } ",
                             },
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Aporte CCME com sucesso",
                                 Condicao = "#query-tpRequisicao#=1",
                                 CodigoHttp = 200,
                                 Resposta =  @"{
 	                                        ""idRequisicao"":""#query-idRequisicao#"",
 	                                        ""tpRequisicao"":#query-tpRequisicao#,
 	                                        ""aporteCCME"": {
-		                                        ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                        ""situacao"":1,
+		                                        ""dtHrSituacao"":""#datenow#"",
+		                                        ""situacao"":0,
 		                                        ""descSituacao"":"""",
 		                                        ""numCtrlIEME"":""#query-idRequisicao#"",
-		                                        ""ispbIEME"":4358798,
+		                                        ""ispbIEME"":32997490,
 		                                        ""numCtrlSTR"":""STR20200124000000001"",
 		                                        ""sitLancSTR"":1,
-		                                        ""valor"":50000.25,
-		                                        ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                        ""dtMovimento"":""2020-01-24""
+		                                        ""valor"":100000,
+		                                        ""dtHrSitBC"":""#datenow#"",
+		                                        ""dtMovimento"":""#datenow#""
 	                                        }
                                         }",
                             },
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Aporte TPF com sucesso",
                                 Condicao = "#query-tpRequisicao#=2",
                                 CodigoHttp = 200,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""aporteTPF"": {
-		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                            ""situacao"":2,
+		                                            ""dtHrSituacao"":""#datenow#"",
+		                                            ""situacao"":0,
 		                                            ""descSituacao"":"""",
 		                                            ""numCtrlIF"":""#query-idRequisicao#"",
-		                                            ""ispbIF"":4358798,
+		                                            ""ispbIF"":32997490,
 		                                            ""numOperacao"":123456,
 		                                            ""numOperacaoRet"":234567,
 		                                            ""numCtrlSTR"":""STR20200124000000001"",
 		                                            ""sitOpSEL"":""ATU"",
 		                                            ""valor"":50000.25,
-		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                            ""dtMovimento"":""2020-01-24""
+		                                            ""dtHrSitBC"":""#datenow#"",
+		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
                                             "
                             },
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Saque RBCL com sucesso",
                                 Condicao = "#query-tpRequisicao#=3",
                                 CodigoHttp = 200,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""saqueRBCL"": {
-		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                            ""situacao"":0,
-		                                            ""descSituacao"":"""",
+		                                            ""dtHrSituacao"":""#datenow#"",
+		                                            ""situacao"":3,
+		                                            ""descSituacao"":""EGEN0008 - ISPB Destinatário Não Informado; EGEN1001 - ISPB Inválido; EGEN0005 - ISPB Emissor Inválido;"",
 		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
-		                                            ""ispbPSPI"":4358798,
-		                                            ""numCtrlSTR"":""STR20200124000000001"",
-		                                            ""sitLancSTR"":1,
-		                                            ""valor"":50000.25,
-		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                            ""dtMovimento"":""2020-01-24""
+		                                            ""ispbPSPI"":32997490,		                                            
+		                                            ""valor"":2000,
+		                                            ""dtHrSitBC"":""#datenow#"",
+		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
                                             "
+                                //Resposta = @"{
+	                               //             ""idRequisicao"":""#query-idRequisicao#"",
+	                               //             ""tpRequisicao"":#query-tpRequisicao#,
+	                               //             ""saqueRBCL"": {
+		                              //              ""dtHrSituacao"":""#datenow#"",
+		                              //              ""situacao"":3,
+		                              //              ""descSituacao"":""ERRO BACEN"",
+		                              //              ""numCtrlPSPI"":""#query-idRequisicao#"",
+		                              //              ""ispbPSPI"":32997490,
+		                              //              ""numCtrlSTR"":""STR2020333665889"",
+		                              //              ""sitLancSTR"":1,
+		                              //              ""valor"":2000,
+		                              //              ""dtHrSitBC"":""#datenow#"",
+		                              //              ""dtMovimento"":""#datenow#""
+	                               //             }
+                                //            }
+                                //            "
                             },
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Saque CCME com sucesso",
                                 Condicao = "#query-tpRequisicao#=4",
                                 CodigoHttp = 200,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""saqueCCME"": {
-		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
-		                                            ""situacao"":0,
-		                                            ""descSituacao"":"""",
+		                                            ""dtHrSituacao"":""#datenow#"",
+		                                            ""situacao"":3, 
+		                                            ""descSituacao"":""Pendente por insuficiência de saldo"",
 		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
-		                                            ""ispbPSPI"":4358798,
-		                                            ""numCtrlSTR"":""STR20200124000000001"",
-		                                            ""sitLancSTR"":1,
-		                                            ""valor"":50000.25,
-		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                            ""dtMovimento"":""2020-01-24""
+		                                            ""ispbPSPI"":32997490,
+		                                            ""sitLancSTR"":24,
+		                                            ""valor"":40000,
+		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
                                             "
                             } ,
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Saque TPF com sucesso",
                                 Condicao = "#query-tpRequisicao#=5",
                                 CodigoHttp = 200,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""saqueTPF"": {
-		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""dtHrSituacao"":""#datenow#"",
 		                                            ""situacao"":0,
 		                                            ""descSituacao"":"""",
 		                                            ""numCtrlIF"":""#query-idRequisicao#"",
-		                                            ""ispbIF"":4358798,
+		                                            ""ispbIF"":32997490,
 		                                            ""numOperacao"":123456,
 		                                            ""numCtrlSTR"":""STR20200124000000001"",
 		                                            ""sitOpSEL"":""CON"",
 		                                            ""valor"":50000.25,
-		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                            ""dtMovimento"":""2020-01-24""
+		                                            ""dtHrSitBC"":""#datenow#"",
+		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
                                             "
                             },
                             new ProjetoItemResposta()
                             {
+                                Descricao = "Aporte automatico com sucesso",
                                 Condicao = "#query-tpRequisicao#=6",
                                 CodigoHttp = 200,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""configAporteAuto"": {
-		                                            ""dtHrSituacao"":""2020-01-24T20:20:05.015Z"",
+		                                            ""dtHrSituacao"":""#datenow#"",
 		                                            ""situacao"":0,
 		                                            ""descSituacao"":"""",
 		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
-		                                            ""ispbPSPI"":4358798,
+		                                            ""ispbPSPI"":32997490,
 		                                            ""percSaldoRBCL"":20.75,
 		                                            ""valorRBCL"":0,
 		                                            ""percSaldoCCME"":0,
 		                                            ""valorCCME"":570000.50,
-		                                            ""dtHrSitBC"":""2020-01-24T19:50:27.108Z"",
-		                                            ""dtMovimento"":""2020-01-24""
+		                                            ""dtHrSitBC"":""#datenow#"",
+		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
                                             "

@@ -1,4 +1,5 @@
-﻿using MiniApps.SpaghettiUI.Core.Contracts.Services;
+﻿using MiniApps.SpaghettiUI.Constants;
+using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
 using MiniApps.SpaghettiUI.Models;
 using Prism.Commands;
@@ -8,14 +9,19 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MiniApps.SpaghettiUI.ViewModels
 {
     public class ProjetoViewModel : BindableBase, INavigationAware
     {
         private readonly IProjetoService _projetoService;
-        
-        private DelegateCommand<string> _endpointCommand;
+        private readonly IRegionNavigationService _navigationService;
+
+        private DelegateCommand _addEndpointCommand;
+        private DelegateCommand<object> _removeEndpointCommand;
+        private DelegateCommand _salvarCommand;
+        private DelegateCommand _removerCommand;
 
         private ProjetoDto _selecionado;
         public ProjetoDto Selecionado
@@ -24,33 +30,59 @@ namespace MiniApps.SpaghettiUI.ViewModels
             set { SetProperty(ref _selecionado, value); }
         }
 
-              
 
-        public ProjetoViewModel(IProjetoService projetoService)
+
+        public ProjetoViewModel(IProjetoService projetoService, IRegionManager regionManager)
         {
             _projetoService = projetoService;
+            _navigationService = regionManager.Regions[Regions.Main].NavigationService;
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext) => true;
-        public DelegateCommand<string> EndpointCommand =>
-            _endpointCommand ?? (_endpointCommand = new DelegateCommand<string>(ExecuteEndpointCommand));
+        public DelegateCommand AddEndpointCommand =>
+            _addEndpointCommand ?? (_addEndpointCommand = new DelegateCommand(ExecuteAddEndpointCommand));
 
-        void ExecuteEndpointCommand(string acao)
+        public DelegateCommand<object> RemoveEndpointCommand =>
+            _removeEndpointCommand ?? (_removeEndpointCommand = new DelegateCommand<object>(ExecuteRemoveEndpointCommand));
+
+        public DelegateCommand SalvarCommand =>
+            _salvarCommand ?? (_salvarCommand = new DelegateCommand(ExecuteSalvarCommand));
+
+        public DelegateCommand RemoverCommand =>
+            _removerCommand ?? (_removerCommand = new DelegateCommand(ExecuteRemoverCommand));
+
+        private async void ExecuteRemoverCommand()
         {
-            if(acao == "+")
+            var result = MessageBox.Show("Deseja realmente remover esse endpoint?", "", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if(result == MessageBoxResult.Yes)
             {
-                Selecionado.Items.Insert(0, new ProjetoItemDto()
+                if(await _projetoService.RemoverProjeto(_selecionado.Id))
                 {
-                    CodigoHttpPadrao = 200,
-                    Endpoint = "/",
-                    Metodo = Core.MetodoHttp.MhPost,
-                });
-                RaisePropertyChanged(nameof(Selecionado));
-            }
-            else if(acao == "-")
-            {
+                    _navigationService.Journal.GoBack();
+                }
+                    
+            }            
+        }
 
-            }
+        private void ExecuteSalvarCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ExecuteRemoveEndpointCommand(object item)
+        {
+            Selecionado.Items.Remove((ProjetoItemDto)item);
+        }
+
+        void ExecuteAddEndpointCommand()
+        {
+            Selecionado.Items.Insert(0, new ProjetoItemDto()
+            {
+                CodigoHttpPadrao = 200,
+                Endpoint = "/",
+                Metodo = Core.MetodoHttp.MhPost,
+            });
+            RaisePropertyChanged(nameof(Selecionado));
         }
 
         public async void OnNavigatedTo(NavigationContext navigationContext)

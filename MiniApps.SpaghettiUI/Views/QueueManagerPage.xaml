@@ -39,7 +39,16 @@
 
                 <TextBlock Text="Nome da fila"/>
                 <TextBox Text="{Binding NomeFila, Mode=TwoWay}"/>
-                <Button Command="{Binding PostarFilaCommand}">Posta na fila</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="aporteccme">Postar Aporte CCME</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="saqueccme">Postar Saque CCME</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="aporterbcl">Postar Aporte RBCL</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="saquerbcl">Postar Saque RBCL</Button>
+
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="aporterbcl-manual">Postar Aporte RBCL(manual)</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="saquerbcl-manual">Postar Saque RBCL(manual)</Button>
+                
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="aporteccme-manual">Postar Aporte CCME(manual)</Button>
+                <Button Command="{Binding PostarFilaCommand}" CommandParameter="saqueccme-manual">Postar Saque CCME(manual)</Button>
             </StackPanel>
         </Grid>
     </Grid>

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MahApps.Metro.Controls;
@@ -17,6 +18,8 @@ using MiniApps.SpaghettiUI.Core.Models;
 using MiniApps.SpaghettiUI.Core.Services;
 using MiniApps.SpaghettiUI.Models;
 using MiniApps.SpaghettiUI.Services;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -25,6 +28,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 {
     public class MasterDetailViewModel : BindableBase, INavigationAware
     {
+        private readonly Regex _regexParameters = new Regex("(?<=(#))(\\w|\\d|\\n|[().,\\-:;@#$%^&*\\[\\]\"'+–/\\/®°⁰!?{}|`~]| )+?(?=(#))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private readonly AppState _appState;
         private readonly IProjetoService _projetoService;
         private readonly IRegionNavigationService _navigationService;
@@ -35,8 +39,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
         private DelegateCommand _subirServidorCommand;
         private DelegateCommand _modificarProjetoCommand;
         private DelegateCommand _pararServidorCommand;
-        
-        
+
+
 
         public bool IsActive
         {
@@ -73,7 +77,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 Projetos.Add(projeto);
             }
 
-            Selected = Projetos.First();
+            Selected = Projetos.FirstOrDefault();
         }
 
         private ProjetoDto ToDto(Projeto x)
@@ -116,7 +120,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         public async void OnNavigatedFrom(NavigationContext navigationContext)
         {
-           
+
         }
 
 
@@ -130,7 +134,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
 
         public DelegateCommand PararServidorCommand => _pararServidorCommand ?? (_pararServidorCommand = new DelegateCommand(ExecutePararServidorCommand));
-        
+
         public DelegateCommand SubirServidorCommand => _subirServidorCommand ?? (_subirServidorCommand = new DelegateCommand(ExecuteSubirServidorCommand));
 
         public DelegateCommand ModificarProjetoCommand =>
@@ -182,6 +186,13 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 {
                     app.MapPost(endpoint.Endpoint, async (context) =>
                     {
+                        //using (var reader = new StreamReader(context.Request.Body))
+                        //{
+                        //    var body = await reader.ReadToEndAsync();
+
+                        //    var json = JsonConvert.DeserializeObject(body);
+                        //}
+
                         await ProcessarRequisicao(context, endpoint);
                     });
                 }
@@ -203,7 +214,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 {
                     var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                     context.Response.StatusCode = resposta.CodigoHttp;
-                    await context.Response.WriteAsync(ProcessarResposta(context, resposta));
+                    await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
                 }
                 else
                 {
@@ -219,7 +230,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     if (resposta != null)
                     {
                         context.Response.StatusCode = resposta.CodigoHttp;
-                        await context.Response.WriteAsync(ProcessarResposta(context, resposta));
+                        await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
                     }
                     else
                     {
@@ -230,7 +241,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         if (respostaHeader != null)
                         {
                             context.Response.StatusCode = resposta.CodigoHttp;
-                            await context.Response.WriteAsync(ProcessarResposta(context, resposta));
+                            await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
                         }
                         else
                         {
@@ -238,7 +249,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                             if (respostasComCondicoes == null)
                             {
                                 context.Response.StatusCode = resposta.CodigoHttp;
-                                await context.Response.WriteAsync(ProcessarResposta(context, respostaSemCondicoes));
+                                await context.Response.WriteAsync(await ProcessarResposta(context, respostaSemCondicoes));
                             }
                             else
                             {
@@ -255,7 +266,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             else
             {
                 context.Response.StatusCode = endpoint.CodigoHttpPadrao;
-                await context.Response.WriteAsync(ProcessarResposta(context, endpoint.RespostaPadrao));
+                await context.Response.WriteAsync(await ProcessarResposta(context, endpoint.RespostaPadrao));
             }
 
             if (endpoint.Projeto.ExibirLog)
@@ -316,33 +327,92 @@ namespace MiniApps.SpaghettiUI.ViewModels
             }
         }
 
-        private string ProcessarResposta(HttpContext context, string respostaPadrao)
+        private async ValueTask<string> ProcessarResposta(HttpContext context, string respostaPadrao)
         {
-            var result = respostaPadrao;
-            foreach (var item in context.Request.Query)
+            var result = new StringBuilder();
+            
+            //Le o corpo da requisição para processamento futuro
+            using var reader = new StreamReader(context.Request.Body);           
+            var body = await reader.ReadToEndAsync();
+
+            result.Append(respostaPadrao);
+
+            var matches = _regexParameters.Matches(respostaPadrao);
+            foreach (Match item in matches)
             {
-                result = result.Replace($"#query-{item.Key}#", item.Value);
+
+                if (item.Value.Contains("query-"))
+                {
+                    var h = context.Request.Query.FirstOrDefault(x => x.Key == item.Value.Substring(item.Value.IndexOf("-") + 1));
+                    if (h.Key != null)
+                        result.Replace($"#{item.Value}#", h.Value);
+                }
+
+                if (item.Value.Contains("header-"))
+                {
+                    var h = context.Request.Headers.FirstOrDefault(x => x.Key == item.Value.Substring(item.Value.IndexOf("-") + 1));
+                    if (h.Key != null)
+                        result.Replace($"#{item.Value}#", h.Value);
+                }
+
+                if (item.Value.Contains("json-"))
+                {
+                    if (!string.IsNullOrWhiteSpace(body))
+                    {
+                        JObject json = (JObject)JsonConvert.DeserializeObject(body);
+                        if (json != null)
+                        {
+                            var token = json.SelectToken(item.Value.Substring(item.Value.IndexOf('-') + 1));
+                            if (token != null)
+                                result.Replace($"#{item.Value}#", token.Value<string>());
+                        }
+                    }                    
+                }
+
+                if (item.Value.Contains("datenow"))
+                {
+                    result.Replace("#datenow#", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                }
+                if (item.Value.Contains("datenowutc"))
+                {
+                    result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
+                }
+                if (item.Value.Contains("guid"))
+                {
+                    result.Replace("#guid#", Guid.NewGuid().ToString());
+                }
+
+                result.Replace(item.Value, item.ToString());
             }
+            //var result = respostaPadrao;
+            //foreach (var item in context.Request.Query)
+            //{
+            //    result = result.Replace($"#query-{item.Key}#", item.Value);
+            //}
 
             //Hack: Usar Regex para processar multiplas entradas de macros
             //Processa outras macros
-            result = result.Replace("#datenow#", DateTime.Now.ToString());
-            result = result.Replace("#guid#", Guid.NewGuid().ToString());
-            if (result.Contains("#datenowutc:#"))
-            {
-                result = result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
-            }
-            else if (result.Contains("#datenowutc#"))
-            {
-                result = result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
-            }
+            //result = result.Replace("#datenow#", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            //result = result.Replace("#jd-id#", "JDPI20out30110751841");
 
-            return result;
+            //result = result.Replace("#guid#", Guid.NewGuid().ToString());
+            //if (result.Contains("#datenowutc:#"))
+            //{
+            //    result = result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
+            //}
+            //else if (result.Contains("#datenowutc#"))
+            //{
+            //    result = result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
+            //}
+
+            //JDPI20out30110751841
+
+            return result.ToString();
         }
 
-        private string ProcessarResposta(HttpContext context, ProjetoItemRespostaDto resposta)
+        private async ValueTask<string> ProcessarResposta(HttpContext context, ProjetoItemRespostaDto resposta)
         {
-            return ProcessarResposta(context, resposta.Resposta);
+            return await ProcessarResposta(context, resposta.Resposta);
         }
     }
 }

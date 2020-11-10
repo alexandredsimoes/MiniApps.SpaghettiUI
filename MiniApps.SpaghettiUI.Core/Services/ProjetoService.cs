@@ -4,6 +4,7 @@ using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MiniApps.SpaghettiUI.Core.Services
@@ -26,6 +27,13 @@ namespace MiniApps.SpaghettiUI.Core.Services
         {
             var entity = await _context.Projetos.FirstOrDefaultAsync(x => x.Id == id);
             return entity;
+        }
+
+        public async Task<bool> RemoverProjeto(Guid id)
+        {
+            var entity = await ObterProjeto(id);
+            _context.Projetos.Remove(entity);
+            return await _context.SaveChangesAsync(CancellationToken.None) > 0;
         }
     }
 }

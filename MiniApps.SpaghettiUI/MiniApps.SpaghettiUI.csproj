@@ -23,8 +23,8 @@
     <ProjectReference Include="..\MiniApps.SpaghettiUI.Core\MiniApps.SpaghettiUI.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="JD.PI.GestaoContaPI.Worker.Contracts">
-      <HintPath>..\..\JDPix\GestaoContaPI\src\02 - Workers Services\01 - Services\JD.PI.GestaoPI.Send.Worker\bin\Debug\netcoreapp3.1\JD.PI.GestaoContaPI.Worker.Contracts.dll</HintPath>
+    <Reference Include="JD.PI.GestaoContaPI.Contracts">
+      <HintPath>..\..\JDPix\GestaoContaPI\src\02 - Workers Services\03 - Application\JD.PI.GestaoContaPI.Contracts\bin\Debug\netstandard2.1\JD.PI.GestaoContaPI.Contracts.dll</HintPath>
     </Reference>
   </ItemGroup>
 
