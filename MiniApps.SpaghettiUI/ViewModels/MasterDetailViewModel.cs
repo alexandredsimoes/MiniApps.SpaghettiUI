@@ -98,6 +98,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     Descricao = x.Descricao,
                     Endpoint = x.Endpoint,
                     RespostaPadrao = x.RespostaPadrao,
+                    RespostaHeader = x.RespostaHeader,
                     Projeto = new ProjetoDto()
                     {
                         ExibirLog = x.Projeto.ExibirLog,
@@ -212,12 +213,14 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 var respostasComCondicoes = endpoint.Respostas.Where(x => x.Condicao != null);
                 if (respostasComCondicoes.Count() == 0)
                 {
+                    ProcessarHeaderResposta(context, endpoint);
                     var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                     context.Response.StatusCode = resposta.CodigoHttp;
                     await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
                 }
                 else
                 {
+                    ProcessarHeaderResposta(context, endpoint);
                     //tpRequisicao=6
                     //idRequisicao=xxxxxxx
                     var query = context.Request.Query.Select(x => $"#query-{x.Key}#={x.Value}").ToList();
@@ -260,13 +263,13 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         }
                     }
                 }
-
-
             }
             else
             {
+                ProcessarHeaderResposta(context, endpoint);
                 context.Response.StatusCode = endpoint.CodigoHttpPadrao;
                 await context.Response.WriteAsync(await ProcessarResposta(context, endpoint.RespostaPadrao));
+                
             }
 
             if (endpoint.Projeto.ExibirLog)
@@ -324,6 +327,21 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 }
 
                 Logs += sb.ToString();
+            }
+
+            static void ProcessarHeaderResposta(HttpContext context, ProjetoItemDto endpoint)
+            {
+                if (string.IsNullOrWhiteSpace(endpoint.RespostaHeader)) return;
+                var headers = endpoint.RespostaHeader.Split("&", StringSplitOptions.RemoveEmptyEntries);
+                if (headers.Length > 0)
+                {
+                    foreach (var item in headers)
+                    {
+
+                        var value = item.Split('=', StringSplitOptions.RemoveEmptyEntries);
+                        context.Response.Headers[value[0]] = value[1];
+                    }
+                }
             }
         }
 

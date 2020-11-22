@@ -112,7 +112,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 NumCtrlIEME = numCtrlIF,
                 DtMovimento = DateTime.Now,
                 IspbIeme = 04358798,
-                Valor = 100_000_000,
+                Valor = 1_000_000,
             };
 
             var aporteCcMeManual = AporteCcMeCommand.CriarAporteManual(32997490,

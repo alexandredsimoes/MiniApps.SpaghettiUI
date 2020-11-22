@@ -17,6 +17,7 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public Projeto Projeto { get;  set; }
         public string Descricao { get; set; }
 
-        public ICollection<ProjetoItemResposta> Respostas { get; set; }        
+        public ICollection<ProjetoItemResposta> Respostas { get; set; }
+        public string RespostaHeader { get; set; }
     }
 }

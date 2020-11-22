@@ -12,5 +12,6 @@ namespace MiniApps.SpaghettiUI.Core.Contracts.Services
         Task<IList<Projeto>> ListarProjetos();
         Task<Projeto> ObterProjeto(Guid id);
         Task<bool> RemoverProjeto(Guid id);
+        Task<bool> SalvarProjeto(Projeto projeto);
     }
 }

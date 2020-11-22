@@ -3,12 +3,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:prism="http://prismlibrary.com/"   
+             xmlns:prism="http://prismlibrary.com/" 
              mc:Ignorable="d"
              xmlns:models="clr-namespace:MiniApps.SpaghettiUI.Core.Models;assembly=MiniApps.SpaghettiUI.Core" 
              xmlns:converters="clr-namespace:MiniApps.SpaghettiUI.Converters"
+             xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
              Style="{StaticResource BaseUserControlStyle}"
-             prism:ViewModelLocator.AutoWireViewModel="True" d:DesignWidth="555.46" d:DesignHeight="712.18">
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignWidth="555.46" d:DesignHeight="712.18"
+             x:Name="TheControl">
     <UserControl.Resources>
         <converters:MetodoIndexConverter x:Key="MetodoIndexConverter"/>
     </UserControl.Resources>
@@ -19,17 +22,17 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button HorizontalAlignment="Left" Command="{Binding SalvarCommand}">SALVAR</Button>
+                <Button HorizontalAlignment="Left" Command="{Binding ElementName=TheControl, Path=DataContext.SalvarCommand}">SALVAR</Button>
                 <Button HorizontalAlignment="Left" Command="{Binding RemoverCommand}" Margin="{StaticResource SmallLeftRightMargin}">REMOVER PROJETO</Button>
             </StackPanel>
-            
+
             <TextBlock Text="Detalhes do projeto" Style="{StaticResource SubtitleTextStyle}"/>
             <TextBlock Text="Nome do projeto" Style="{StaticResource BodyTextStyle}"/>
             <TextBox Text="{Binding Selecionado.Nome, Mode=TwoWay}"/>
             <TextBlock Text="Porta padrão"  Style="{StaticResource BodyTextStyle}"/>
             <TextBox Text="{Binding Selecionado.PortaPadrao, Mode=TwoWay}" />
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                 <TextBlock Text="Endpoints" Style="{StaticResource SubtitleTextStyle}"/>
                 <Button Margin="{StaticResource SmallLeftMargin}" Command="{Binding AddEndpointCommand}" CommandParameter="-">Remover endpoint</Button>
                 <Button Margin="{StaticResource SmallLeftMargin}" Command="{Binding RemoveEndpointCommand}" CommandParameter="+">Novo endpoint</Button>
@@ -38,8 +41,9 @@
 
         </StackPanel>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible">
-            <ListView ItemsSource="{Binding Selecionado.Items}" Margin="{StaticResource SmallTopMargin}">
-                <ListView.ItemContainerStyle>
+            <ListView ItemsSource="{Binding Selecionado.Items}">
+
+                <!--<ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="Template">
@@ -50,17 +54,37 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                </ListView.ItemContainerStyle>
+                </ListView.ItemContainerStyle>-->
                 <d:ListView.ItemsSource>
                     <x:Array Type="{x:Type models:ProjetoItem}">
                         <models:ProjetoItem RespostaPadrao="\{ Teste:{ 'Teste'}}" CodigoHttpPadrao="200" Metodo="MhPost" Descricao="Teste" Endpoint="/api/enviar"></models:ProjetoItem>
-                        <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhGet" Descricao="Teste" Endpoint="/api/pegar?Id=1"></models:ProjetoItem>
-                        <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhGet" Descricao="Teste" Endpoint="/api"></models:ProjetoItem>
+                        <models:ProjetoItem CodigoHttpPadrao="200" Metodo="MhGet" Descricao="Resposta com sucesso" Endpoint="/api/pegar?Id=1"></models:ProjetoItem>
+                        <models:ProjetoItem CodigoHttpPadrao="501" Metodo="MhGet" Descricao="Resposta com erro" Endpoint="/api"></models:ProjetoItem>
                     </x:Array>
                 </d:ListView.ItemsSource>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ShowGridLines="False" Margin="8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="0,8" x:Name="stackPanel">
+
+                                <!--<behaviors:Interaction.Triggers>
+                                    <behaviors:EventTrigger EventName="MouseDoubleClick" SourceObject="{Binding ElementName=stackPanel}">
+                                        <behaviors:InvokeCommandAction Command="{Binding ElementName=TheControl, Path=DataContext.SelecionarRespostaCommand}" />
+                                    </behaviors:EventTrigger>
+                                </behaviors:Interaction.Triggers>-->
+                                <TextBlock Text="{Binding Endpoint}" Style="{StaticResource SubtitleTextStyle}"/>
+                                <TextBlock Text="{Binding Descricao}" Style="{StaticResource BaseTextBlockStyle}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="Alterar" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Command="{Binding ElementName=TheControl, Path=DataContext.SelecionarRespostaCommand}" CommandParameter="{Binding}"/>
+                        </Grid>
+                        
+
+                        <!--<Grid ShowGridLines="False" Margin="8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="10"/>
                                 <ColumnDefinition />
@@ -70,6 +94,7 @@
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition />
+                                <RowDefinition  />
                                 <RowDefinition  />
                                 <RowDefinition  />
                             </Grid.RowDefinitions>
@@ -101,7 +126,8 @@
                                 <TextBlock Text="Resposta padrão"  Style="{StaticResource ListSubTitleStyle}"/>
                                 <TextBox MinHeight="80" Grid.Row="1" Text="{Binding RespostaPadrao}" VerticalAlignment="Stretch"  TextWrapping="WrapWithOverflow" Height="Auto"/>
                             </Grid>
-                        </Grid>
+                            <Button Grid.Row="3" Content="Respostas" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8" HorizontalAlignment="Left"/>
+                        </Grid>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

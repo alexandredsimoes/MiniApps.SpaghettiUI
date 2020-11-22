@@ -73,8 +73,7 @@ namespace MiniApps.SpaghettiUI
             // Core Services
             containerRegistry.Register<IFileService, FileService>();
 
-            // App Services
-            containerRegistry.Register<IApplicationInfoService, ApplicationInfoService>();
+            // App Services            
             containerRegistry.Register<ISystemService, SystemService>();
             containerRegistry.Register<IPersistAndRestoreService, PersistAndRestoreService>();
             containerRegistry.Register<IThemeSelectorService, ThemeSelectorService>();
@@ -88,6 +87,8 @@ namespace MiniApps.SpaghettiUI
             containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(PageKeys.Main);
             containerRegistry.RegisterForNavigation<ShellWindow, ShellViewModel>();
             containerRegistry.RegisterForNavigation<ProjetoPage, ProjetoViewModel>(PageKeys.Projeto);
+            containerRegistry.RegisterDialog<ProjetoItemDialogPage, ProjetoItemDialogPageViewModel>();
+            containerRegistry.RegisterDialog<ProjetoItemRespostaDialogPage, ProjetoItemRespostaDialogPageViewModel>();
 
 
             //
@@ -106,12 +107,18 @@ namespace MiniApps.SpaghettiUI
 
             containerRegistry.RegisterSingleton<IApplicationDbContext, ApplicationDbContext>();
 
-            var db = containerRegistry.GetContainer().Resolve<ApplicationDbContext>();
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
 
 
 #if DEBUG
+
+            var db = containerRegistry.GetContainer().Resolve<ApplicationDbContext>();
+            db.Database.EnsureDeleted();
+            db.Database.EnsureCreated();
+            //if (!db.Database.EnsureCreated())
+            //{
+            //    return;
+            //}
+
             //""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
             var projetoId = Guid.NewGuid();
             var respostaAporte = @"{
@@ -209,13 +216,25 @@ namespace MiniApps.SpaghettiUI
 	                                        ""aporteRBCL"": {
 		                                        ""dtHrSituacao"":""#datenow#"",
 		                                        ""situacao"":3,
-		                                        ""descSituacao"":""Cancelado"",
+		                                        ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
 		                                        ""numCtrlIF"":""#query-idRequisicao#"",
 		                                        ""ispbIF"":32997490,		                                        
-		                                        ""valor"":50000.25,
-                                                ""sitLancSTR"":14,
+		                                        ""valor"":10000,
 	                                        }
                                         } ",
+                                //Resposta =  @"{
+	                               //         ""idRequisicao"":""#query-idRequisicao#"",
+	                               //         ""tpRequisicao"":#query-tpRequisicao#,
+	                               //         ""aporteRBCL"": {
+		                              //          ""dtHrSituacao"":""#datenow#"",
+		                              //          ""situacao"":3,
+		                              //          ""descSituacao"":""Cancelado"",
+		                              //          ""numCtrlIF"":""#query-idRequisicao#"",
+		                              //          ""ispbIF"":32997490,		                                        
+		                              //          ""valor"":50000.25,
+                                //                ""sitLancSTR"":14,
+	                               //         }
+                                //        } ",
                             },
                             new ProjetoItemResposta()
                             {
@@ -233,7 +252,7 @@ namespace MiniApps.SpaghettiUI
 		                                        ""ispbIEME"":32997490,
 		                                        ""numCtrlSTR"":""STR20200124000000001"",
 		                                        ""sitLancSTR"":1,
-		                                        ""valor"":100000,
+		                                        ""valor"":1000000,
 		                                        ""dtHrSitBC"":""#datenow#"",
 		                                        ""dtMovimento"":""#datenow#""
 	                                        }
@@ -312,12 +331,12 @@ namespace MiniApps.SpaghettiUI
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""saqueCCME"": {
 		                                            ""dtHrSituacao"":""#datenow#"",
-		                                            ""situacao"":3, 
-		                                            ""descSituacao"":""Pendente por insuficiência de saldo"",
+		                                            ""situacao"":0, 
+		                                            ""descSituacao"":""Saque efetuado com sucesso"",
 		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
 		                                            ""ispbPSPI"":32997490,
-		                                            ""sitLancSTR"":24,
-		                                            ""valor"":40000,
+		                                            ""sitLancSTR"":1,
+		                                            ""valor"":5000,
 		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
@@ -378,7 +397,7 @@ namespace MiniApps.SpaghettiUI
             new Projeto()
             {
                 Nome = "Bacen Messages" ,
-                PortaPadrao = 5002,
+                PortaPadrao = 5013,
                 ExibirLog = true,
                 Items = new List<ProjetoItem>()
                 {
@@ -386,9 +405,18 @@ namespace MiniApps.SpaghettiUI
                     {
                         Metodo = MetodoHttp.MhGet,
                         CodigoHttpPadrao = 200,
-                        Descricao = "Mensagens Pacs,Admi,Reda" ,
-                        Endpoint ="/consulta/{ispb}/msgs",
-                        RespostaPadrao = "Pacs008"
+                        Descricao = "Saida de mensagem do BACEN PIX" ,
+                        Endpoint ="/api/v1/out/{ispb}/stream/start",
+                        RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<Envelope xmlns=\"https://www.bcb.gov.br/pi/pacs.002/1.4\">\n    <AppHdr>\n        <Fr>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>00038166</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </Fr>\n        <To>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>4358798</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </To>\n        <BizMsgIdr>M99999010655f476b4435483f9578cf8</BizMsgIdr>\n        <MsgDefIdr>pacs.002.spi.1.4</MsgDefIdr>\n        <CreDt>2020-01-01T08:30:12.000Z</CreDt>\n        <Sgntr/>\n    </AppHdr>\n    <Document>\n        <FIToFIPmtStsRpt>\n            <GrpHdr>\n                <MsgId>M99999010655f476b4435483f9578cf8</MsgId>\n                <CreDtTm>2020-04-07T14:01:20.343Z</CreDtTm>\n            </GrpHdr>\n            <TxInfAndSts>\n                <OrgnlInstrId>E0435879820201119175707308958669</OrgnlInstrId>\n                <OrgnlEndToEndId>E0435879820201119175707308958669</OrgnlEndToEndId>\n                <TxSts>ACSP</TxSts>\n            </TxInfAndSts>\n        </FIToFIPmtStsRpt>\n    </Document>\n</Envelope>",                        
+                    },
+                    new ProjetoItem()
+                    {
+                        Metodo = MetodoHttp.MhPost,
+                        CodigoHttpPadrao = 201,
+                        Descricao = "Envio de mensagem para o BACEN PIX" ,
+                        Endpoint ="/api/v1/in/{ispb}/msgs",
+                        RespostaPadrao = "",
+                        RespostaHeader="PI-ResourceId=123456789"
                     }
                 }
             });

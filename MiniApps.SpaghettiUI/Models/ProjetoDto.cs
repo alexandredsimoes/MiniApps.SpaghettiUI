@@ -49,12 +49,14 @@ namespace MiniApps.SpaghettiUI.Models
         public string Descricao { get => descricao; set => SetProperty(ref descricao, value); }
 
         public ObservableCollection<ProjetoItemRespostaDto> Respostas { get => respostas; set => SetProperty(ref respostas, value); }
+        public string RespostaHeader { get; internal set; }
     }
 
     public class ProjetoItemRespostaDto
     {
-        public int CodigoHttp { get; internal set; }
-        public object Condicao { get; internal set; }
-        public string Resposta { get; internal set; }
+        public int CodigoHttp { get; set; }
+        public string Condicao { get; set; }
+        public string Resposta { get; set; }
+        public string Descricao { get; set; }
     }
 }

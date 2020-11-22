@@ -1,0 +1,98 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/" xmlns:converters="clr-namespace:MiniApps.SpaghettiUI.Converters"
+             xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="MiniApps.SpaghettiUI.Views.ProjetoItemDialogPage"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:models="clr-namespace:MiniApps.SpaghettiUI.Core.Models;assembly=MiniApps.SpaghettiUI.Core"
+             prism:ViewModelLocator.AutoWireViewModel="True" av:DesignWidth="611.167" av:DesignHeight="438.707"
+             x:Name="TheControl"
+             MinWidth="780" MinHeight="546">
+    <UserControl.Resources>
+        <converters:MetodoIndexConverter x:Key="MetodoIndexConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="8.0">
+            <Button HorizontalAlignment="Left" Command="{Binding SalvarCommand}">SALVAR</Button>
+        </StackPanel>
+        <Grid Grid.Row="1" ShowGridLines="False" Margin="8" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition  />
+                <RowDefinition  />
+                <RowDefinition  />
+            </Grid.RowDefinitions>
+            <Rectangle Fill="Bisque" Grid.RowSpan="3" Margin="2,0" />
+            <TextBlock Text="Descrição" Grid.Column="1" Style="{StaticResource BodyTextStyle}"/>
+            <TextBox Text="{Binding ElementName=TheControl, Path=DataContext.Item.Descricao, Mode=TwoWay}" Grid.Column="1" Grid.Row="1"/>
+
+            <TextBlock Text="Endpoint" Grid.Column="2" Style="{StaticResource BodyTextStyle}"/>
+            <TextBox Text="{Binding  ElementName=TheControl, Path=DataContext.Item.Endpoint, Mode=TwoWay}" Grid.Column="2" Grid.Row="1"/>
+
+            <TextBlock Text="Código HTTP" Grid.Column="3" Style="{StaticResource BodyTextStyle}"/>
+            <TextBox Text="{Binding Item.CodigoHttpPadrao, Mode=TwoWay}" Grid.Column="3" Grid.Row="1"/>
+
+            <TextBlock Text="Método" Grid.Column="4" Style="{StaticResource BodyTextStyle}"/>
+            <ComboBox Grid.Row="1" Grid.Column="4" SelectedIndex="{Binding Item.Metodo, Mode=TwoWay, Converter={StaticResource MetodoIndexConverter}}">
+                <ComboBoxItem Content="POST"/>
+                <ComboBoxItem Content="GET"/>
+                <ComboBoxItem Content="PUT"/>
+                <ComboBoxItem Content="DELETE"/>
+                <ComboBoxItem Content="PATCH"/>
+
+            </ComboBox>
+
+            <Grid Grid.Row="2" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Resposta padrão"  Style="{StaticResource ListSubTitleStyle}"/>
+                <TextBox MinHeight="80" Grid.Row="1" Text="{Binding Item.RespostaPadrao, Mode=TwoWay}" VerticalAlignment="Stretch"  TextWrapping="WrapWithOverflow" Height="Auto"/>
+            </Grid>
+            <Button Grid.Row="3" Content="Respostas" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8" HorizontalAlignment="Left"
+                    Command="{Binding ElementName=TheControl, Path=DataContext.RespostaCommand}"/>
+        </Grid>
+        <ListView Grid.Row="2" ItemsSource="{Binding Item.Respostas}">
+            <d:ListView.ItemsSource>
+                <x:Array Type="{x:Type models:ProjetoItemResposta}">
+                    <models:ProjetoItemResposta Resposta="\{ Teste:{ 'Teste'}}" 
+                                                CodigoHttp="200" 
+                                                Descricao="Aporte RBCL com sucesso" 
+                                                Condicao="#query-tpRequisicao#=0"
+                                                />
+
+                    <models:ProjetoItemResposta Resposta="\{ Teste:{ 'Teste'}}" 
+                                                CodigoHttp="200" 
+                                                Descricao="Aporte CCME com sucesso" 
+                                                Condicao="#query-tpRequisicao#=0" />
+
+                    <models:ProjetoItemResposta Resposta="\{ Teste:{ 'Teste'}}" 
+                                                CodigoHttp="200" 
+                                                Descricao="Consulta de requisição" 
+                                                Condicao="#query-tpRequisicao#=0" />
+                </x:Array>
+            </d:ListView.ItemsSource>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding CodigoHttp}" Style="{StaticResource BodyTextStyle}" Margin="8,0"/>
+                        <TextBlock Text="{Binding Descricao}" Style="{StaticResource SubtitleTextStyle}"/>
+                        <Button Content="Alterar" Margin="8,0" Command="{Binding ElementName=TheControl, Path=DataContext.RespostaCommand}" CommandParameter="{Binding}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</UserControl>

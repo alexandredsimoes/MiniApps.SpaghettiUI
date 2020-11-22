@@ -1,0 +1,54 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/" xmlns:models="clr-namespace:MiniApps.SpaghettiUI.Core.Models;assembly=MiniApps.SpaghettiUI.Core" xmlns:d="http://schemas.microsoft.com/netfx/2009/xaml/presentation" xmlns:converters="clr-namespace:MiniApps.SpaghettiUI.Converters"
+             xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="MiniApps.SpaghettiUI.Views.ProjetoItemRespostaDialogPage"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             x:Name="TheControl" av:DesignWidth="493" av:DesignHeight="500.173">
+    <UserControl.Resources>
+        <converters:MetodoIndexConverter x:Key="MetodoIndexConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="8.0">
+            <Button HorizontalAlignment="Left" Command="{Binding SalvarCommand}" Content="SALVAR"/>
+        </StackPanel>
+        <Grid Grid.Row="1" ShowGridLines="False" Margin="8" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition Width="90"/>
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition  />
+                <RowDefinition  />
+                <RowDefinition  />
+            </Grid.RowDefinitions>
+            <Rectangle Fill="Bisque" Grid.RowSpan="3" Margin="2,0" />
+            <TextBlock Text="Descrição" Grid.Column="1" Style="{StaticResource BodyTextStyle}" Grid.ColumnSpan="3"/>
+            <TextBox Text="{Binding DataContext.Item.Descricao, ElementName=TheControl, Mode=TwoWay}" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="3"/>
+
+
+            <TextBlock Text="Código HTTP" Grid.Column="5" Style="{StaticResource BodyTextStyle}"/>
+            <TextBox Text="{Binding Item.CodigoHttp, Mode=TwoWay}" Grid.Column="5" Grid.Row="1"/>
+
+            <Grid Grid.Row="2" VerticalAlignment="Stretch" Grid.Column="1" Grid.ColumnSpan="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Resposta padrão"  Style="{StaticResource ListSubTitleStyle}"/>
+                <TextBox MinHeight="180" Grid.Row="1" Text="{Binding Item.Resposta, Mode=TwoWay}" VerticalAlignment="Stretch"  TextWrapping="Wrap" Height="Auto"/>
+            </Grid>
+            <Button Grid.Row="3" Content="Respostas" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,8" HorizontalAlignment="Left"
+                    Command="{Binding DataContext.RespostaCommand, ElementName=TheControl}"/>
+        </Grid>
+    </Grid>
+</UserControl>

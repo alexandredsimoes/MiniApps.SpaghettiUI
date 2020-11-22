@@ -13,5 +13,6 @@ namespace MiniApps.SpaghettiUI.Core.Contracts
     {
         DbSet<Projeto> Projetos { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+        void Detach(object item);
     }
 }

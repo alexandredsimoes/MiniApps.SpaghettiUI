@@ -11,29 +11,51 @@ namespace MiniApps.SpaghettiUI.Core.Services
 {
     public class ProjetoService : IProjetoService
     {
-        private readonly IApplicationDbContext _context;
+        //private readonly IApplicationDbContext _context;
 
-        public ProjetoService(IApplicationDbContext context)
-        {
-            _context = context;
-        }
+        //public ProjetoService(IApplicationDbContext context)
+        //{
+        //    _context = context;
+        //}
 
         public async Task<IList<Projeto>> ListarProjetos()
         {
-            return await _context.Projetos.Include(x=>x.Items).ThenInclude(x=>x.Respostas).ToListAsync();
+            using var context = new ApplicationDbContext();
+            return await context.Projetos.AsNoTracking().Include(x=>x.Items).ThenInclude(x=>x.Respostas).ToListAsync();
         }
 
         public async Task<Projeto> ObterProjeto(Guid id)
         {
-            var entity = await _context.Projetos.FirstOrDefaultAsync(x => x.Id == id);
+            using var context = new ApplicationDbContext();
+            var entity = await context.Projetos.AsNoTracking()
+                .Include(x=>x.Items).ThenInclude(x=>x.Respostas)
+                .FirstOrDefaultAsync(x => x.Id == id);
             return entity;
         }
 
         public async Task<bool> RemoverProjeto(Guid id)
         {
+            using var context = new ApplicationDbContext();
             var entity = await ObterProjeto(id);
-            _context.Projetos.Remove(entity);
-            return await _context.SaveChangesAsync(CancellationToken.None) > 0;
+            context.Projetos.Remove(entity);
+            return await context.SaveChangesAsync(CancellationToken.None) > 0;
+        }
+
+        public async Task<bool> SalvarProjeto(Projeto projeto)
+        {
+            using var context = new ApplicationDbContext();
+            if (projeto.Id == Guid.Empty)
+                context.Projetos.Add(projeto);
+            else
+            {
+                context.Projetos.Update(projeto);
+                
+            }
+
+            
+            var result =  await context.SaveChangesAsync(CancellationToken.None) > 0;
+            context.Detach(projeto);
+            return result;
         }
     }
 }

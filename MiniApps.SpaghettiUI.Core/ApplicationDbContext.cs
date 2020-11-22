@@ -19,7 +19,12 @@ namespace MiniApps.SpaghettiUI.Core
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {            
-            optionsBuilder.UseSqlite(@"Data Source=SpaghettiUI.db");
+            optionsBuilder.UseSqlite(@"Data Source=SpaghettiUI.db", config =>
+            {
+
+            }).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -104,11 +109,10 @@ namespace MiniApps.SpaghettiUI.Core
                 }
             }
         }
-        //public ApplicationDbContext(
-        //   DbContextOptionsBuilder<ApplicationDbContext> options)           
-        //{
-        //    options.UseSqlite("Filename:SpaghettiUIDb.db");
-        //    options.
-        //}
+        
+        public void Detach(object item)
+        {
+            this.Entry(item).State = EntityState.Unchanged;  
+        }
     }
 }
