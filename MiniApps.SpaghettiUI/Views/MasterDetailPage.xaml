@@ -38,8 +38,12 @@
                     VerticalAlignment="Center">
                     <TextBlock Style="{StaticResource ListTitleStyle}" Text="{Binding Nome}" />
                     <TextBlock Style="{StaticResource BaseTextBlockStyle}">
-                        <Run  Text="Porta padrão"/>
+                        <Run  Text="Porta"/>
                         <Run  Text="{Binding PortaPadrao}"/>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource BaseTextBlockStyle}">
+                        <Run  Text="Porta HTTPS"/>
+                        <Run  Text="{Binding PortaPadraoHttps}"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
@@ -58,11 +62,15 @@
                     Style="{StaticResource MediumIconStyle}"
                     Margin="{StaticResource XSmallLeftMargin}"
                     AutomationProperties.Name="List item icon" />
-                        <TextBlock
+                        <!--<TextBlock
                             Margin="{StaticResource SmallLeftMargin}"
                             VerticalAlignment="Center"
                             Text="{Binding Nome, Mode=OneWay}"
-                            Style="{StaticResource PageTitleStyle}" />
+                            Style="{StaticResource PageTitleStyle}" />-->
+                        <TextBlock Style="{StaticResource PageTitleStyle}" Margin="{StaticResource SmallLeftMargin}" VerticalAlignment="Center">
+                            <Run Text="{Binding Nome, Mode=OneWay}"  />
+                        </TextBlock>
+                            
                     </StackPanel>
                     <TextBlock
                             Style="{StaticResource SubtitleTextStyle}"
@@ -81,7 +89,11 @@
                                     <TextBlock
                                         Style="{StaticResource BodyTextStyle}">
                                 <Run Text="{Binding Metodo, Converter={StaticResource MetodoToStringConverter}}" FontSize="20"/>
-                                <Run Text="{Binding Endpoint}"/>
+                                        <Run Text="{Binding Descricao}"/>
+                                        <Run Text="("/>
+                                        <Run Text="{Binding Endpoint}"/>
+                                        <Run Text=")"/>
+                                 
                                     </TextBlock>
                                 </Grid>
                             </DataTemplate>
@@ -103,7 +115,7 @@
             </ScrollViewer>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
+    <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="180" MaxWidth="300" Width="*" />
             <ColumnDefinition Width="2*" />
@@ -124,9 +136,9 @@
                 SelectedItem="{Binding Selected, Mode=TwoWay}">
                 <d:ListView.ItemsSource>
                     <x:Array Type="{x:Type models:Projeto}">
-                        <models:Projeto Nome="Projeto 1" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
-                        <models:Projeto Nome="Projeto 2" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
-                        <models:Projeto Nome="Projeto 3" PortaPadrao="5001" ExibirLog="True"></models:Projeto>
+                        <models:Projeto Nome="Projeto 1" PortaPadrao="5001" PortaPadraoHttps="5000" ExibirLog="True"></models:Projeto>
+                        <models:Projeto Nome="Projeto 2" PortaPadrao="5001" PortaPadraoHttps="5000" ExibirLog="True"></models:Projeto>
+                        <models:Projeto Nome="Projeto 3" PortaPadrao="5001" PortaPadraoHttps="5000" ExibirLog="True"></models:Projeto>
                     </x:Array>
                 </d:ListView.ItemsSource>
             </ListView>

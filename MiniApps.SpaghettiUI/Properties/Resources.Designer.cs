@@ -19,7 +19,7 @@ namespace MiniApps.SpaghettiUI.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -84,6 +84,15 @@ namespace MiniApps.SpaghettiUI.Properties {
         public static string MasterDetailPageTitle {
             get {
                 return ResourceManager.GetString("MasterDetailPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QueueManager.
+        /// </summary>
+        public static string QueueManagerPageTitle {
+            get {
+                return ResourceManager.GetString("QueueManagerPageTitle", resourceCulture);
             }
         }
         
@@ -196,29 +205,20 @@ namespace MiniApps.SpaghettiUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configurações.
-        /// </summary>
-        public static string ShellSettingsPage {
-            get {
-                return ResourceManager.GetString("ShellSettingsPage", resourceCulture);
-            }
-        }
-    
-        /// <summary>
-        ///   Looks up a localized string similar to QueueManager.
-        /// </summary>
-        public static string QueueManagerPageTitle {
-            get {
-                return ResourceManager.GetString("QueueManagerPageTitle", resourceCulture);
-            }
-        }
-    
-        /// <summary>
         ///   Looks up a localized string similar to QueueManager.
         /// </summary>
         public static string ShellQueueManagerPage {
             get {
                 return ResourceManager.GetString("ShellQueueManagerPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configurações.
+        /// </summary>
+        public static string ShellSettingsPage {
+            get {
+                return ResourceManager.GetString("ShellSettingsPage", resourceCulture);
             }
         }
     }

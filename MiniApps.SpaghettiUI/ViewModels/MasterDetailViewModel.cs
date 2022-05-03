@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Bogus;
 using MahApps.Metro.Controls;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -88,6 +90,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 Id = x.Id,
                 Nome = x.Nome,
                 PortaPadrao = x.PortaPadrao,
+                PortaPadraoHttps = x.PortaPadraoHttps,
                 ExibirLog = x.ExibirLog,
                 Items = new ObservableCollection<ProjetoItemDto>(x.Items.Select(x => new ProjetoItemDto()
                 {
@@ -99,6 +102,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     Endpoint = x.Endpoint,
                     RespostaPadrao = x.RespostaPadrao,
                     RespostaHeader = x.RespostaHeader,
+                    TipoConteudo = x.TipoConteudo,
                     Projeto = new ProjetoDto()
                     {
                         ExibirLog = x.Projeto.ExibirLog,
@@ -112,6 +116,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         CodigoHttp = x.CodigoHttp,
                         Condicao = x.Condicao,
                         Resposta = x.Resposta,
+                        TipoConteudo = x.TipoConteudo,
+                        Descricao = x.Descricao,
                     }))
                 }))
             };
@@ -168,9 +174,13 @@ namespace MiniApps.SpaghettiUI.ViewModels
             }
 
             //
-            var app = WebApplication.Create();
+            var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder();
+            //var app = Microsoft.AspNetCore.Builder.WebApplication.Create();
+            var app = builder.Build();
 
-            app.Listen($"https://localhost:{Selected.PortaPadrao}");
+
+            app.Listen($"http://localhost:{Selected.PortaPadrao}", $"https://localhost:{Selected.PortaPadraoHttps}");
+
 
             foreach (var endpoint in Selected.Items)
             {
@@ -216,6 +226,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     ProcessarHeaderResposta(context, endpoint);
                     var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                     context.Response.StatusCode = resposta.CodigoHttp;
+                    context.Response.ContentType = endpoint.TipoConteudo;
                     await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
                 }
                 else
@@ -248,10 +259,41 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         }
                         else
                         {
-                            var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
-                            if (respostasComCondicoes == null)
+                            var jsons = endpoint.Respostas
+                                .Where(x => x.Condicao?.Contains("#json-") ?? false)
+                                .ToList();
+
+
+                            //Tentaremos no body
+                            using var reader = new StreamReader(context.Request.Body);
+                            var body = await reader.ReadToEndAsync();
+
+                            if (!string.IsNullOrWhiteSpace(body))
                             {
-                                context.Response.StatusCode = resposta.CodigoHttp;
+                                JObject json = (JObject)JsonConvert.DeserializeObject(body);
+                                if (json != null)
+                                {
+
+                                    foreach (var item in jsons)
+                                    {
+                                        var match = _regexParameters.Match(item.Condicao);
+                                        var token = json.SelectToken(match.Value.Substring(match.Value.IndexOf('-') + 1));
+                                        if (token != null && token.Value<string>() == item.Condicao.Substring(item.Condicao.IndexOf('=') + 1))
+
+                                        {
+                                            context.Response.StatusCode = item.CodigoHttp;
+                                            await context.Response.WriteAsync(await ProcessarResposta(context, item));
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+
+                            var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                            if (respostaSemCondicoes != null)
+                            {
+                                context.Response.StatusCode = respostaSemCondicoes.CodigoHttp;
+                                context.Response.ContentType = respostaSemCondicoes.TipoConteudo;
                                 await context.Response.WriteAsync(await ProcessarResposta(context, respostaSemCondicoes));
                             }
                             else
@@ -267,9 +309,10 @@ namespace MiniApps.SpaghettiUI.ViewModels
             else
             {
                 ProcessarHeaderResposta(context, endpoint);
+                context.Response.ContentType = endpoint.TipoConteudo;
                 context.Response.StatusCode = endpoint.CodigoHttpPadrao;
                 await context.Response.WriteAsync(await ProcessarResposta(context, endpoint.RespostaPadrao));
-                
+
             }
 
             if (endpoint.Projeto.ExibirLog)
@@ -347,10 +390,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         private async ValueTask<string> ProcessarResposta(HttpContext context, string respostaPadrao)
         {
+            var faker = new Faker();
             var result = new StringBuilder();
-            
+
             //Le o corpo da requisição para processamento futuro
-            using var reader = new StreamReader(context.Request.Body);           
+            using var reader = new StreamReader(context.Request.Body);
             var body = await reader.ReadToEndAsync();
 
             result.Append(respostaPadrao);
@@ -384,7 +428,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                             if (token != null)
                                 result.Replace($"#{item.Value}#", token.Value<string>());
                         }
-                    }                    
+                    }
                 }
 
                 if (item.Value.Contains("datenow"))
@@ -398,6 +442,12 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 if (item.Value.Contains("guid"))
                 {
                     result.Replace("#guid#", Guid.NewGuid().ToString());
+                }
+
+
+                if (item.Value.Contains("random_currency"))
+                {
+                    result.Replace("#random_currency#", faker.Finance.Amount(-20_000, -10_000).ToString(CultureInfo.CreateSpecificCulture("en-US")));
                 }
 
                 result.Replace(item.Value, item.ToString());

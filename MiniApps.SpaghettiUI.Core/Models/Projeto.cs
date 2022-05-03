@@ -9,6 +9,8 @@ namespace MiniApps.SpaghettiUI.Core.Models
 {
     public class Projeto
     {
+        public int PortaSegura { get; set; }
+
         public Guid Id { get; set; }
         
         [NotMapped]
@@ -18,6 +20,7 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public int PortaPadrao { get; set; }
         public ICollection<ProjetoItem> Items { get; set; }
         public bool ExibirLog { get; set; }
+        public int PortaPadraoHttps { get; set; }
 
         public Projeto()
         {

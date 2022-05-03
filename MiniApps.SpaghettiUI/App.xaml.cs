@@ -125,13 +125,15 @@ namespace MiniApps.SpaghettiUI
 	                                            ""idRequisicao"":""#json-numCtrlIf#"",
 	                                            ""dtHrRequisicao"":""#datenowutc#"",
                                             }";
-            db.Projetos.AddRange(new Projeto()
-            {
-                Id = projetoId,
-                Nome = "Gestão Conta PI",
-                PortaPadrao = 5082,
-                ExibirLog = true,
-                Items = new List<ProjetoItem>()
+            db.Projetos.AddRange(
+                new Projeto()
+                {
+                    Id = projetoId,
+                    Nome = "Gestão Conta PI",
+                    PortaPadrao = 5082,
+                    PortaPadraoHttps = 5081,
+                    ExibirLog = true,
+                    Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
                     {
@@ -199,6 +201,68 @@ namespace MiniApps.SpaghettiUI
                     new ProjetoItem()
                     {
                         ProjetoId = projetoId,
+                        Descricao = "Consulta Aportes/Retiradas",
+                        RespostaPadrao = respostaAporte,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhGet,
+                        Endpoint = "/conta/api/v1/listar/aporte-retirada",
+                        Respostas = new List<ProjetoItemResposta>()
+                        {
+                            new ProjetoItemResposta()
+                            {
+                                Descricao = "Listagem de aportes e retiradas",
+                                CodigoHttp = 200,
+                                Resposta =  @"{
+	                                            ""dtHrResultado"": ""2021-12-15T17:10:05.025Z"",
+	                                            ""resultado"": [
+		                                            {
+			                                            ""tpOperacao"": 1,
+			                                            ""situacao"": 0,
+			                                            ""numCtrlSTR"": ""STR20211215000000001"",
+			                                            ""numCtrl"": ""c61f126d-efa1-4ff0-8"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:34:22""
+		                                            },
+		                                            {
+			                                            ""tpOperacao"": 1,
+			                                            ""situacao"": 0,
+			                                            ""numCtrlSTR"": ""STR20211215000000002"",
+			                                            ""numCtrl"": ""JDPI21DEZ15182615002"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+		                                            },
+		                                            {
+			                                            ""tpOperacao"": 0,
+			                                            ""situacao"": 0,
+			                                            ""numCtrlSTR"": ""STR20211215000000003"",
+			                                            ""numCtrl"": ""JDPI21DEZ15182615003"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+		                                            },
+		                                            {
+			                                            ""tpOperacao"": 4,
+			                                            ""situacao"": 1,
+			                                            ""numCtrl"": ""JDPI21DEZ15182615004"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+		                                            },
+		                                            {
+			                                            ""tpOperacao"": 3,
+			                                            ""situacao"": 2,
+			                                            ""numCtrl"": ""JDPI21DEZ15182615005"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+		                                            },
+		                                            {
+			                                            ""tpOperacao"": 4,
+			                                            ""situacao"": 0,
+			                                            ""numCtrlSTR"": ""STR20211215000000005"",
+			                                            ""numCtrl"": ""JDPI21DEZ15182615006"",
+			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+		                                            }
+	                                            ]
+                                            }"
+                            },
+                        }
+                    },
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
                         Descricao = "Consulta situação Aporte RCBL",
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhGet,
@@ -210,35 +274,59 @@ namespace MiniApps.SpaghettiUI
                                 Descricao = "Aporte RBCL com sucesso",
                                 Condicao = "#query-tpRequisicao#=0",
                                 CodigoHttp = 200,
-                                Resposta =  @"{
-	                                        ""idRequisicao"":""#query-idRequisicao#"",
-	                                        ""tpRequisicao"":#query-tpRequisicao#,
-	                                        ""aporteRBCL"": {
-		                                        ""dtHrSituacao"":""#datenow#"",
-		                                        ""situacao"":3,
-		                                        ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
-		                                        ""numCtrlIF"":""#query-idRequisicao#"",
-		                                        ""ispbIF"":32997490,		                                        
-		                                        ""valor"":10000,
-	                                        }
-                                        } ",
                                 //Resposta =  @"{
 	                               //         ""idRequisicao"":""#query-idRequisicao#"",
 	                               //         ""tpRequisicao"":#query-tpRequisicao#,
 	                               //         ""aporteRBCL"": {
 		                              //          ""dtHrSituacao"":""#datenow#"",
 		                              //          ""situacao"":3,
-		                              //          ""descSituacao"":""Cancelado"",
+		                              //          ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
 		                              //          ""numCtrlIF"":""#query-idRequisicao#"",
 		                              //          ""ispbIF"":32997490,		                                        
-		                              //          ""valor"":50000.25,
-                                //                ""sitLancSTR"":14,
+		                              //          ""valor"":10000,
 	                               //         }
                                 //        } ",
+                                Resposta =  @"{
+	                                        ""idRequisicao"":""#query-idRequisicao#"",
+	                                        ""tpRequisicao"":#query-tpRequisicao#,
+	                                        ""aporteRBCL"": {
+		                                        ""dtHrSituacao"":""#datenow#"",
+                                                ""dtHrSitBC"" : ""#datenowutc#"",
+		                                        ""situacao"":0,
+		                                        ""descSituacao"":"""",
+		                                        ""numCtrlIF"":""#query-idRequisicao#"",
+		                                        ""ispbIF"":32997490,		                                        
+		                                        ""valor"":50000.25,
+                                                ""sitLancSTR"":1,
+                                                ""dtMovimento"":""#datenow#""
+	                                        }
+                                        } ",
                             },
+                            //new ProjetoItemResposta()
+                            //{
+                            //    Descricao = "Aporte CCME com sucesso",
+                            //    Condicao = "#query-tpRequisicao#=1",
+                            //    CodigoHttp = 200,
+                            //    Resposta =  @"{
+	                           //             ""idRequisicao"":""#query-idRequisicao#"",
+	                           //             ""tpRequisicao"":#query-tpRequisicao#,
+	                           //             ""aporteCCME"": {
+		                          //              ""dtHrSituacao"":""#datenow#"",
+		                          //              ""situacao"":0,
+		                          //              ""descSituacao"":"""",
+		                          //              ""numCtrlIEME"":""#query-idRequisicao#"",
+		                          //              ""ispbIEME"":32997490,
+		                          //              ""numCtrlSTR"":""STR20200124000000001"",
+		                          //              ""sitLancSTR"":1,
+		                          //              ""valor"":1000000,
+		                          //              ""dtHrSitBC"":""#datenow#"",
+		                          //              ""dtMovimento"":""#datenow#""
+	                           //             }
+                            //            }",
+                            //},
                             new ProjetoItemResposta()
                             {
-                                Descricao = "Aporte CCME com sucesso",
+                                Descricao = "Aporte CCME com erro",
                                 Condicao = "#query-tpRequisicao#=1",
                                 CodigoHttp = 200,
                                 Resposta =  @"{
@@ -393,13 +481,14 @@ namespace MiniApps.SpaghettiUI
                         }
                     }
                 }
-            },
-            new Projeto()
-            {
-                Nome = "Bacen Messages" ,
-                PortaPadrao = 5013,
-                ExibirLog = true,
-                Items = new List<ProjetoItem>()
+                },
+                new Projeto()
+                {
+                    Nome = "Bacen Messages",
+                    PortaPadrao = 5013,
+                    PortaPadraoHttps = 5012,
+                    ExibirLog = true,
+                    Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
                     {
@@ -407,7 +496,7 @@ namespace MiniApps.SpaghettiUI
                         CodigoHttpPadrao = 200,
                         Descricao = "Saida de mensagem do BACEN PIX" ,
                         Endpoint ="/api/v1/out/{ispb}/stream/start",
-                        RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<Envelope xmlns=\"https://www.bcb.gov.br/pi/pacs.002/1.4\">\n    <AppHdr>\n        <Fr>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>00038166</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </Fr>\n        <To>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>4358798</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </To>\n        <BizMsgIdr>M99999010655f476b4435483f9578cf8</BizMsgIdr>\n        <MsgDefIdr>pacs.002.spi.1.4</MsgDefIdr>\n        <CreDt>2020-01-01T08:30:12.000Z</CreDt>\n        <Sgntr/>\n    </AppHdr>\n    <Document>\n        <FIToFIPmtStsRpt>\n            <GrpHdr>\n                <MsgId>M99999010655f476b4435483f9578cf8</MsgId>\n                <CreDtTm>2020-04-07T14:01:20.343Z</CreDtTm>\n            </GrpHdr>\n            <TxInfAndSts>\n                <OrgnlInstrId>E0435879820201119175707308958669</OrgnlInstrId>\n                <OrgnlEndToEndId>E0435879820201119175707308958669</OrgnlEndToEndId>\n                <TxSts>ACSP</TxSts>\n            </TxInfAndSts>\n        </FIToFIPmtStsRpt>\n    </Document>\n</Envelope>",                        
+                        RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<Envelope xmlns=\"https://www.bcb.gov.br/pi/pacs.002/1.4\">\n    <AppHdr>\n        <Fr>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>00038166</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </Fr>\n        <To>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>4358798</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </To>\n        <BizMsgIdr>M99999010655f476b4435483f9578cf8</BizMsgIdr>\n        <MsgDefIdr>pacs.002.spi.1.4</MsgDefIdr>\n        <CreDt>2020-01-01T08:30:12.000Z</CreDt>\n        <Sgntr/>\n    </AppHdr>\n    <Document>\n        <FIToFIPmtStsRpt>\n            <GrpHdr>\n                <MsgId>M99999010655f476b4435483f9578cf8</MsgId>\n                <CreDtTm>2020-04-07T14:01:20.343Z</CreDtTm>\n            </GrpHdr>\n            <TxInfAndSts>\n                <OrgnlInstrId>E0435879820201119175707308958669</OrgnlInstrId>\n                <OrgnlEndToEndId>E0435879820201119175707308958669</OrgnlEndToEndId>\n                <TxSts>ACSP</TxSts>\n            </TxInfAndSts>\n        </FIToFIPmtStsRpt>\n    </Document>\n</Envelope>",
                     },
                     new ProjetoItem()
                     {
@@ -419,7 +508,90 @@ namespace MiniApps.SpaghettiUI
                         RespostaHeader="PI-ResourceId=123456789"
                     }
                 }
-            });
+                },
+                new Projeto()
+                {
+                    ExibirLog = true,
+                    Nome = "Integrador SINQIA",
+                    PortaPadrao = 6529,
+                    PortaPadraoHttps = 6528,
+                    Items = new List<ProjetoItem>()
+                    {
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Criação de lançamento em conta corrente" ,
+                            Endpoint ="/BJ08M01/BJ08SS0103B/lancarValorCC",
+                            RespostaPadrao = "{\"nrSeqLct\":1,\"tpLanc\":1}",
+                            TipoConteudo  = "application/json"
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Criação de lançamento TEF/DOC" ,
+                            Endpoint ="/BJ08M01/BJ08M01/BJ08SS0101D/lancamentoTransferencia",
+                            RespostaPadrao = "{\"cdStatus\":1,\"dsMsg\":1, \"nmFav\": \"Teste\"}",
+                            TipoConteudo  = "application/json"
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Autenticação" ,
+                            Endpoint ="/BJ08M01/user",
+                            RespostaPadrao = "",
+                            TipoConteudo  = "application/json"
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Efetivação de crédito" ,
+                            Endpoint ="/sistema-gestor-auth/jdpi/spi/api/v2/credito",
+                            RespostaPadrao = "{\"IdReqJdPi\": \"\", \"IdCreditoSgct\": \"\", \"DtHrCreditoSgct\": \"\"}",
+                            TipoConteudo  = "application/json"
+                        },
+                        new ProjetoItem()
+                        {
+                            Descricao = "Consulta",
+                            Endpoint = "/BJ08M01/BJ08SS0101B/consultaSaldo",
+                            CodigoHttpPadrao = 200,
+                            TipoConteudo = "application/json",
+                            Metodo = MetodoHttp.MhPost,
+                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    //Resposta = @"{
+                                    //              ""cdCta"": 0,
+                                    //              ""dtSdo"": 0,
+                                    //              ""idIncLim"": ""string"",
+                                    //              ""idSdoBlq"": ""string"",
+                                    //              ""nrAgen"": 0,
+                                    //              ""nrInst"": 0,
+                                    //              ""nrSeq"": 0
+                                    //            }",
+                                    Resposta = @"{
+                                                    ""vlSaldo"": #random_currency#
+                                                }"
+                                },
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 400,
+                                    //TipoConteudo= "application/json",                                    
+                                    Condicao = "#json-nrInst#=0",
+                                    Resposta = @"-10 - Número de instituição não encontrada."
+                                }
+                            }
+                        }
+                    }
+                }
+            );
             db.SaveChanges();
 #endif
         }

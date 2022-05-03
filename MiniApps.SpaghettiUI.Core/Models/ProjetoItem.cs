@@ -19,5 +19,6 @@ namespace MiniApps.SpaghettiUI.Core.Models
 
         public ICollection<ProjetoItemResposta> Respostas { get; set; }
         public string RespostaHeader { get; set; }
+        public string TipoConteudo { get; set; }
     }
 }

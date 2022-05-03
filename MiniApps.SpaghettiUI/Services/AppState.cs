@@ -10,7 +10,7 @@ namespace MiniApps.SpaghettiUI.Services
 {
     public class AppState
     {
-        public ObservableCollection<(Guid,WebApplication)> Applications { get; set; } = new ObservableCollection<(Guid,WebApplication)>();
+        public ObservableCollection<(Guid,WebApplication)> Applications { get; set; } = new ObservableCollection<(Guid, WebApplication)>();
 
         public AppState()
         {
@@ -26,7 +26,7 @@ namespace MiniApps.SpaghettiUI.Services
         {
             if( e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
             {
-                await (((Guid,WebApplication))e.NewItems[0]).Item2.RunAsync();
+                await (((Guid, Microsoft.AspNetCore.Builder.WebApplication))e.NewItems[0]).Item2.RunAsync();
             }
             else if(e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
             {

@@ -15,6 +15,7 @@ namespace MiniApps.SpaghettiUI.Models
         private char icone = (char)57643;
         private string nome;
         private int portaPadrao;
+        private int portaPadraoHttps;
         private ObservableCollection<ProjetoItemDto> items;
        
 
@@ -23,6 +24,7 @@ namespace MiniApps.SpaghettiUI.Models
         public char Icone { get => icone; set => SetProperty(ref icone, value); }
         public string Nome { get => nome; set => SetProperty(ref nome, value); }
         public int PortaPadrao { get => portaPadrao; set => SetProperty(ref portaPadrao, value); }
+        public int PortaPadraoHttps { get => portaPadraoHttps; set => SetProperty(ref portaPadraoHttps, value); }
         public ObservableCollection<ProjetoItemDto> Items { get => items; set => SetProperty(ref items, value); }
         public bool ExibirLog { get; internal set; }
     }
@@ -50,6 +52,7 @@ namespace MiniApps.SpaghettiUI.Models
 
         public ObservableCollection<ProjetoItemRespostaDto> Respostas { get => respostas; set => SetProperty(ref respostas, value); }
         public string RespostaHeader { get; internal set; }
+        public string TipoConteudo { get; internal set; }
     }
 
     public class ProjetoItemRespostaDto
@@ -58,5 +61,6 @@ namespace MiniApps.SpaghettiUI.Models
         public string Condicao { get; set; }
         public string Resposta { get; set; }
         public string Descricao { get; set; }
+        public string TipoConteudo { get; set; }
     }
 }

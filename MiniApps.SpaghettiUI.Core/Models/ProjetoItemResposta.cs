@@ -16,5 +16,6 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public string Resposta { get; set; }
         public ProjetoItem Item { get; set; }
         public string Condicao { get; set; }
+        public string TipoConteudo { get; set; }
     }
 }
