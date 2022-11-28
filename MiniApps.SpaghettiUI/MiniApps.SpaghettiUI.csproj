@@ -30,7 +30,7 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Reference Include="JD.PI.GestaoContaPI.Contracts">
-	    <HintPath>..\..\JDPix\GestaoContaPI\src\02 - Workers Services\03 - Application\JD.PI.GestaoContaPI.Contracts\bin\Debug\netstandard2.1\JD.PI.GestaoContaPI.Contracts.dll</HintPath>
+	    <HintPath>..\_lib\JD.PI.GestaoContaPI.Contracts.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

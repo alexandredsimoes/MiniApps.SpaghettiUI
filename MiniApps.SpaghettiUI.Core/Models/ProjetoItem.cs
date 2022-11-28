@@ -16,7 +16,7 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public int CodigoHttpPadrao { get; set; }
         public Projeto Projeto { get;  set; }
         public string Descricao { get; set; }
-
+        public bool Ativo { get; set; } = true;
         public ICollection<ProjetoItemResposta> Respostas { get; set; }
         public string RespostaHeader { get; set; }
         public string TipoConteudo { get; set; }

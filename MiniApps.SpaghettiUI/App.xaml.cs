@@ -133,6 +133,7 @@ namespace MiniApps.SpaghettiUI
                     PortaPadrao = 5082,
                     PortaPadraoHttps = 5081,
                     ExibirLog = true,
+                    DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
@@ -425,6 +426,7 @@ namespace MiniApps.SpaghettiUI
 		                                            ""ispbPSPI"":32997490,
 		                                            ""sitLancSTR"":1,
 		                                            ""valor"":5000,
+                                                    ""dtHrSitBC"":""#datenow#"",
 		                                            ""dtMovimento"":""#datenow#""
 	                                            }
                                             }
@@ -488,6 +490,7 @@ namespace MiniApps.SpaghettiUI
                     PortaPadrao = 5013,
                     PortaPadraoHttps = 5012,
                     ExibirLog = true,
+                    DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
                 {
                     new ProjetoItem()
@@ -515,6 +518,7 @@ namespace MiniApps.SpaghettiUI
                     Nome = "Integrador SINQIA",
                     PortaPadrao = 6529,
                     PortaPadraoHttps = 6528,
+                    DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
                     {
                         new ProjetoItem()
@@ -522,9 +526,10 @@ namespace MiniApps.SpaghettiUI
                             Metodo = MetodoHttp.MhPost,
                             CodigoHttpPadrao = 200,
                             Descricao = "Criação de lançamento em conta corrente" ,
-                            Endpoint ="/BJ08M01/BJ08SS0103B/lancarValorCC",
+                            Endpoint ="/BJ08M01/BJ08M01/BJ08SS0103B/lancarValorCC",
                             RespostaPadrao = "{\"nrSeqLct\":1,\"tpLanc\":1}",
-                            TipoConteudo  = "application/json"
+                            TipoConteudo  = "application/json",
+                            Ativo = true,
                         },
                         new ProjetoItem()
                         {
@@ -533,7 +538,8 @@ namespace MiniApps.SpaghettiUI
                             Descricao = "Criação de lançamento TEF/DOC" ,
                             Endpoint ="/BJ08M01/BJ08M01/BJ08SS0101D/lancamentoTransferencia",
                             RespostaPadrao = "{\"cdStatus\":1,\"dsMsg\":1, \"nmFav\": \"Teste\"}",
-                            TipoConteudo  = "application/json"
+                            TipoConteudo  = "application/json",
+                            Ativo = true,
                         },
                         new ProjetoItem()
                         {
@@ -541,43 +547,114 @@ namespace MiniApps.SpaghettiUI
                             CodigoHttpPadrao = 200,
                             Descricao = "Autenticação" ,
                             Endpoint ="/BJ08M01/user",
-                            RespostaPadrao = "",
-                            TipoConteudo  = "application/json"
+                            RespostaPadrao = "{" + Environment.NewLine +
+                                            "    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
+                                            "    \"ExpiresIn\": 1234558," + Environment.NewLine +
+                                            "    \"TokenType\": \"bearer\"," + Environment.NewLine +
+                                            "    \"Scope\": \"read write\"," + Environment.NewLine +
+                                            "    \"Id\": 5555," + Environment.NewLine +
+                                            "    \"UserName\": \"jdpi\"," + Environment.NewLine +
+                                            "    \"NrInst\": 1406," + Environment.NewLine +
+                                            "    \"NrAgen\": 1," + Environment.NewLine +
+                                            "    \"NrAccess\": 25" + Environment.NewLine +
+                                            "}",
+                            TipoConteudo  = "application/json"  ,
+                            RespostaHeader = "auth=2222222" ,
+                            Ativo = true,
                         },
+                        //new ProjetoItem()
+                        //{
+                        //    Metodo = MetodoHttp.MhPost,
+                        //    CodigoHttpPadrao = 200,
+                        //    Descricao = "Efetivação de crédito" ,
+                        //    Endpoint ="/sistema-gestor-auth/jdpi/spi/api/v2/credito",
+                        //    RespostaPadrao = "{\"IdReqJdPi\": \"\", \"IdCreditoSgct\": \"\", \"DtHrCreditoSgct\": \"\"}",
+                        //    TipoConteudo  = "application/json" ,
+                        //    Ativo = true,
+                        //},
+                        //new ProjetoItem()
+                        //{   Metodo = MetodoHttp.MhPost,
+                        //    CodigoHttpPadrao = 200,
+                        //    Descricao = "Devolução recebida",
+                        //    TipoConteudo = "application/json",
+                        //    RespostaPadrao = @"{""IdReqJdPi"": ""a"", ""IdCreditoSgct"": ""a"", ""DtHrCreditoSgct"": ""a""}",
+                        //    Ativo = true,
+                        //    Endpoint = "/sistema-gestor-auth/jdpi/spi/api/v2/devolucao"
+                        //},
                         new ProjetoItem()
                         {
+                            Endpoint = "/jdpi/spi/api/v2/op",
+                            Descricao = "JDPI - Ordem de pagamento",
                             Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Efetivação de crédito" ,
-                            Endpoint ="/sistema-gestor-auth/jdpi/spi/api/v2/credito",
-                            RespostaPadrao = "{\"IdReqJdPi\": \"\", \"IdCreditoSgct\": \"\", \"DtHrCreditoSgct\": \"\"}",
-                            TipoConteudo  = "application/json"
-                        },
-                        new ProjetoItem()
-                        {
-                            Descricao = "Consulta",
-                            Endpoint = "/BJ08M01/BJ08SS0101B/consultaSaldo",
-                            CodigoHttpPadrao = 200,
                             TipoConteudo = "application/json",
-                            Metodo = MetodoHttp.MhPost,
-                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
+                            CodigoHttpPadrao = 200,
                             Respostas = new List<ProjetoItemResposta>()
                             {
                                 new ProjetoItemResposta()
                                 {
                                     CodigoHttp = 200,
                                     TipoConteudo= "application/json",
-                                    //Resposta = @"{
-                                    //              ""cdCta"": 0,
-                                    //              ""dtSdo"": 0,
-                                    //              ""idIncLim"": ""string"",
-                                    //              ""idSdoBlq"": ""string"",
-                                    //              ""nrAgen"": 0,
-                                    //              ""nrInst"": 0,
-                                    //              ""nrSeq"": 0
-                                    //            }",
                                     Resposta = @"{
-                                                    ""vlSaldo"": #random_currency#
+                                        ""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+                                        ""IdReqJdPi"": ""#guid#"",
+                                        ""EndToEndId"": ""#json-endToEndId#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+                            Descricao = "JDPI - Consulta Ordem de pagamento",
+                            Metodo = MetodoHttp.MhGet,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""StJdPi"" : 9                                        
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/connect/token",
+                            Descricao = "JDPI - Autenticação",
+                            RespostaPadrao = "{" + Environment.NewLine +
+                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+                                             "    \"expires_in\": 1234558," + Environment.NewLine +
+                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
+                                             "    \"scope\": \"read write\"," + Environment.NewLine +
+                                             "}",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200
+                        },
+                        new ProjetoItem()
+                        {
+                            Descricao = "Consulta",
+                            Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
+                            CodigoHttpPadrao = 200,
+                            TipoConteudo = "application/json",
+                            Metodo = MetodoHttp.MhPost,
+                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
+                            Ativo = true,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                                    ""ConsultaSaldo"": [ {""vlSaldo"": #random_currency# }]
                                                 }"
                                 },
                                 new ProjetoItemResposta()
@@ -588,6 +665,214 @@ namespace MiniApps.SpaghettiUI
                                     Resposta = @"-10 - Número de instituição não encontrada."
                                 }
                             }
+                        }
+                    }
+                },
+                new Projeto()
+                {
+                    ExibirLog = true,
+                    Nome = "CIP",
+                    PortaPadrao = 6530,
+                    PortaPadraoHttps = 6531,
+                    DataCriacao = DateTime.Now,
+                    Items = new List<ProjetoItem>()
+                    {
+                        new()
+                        {
+                            Descricao = "Consulta Guia de Arrecadação - Sucesso",
+                            Endpoint = "/api/v1/guia-arrecadacao/consulta",
+                            CodigoHttpPadrao = 200,
+                            TipoConteudo = "application/json",
+                            Metodo = MetodoHttp.MhGet,
+                            RespostaPadrao = @"{
+                                                  ""grpHdr"": {
+                                                    ""msgId"": ""20221107000000000030"",
+                                                    ""creDtTm"": ""2022-11-07T13:39:54"",
+                                                    ""initgPty"": {
+                                                      ""nm"": ""CIP"",
+                                                      ""id"": {
+                                                        ""orgId"": {
+                                                          ""othr"": [
+                                                            {
+                                                              ""id"": ""02992335""
+                                                            }
+                                                          ]
+                                                        }
+                                                      }
+                                                    },
+                                                    ""nbOfTxs"": ""1""
+                                                  },
+                                                  ""pmtInf"": [
+                                                    {
+                                                      ""pmtInfId"": ""20221107000000000031"",
+                                                      ""pmtMtd"": ""CSH"",
+                                                      ""reqdExctnDt"": ""2022-11-03"",
+                                                      ""xpryDt"": ""2022-11-03"",
+                                                      ""dbtr"": {
+                                                        ""nm"": ""Cereja Prunus avium"",
+                                                        ""id"": {
+                                                          ""orgId"": {
+                                                            ""othr"": [
+                                                              {
+                                                                ""id"": ""07239345198820"",
+                                                                ""schmeNm"": {
+                                                                  ""prtry"": ""CNPJ""
+                                                                }
+                                                              }
+                                                            ]
+                                                          }
+                                                        }
+                                                      },
+                                                      ""dbtrAgt"": {
+                                                        ""finInstnId"": {
+                                                          ""othr"": {
+                                                            ""id"": ""55555555""
+                                                          }
+                                                        }
+                                                      },
+                                                      ""cdtTrfTx"": [
+                                                        {
+                                                          ""pmtId"": {
+                                                            ""instrId"": ""74863"",
+                                                            ""endToEndId"": ""83640095074470011550000000000000000000000000""
+                                                          },
+                                                          ""amt"": {
+                                                            ""instdAmt"": ""9507447.00""
+                                                          },
+                                                          ""chrgBr"": ""SLEV"",
+                                                          ""intrmyAgt1"": {
+                                                            ""finInstnId"": {
+                                                              ""othr"": {
+                                                                ""id"": ""55555555""
+                                                              }
+                                                            }
+                                                          },
+                                                          ""cdtr"": {
+                                                            ""nm"": ""BA11111111RSOC"",
+                                                            ""id"": {
+                                                              ""orgId"": {
+                                                                ""othr"": [
+                                                                  {
+                                                                    ""id"": ""11111111""
+                                                                  }
+                                                                ]
+                                                              }
+                                                            }
+                                                          },
+                                                          ""rltdRmtInf"": [
+                                                            {
+                                                              ""rmtId"": ""618820445199107""
+                                                            }
+                                                          ],
+                                                          ""rmtInf"": [
+                                                            {
+                                                              ""ustrd"": [
+                                                                ""83640095074470011550000000000000000000000000""
+                                                              ],
+                                                              ""strd"": [
+                                                                {
+                                                                  ""rfrdDocInf"": [
+                                                                    {
+                                                                      ""tp"": {
+                                                                        ""cdOrPrtry"": {
+                                                                          ""prtry"": ""3""
+                                                                        }
+                                                                      },
+                                                                      ""nb"": ""2022032200000000020"",
+                                                                      ""rltdDt"": ""2022-11-03"",
+                                                                      ""lineDtls"": [
+                                                                        {
+                                                                          ""id"": [
+                                                                            {
+                                                                              ""tp"": {
+                                                                                ""cdOrPrtry"": {
+                                                                                  ""prtry"": ""URLGUIA""
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          ],
+                                                                          ""desc"": ""https://endereco-guia.com.br/""
+                                                                        },
+                                                                        {
+                                                                          ""id"": [
+                                                                            {
+                                                                              ""tp"": {
+                                                                                ""cdOrPrtry"": {
+                                                                                  ""prtry"": ""INFODOC""
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                          ],
+                                                                          ""desc"": ""rhIQPTQjROpvpsMIQHtRJypllvTqTlByXeRmiJgOzONcHpgOzOzvfzkUtJsnrAYCPmYGyOEUEzaZdhFobuxSHMBfHifwBeODuACy""
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ],
+                                                                  ""rfrdDocAmt"": {
+                                                                    ""adjstmntAmtAndRsn"": [
+                                                                      {
+                                                                        ""addtlInf"": ""09""
+                                                                      },
+                                                                      {
+                                                                        ""amt"": ""9507447.00""
+                                                                      }
+                                                                    ]
+                                                                  },
+                                                                  ""cdtrRefInf"": {
+                                                                    ""ref"": ""N""
+                                                                  },
+                                                                  ""invcr"": {
+                                                                    ""nm"": ""BA11111111RSOC"",
+                                                                    ""id"": {
+                                                                      ""orgId"": {
+                                                                        ""othr"": [
+                                                                          {
+                                                                            ""id"": ""11111111""
+                                                                          }
+                                                                        ]
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  ""invcee"": {
+                                                                    ""nm"": ""Cereja Prunus avium"",
+                                                                    ""pstlAdr"": {
+                                                                      ""strtNm"": ""Travessa do Rubro"",
+                                                                      ""pstCd"": ""63470425"",
+                                                                      ""twnNm"": ""Rio Grande do Norte"",
+                                                                      ""ctrySubDvsn"": ""PB""
+                                                                    }
+                                                                  },
+                                                                  ""addtlRmtInf"": [
+                                                                    ""01""
+                                                                  ]
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }",
+                            Ativo = true,
+                            //Respostas = new List<ProjetoItemResposta>()
+                            //{
+                            //    new ProjetoItemResposta()
+                            //    {
+                            //        CodigoHttp = 200,
+                            //        TipoConteudo= "application/json",
+                            //        Resposta = @"{
+                            //                        ""ConsultaSaldo"": [ {""vlSaldo"": #random_currency# }]
+                            //                    }"
+                            //    },
+                            //    new ProjetoItemResposta()
+                            //    {
+                            //        CodigoHttp = 400,
+                            //        //TipoConteudo= "application/json",                                    
+                            //        Condicao = "#json-nrInst#=0",
+                            //        Resposta = @"-10 - Número de instituição não encontrada."
+                            //    }
+                            //}
                         }
                     }
                 }

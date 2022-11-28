@@ -12,9 +12,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
     {
         private DelegateCommand<string> _postarFilaCommand;
         private string nomeFila = "";
-        private string servidor = "localhost";
-        private string usuario = "guest";
-        private string senha = "guest";
+        private string servidor = "10.10.20.36";
+        private string usuario = "jdpi";
+        private string senha = "jdpi";
 
 
         public string NomeFila
@@ -88,7 +88,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             await bus.StartAsync(); // This is important!
 
             //var numCtrlIF = "JDPI20out30110751841";
-            var numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+            var numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmssfff")}";// "JDPI20out30110751841";
 
             var aporteRbCl = new AporteRbCLCommand()
             {
@@ -99,7 +99,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 Valor = 50000
             };
             
-            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmss")}";// "JDPI20out30110751841";
             var aporteRbClManual = AporteRbCLCommand.CriarAporteManual(32997490,
                                                                        32997490,
                                                                        50_000,
@@ -108,7 +108,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                                                        "123456",
                                                                        DateTime.Now.AddMinutes(10));
 
-            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmss")}";// "JDPI20out30110751841";
             var aporteCcMe = new AporteCcMeCommand()
             {
                 NumCtrlIEME = numCtrlIF,
@@ -124,7 +124,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                                                        "12345678",
                                                                        DateTime.Now);
 
-            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmss")}";// "JDPI20out30110751841";
             var saqueRbCl = new SaqueRbClCommand()
             {
                 NumCtrlPSPI = numCtrlIF,
@@ -151,7 +151,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                                                      "123456789",
                                                                      DateTime.Now);
 
-            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMMddHHmmssfff")}";// "JDPI20out30110751841";
+            numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmss")}";// "JDPI20out30110751841";
             var saqueCcMe = new SaqueCcMeCommand()
             {
                 NumCtrlPSPI = numCtrlIF,
@@ -194,7 +194,6 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
             if (tipo == "saqueccme-manual")
                 await bus.Publish(saqueCcMeManual);
-
 
 
             //await bus.Send<AporteRbCLCommand>(aporte);

@@ -103,6 +103,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     RespostaPadrao = x.RespostaPadrao,
                     RespostaHeader = x.RespostaHeader,
                     TipoConteudo = x.TipoConteudo,
+                    Ativo = x.Ativo,
                     Projeto = new ProjetoDto()
                     {
                         ExibirLog = x.Projeto.ExibirLog,
@@ -182,7 +183,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             app.Listen($"http://localhost:{Selected.PortaPadrao}", $"https://localhost:{Selected.PortaPadraoHttps}");
 
 
-            foreach (var endpoint in Selected.Items)
+            foreach (var endpoint in Selected.Items.Where(x => x.Ativo))
             {
                 if (endpoint.Metodo == Core.MetodoHttp.MhGet)
                 {
@@ -447,7 +448,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                 if (item.Value.Contains("random_currency"))
                 {
-                    result.Replace("#random_currency#", faker.Finance.Amount(-20_000, -10_000).ToString(CultureInfo.CreateSpecificCulture("en-US")));
+                    result.Replace("#random_currency#", faker.Finance.Amount(1_000, 10_000).ToString(CultureInfo.CreateSpecificCulture("en-US")));
                 }
 
                 result.Replace(item.Value, item.ToString());

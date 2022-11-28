@@ -12,19 +12,20 @@ namespace MiniApps.SpaghettiUI.Core.Models
         public int PortaSegura { get; set; }
 
         public Guid Id { get; set; }
-        
+
         [NotMapped]
         public char Icone { get; set; } = (char)57643;
-        
+
         public string Nome { get; set; }
         public int PortaPadrao { get; set; }
         public ICollection<ProjetoItem> Items { get; set; }
         public bool ExibirLog { get; set; }
         public int PortaPadraoHttps { get; set; }
+        public DateTime DataCriacao { get; set; }
 
         public Projeto()
         {
-            
+
         }
     }
 }

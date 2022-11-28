@@ -4,6 +4,7 @@ using MiniApps.SpaghettiUI.Core.Contracts.Services;
 using MiniApps.SpaghettiUI.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace MiniApps.SpaghettiUI.Core.Services
         public async Task<IList<Projeto>> ListarProjetos()
         {
             using var context = new ApplicationDbContext();
-            return await context.Projetos.AsNoTracking().Include(x=>x.Items).ThenInclude(x=>x.Respostas).ToListAsync();
+            return await context.Projetos.AsNoTracking().Include(x=>x.Items).ThenInclude(x=>x.Respostas).OrderBy(x=>x.DataCriacao).ToListAsync();
         }
 
         public async Task<Projeto> ObterProjeto(Guid id)
