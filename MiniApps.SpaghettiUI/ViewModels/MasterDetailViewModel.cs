@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,9 +24,11 @@ using MiniApps.SpaghettiUI.Models;
 using MiniApps.SpaghettiUI.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace MiniApps.SpaghettiUI.ViewModels
 {
@@ -422,7 +426,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 {
                     if (!string.IsNullOrWhiteSpace(body))
                     {
-                        JObject json = (JObject)JsonConvert.DeserializeObject(body);
+
+                        JObject json = (JObject)JsonConvert.DeserializeObject(body, new JsonSerializerSettings()
+                        {
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        });
                         if (json != null)
                         {
                             var token = json.SelectToken(item.Value.Substring(item.Value.IndexOf('-') + 1));

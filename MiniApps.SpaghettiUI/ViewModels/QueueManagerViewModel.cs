@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using GreenPipes;
 using JD.PI.GestaoContaPI.Contracts;
+using JD.PI.GestaoContaPI.Contracts.Events;
 using MassTransit;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -81,6 +83,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 sbc.Message<SaqueRbClCommand>(config =>
                 {
                     config.SetEntityName(SaqueRbClCommand.EntityName);
+                });
+
+                sbc.Message<ConsultaSaldoRbClCommand>(config =>
+                {
+                    config.SetEntityName(ConsultaSaldoRbClCommand.EntityName);
                 });
 
             });
@@ -167,6 +174,13 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                                                      "123456789",
                                                                      DateTime.Now);
 
+            var consultaSaldoRbCl = new ConsultaSaldoRbClCommand()
+            {
+                DtMovimento = DateTime.Now,
+                IspbIfLdl = 12345678,
+                NumCtrlIfLdl = numCtrlIF
+            };
+
             if (tipo == "aporteccme")
                 await bus.Publish(aporteCcMe);
 
@@ -195,8 +209,21 @@ namespace MiniApps.SpaghettiUI.ViewModels
             if (tipo == "saqueccme-manual")
                 await bus.Publish(saqueCcMeManual);
 
+            if (tipo == "consultasaldorbcl")
+            {
+                var requestClient = bus.CreateRequestClient<ConsultaSaldoRbClCommand>(
+                    destinationAddress: new Uri($"queue:{ConsultaSaldoRbClCommand.QueueName}"),
+                    timeout: TimeSpan.FromSeconds(60));
 
-            //await bus.Send<AporteRbCLCommand>(aporte);
+                using var requestHandler = requestClient.Create(consultaSaldoRbCl, CancellationToken.None);
+
+                requestHandler.UseExecute(c =>
+                {
+                    c.Durable = true;
+                });
+
+                var response = await requestHandler.GetResponse<ConsultaSaldoRbClEvent>().ConfigureAwait(false);
+            }
 
             await bus.StopAsync();
         }

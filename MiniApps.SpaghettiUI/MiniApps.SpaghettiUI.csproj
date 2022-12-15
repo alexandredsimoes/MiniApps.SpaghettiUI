@@ -29,6 +29,9 @@
 		<ProjectReference Include="..\MiniApps.SpaghettiUI.Core\MiniApps.SpaghettiUI.Core.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Reference Include="FeatherHttp">
+	    <HintPath>..\_lib\FeatherHttp.dll</HintPath>
+	  </Reference>
 	  <Reference Include="JD.PI.GestaoContaPI.Contracts">
 	    <HintPath>..\_lib\JD.PI.GestaoContaPI.Contracts.dll</HintPath>
 	  </Reference>

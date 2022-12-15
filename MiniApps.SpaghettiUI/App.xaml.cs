@@ -125,6 +125,11 @@ namespace MiniApps.SpaghettiUI
 	                                            ""idRequisicao"":""#json-numCtrlIf#"",
 	                                            ""dtHrRequisicao"":""#datenowutc#"",
                                             }";
+
+            var respostConsulta = @"{
+	                                            ""idRequisicao"":""#json-NumCtrlIfLdl#"",
+	                                            ""dtHrRequisicao"":""#datenowutc#"",
+                                            }";
             db.Projetos.AddRange(
                 new Projeto()
                 {
@@ -136,6 +141,15 @@ namespace MiniApps.SpaghettiUI
                     DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
                 {
+                    new ProjetoItem()
+                    {
+                        ProjetoId = projetoId,
+                        Descricao = "Consulta Saldo RB ou CL",
+                        RespostaPadrao = respostConsulta,
+                        CodigoHttpPadrao = 200,
+                        Metodo = MetodoHttp.MhPost,
+                        Endpoint = "/jdspb/conta/api/v1/consultar-saldo/rbcl"
+                    },
                     new ProjetoItem()
                     {
                         ProjetoId = projetoId,
@@ -303,28 +317,26 @@ namespace MiniApps.SpaghettiUI
 	                                        }
                                         } ",
                             },
-                            //new ProjetoItemResposta()
-                            //{
-                            //    Descricao = "Aporte CCME com sucesso",
-                            //    Condicao = "#query-tpRequisicao#=1",
-                            //    CodigoHttp = 200,
-                            //    Resposta =  @"{
-	                           //             ""idRequisicao"":""#query-idRequisicao#"",
-	                           //             ""tpRequisicao"":#query-tpRequisicao#,
-	                           //             ""aporteCCME"": {
-		                          //              ""dtHrSituacao"":""#datenow#"",
-		                          //              ""situacao"":0,
-		                          //              ""descSituacao"":"""",
-		                          //              ""numCtrlIEME"":""#query-idRequisicao#"",
-		                          //              ""ispbIEME"":32997490,
-		                          //              ""numCtrlSTR"":""STR20200124000000001"",
-		                          //              ""sitLancSTR"":1,
-		                          //              ""valor"":1000000,
-		                          //              ""dtHrSitBC"":""#datenow#"",
-		                          //              ""dtMovimento"":""#datenow#""
-	                           //             }
-                            //            }",
-                            //},
+                            new ProjetoItemResposta()
+                            {
+                                Descricao = "Consulta saldo RBCL",
+                                Condicao = "#query-tpRequisicao#=7",
+                                CodigoHttp = 200,
+                                Resposta =  @"{
+	                                        ""idRequisicao"":""#query-idRequisicao#"",
+	                                        ""tpRequisicao"":#query-tpRequisicao#,
+	                                        ""consultaSaldoRBCL"": {
+		                                        ""dtHrSituacao"":""#datenow#"",
+		                                        ""situacao"":0,
+		                                        ""descSituacao"":"""",
+		                                        ""numCtrlIfLDL"":""#query-idRequisicao#"",
+		                                        ""ispbIfLDL"":32997490,		                                        
+		                                        ""saldoRBCL"":1000000,
+		                                        ""dtHrBC"":""#datenow#"",
+		                                        ""dtMovimento"":""#datenow#""
+	                                        }
+                                        }",
+                            },
                             new ProjetoItemResposta()
                             {
                                 Descricao = "Aporte CCME com erro",
