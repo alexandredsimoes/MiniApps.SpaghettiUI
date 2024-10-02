@@ -7,16 +7,19 @@ using JD.PI.GestaoContaPI.Contracts.Events;
 using MassTransit;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Regions;
 
 namespace MiniApps.SpaghettiUI.ViewModels
 {
-    public class QueueManagerViewModel : BindableBase
+    public class QueueManagerViewModel : BindableBase, INavigationAware
     {
         private DelegateCommand<string> _postarFilaCommand;
         private string nomeFila = "";
-        private string servidor = "10.10.20.36";
+        private string servidor = "localhost";
         private string usuario = "jdpi";
         private string senha = "jdpi";
+        private string virtualHost = "jdpi";
+        private IBusControl bus = null;
 
 
         public string NomeFila
@@ -24,6 +27,13 @@ namespace MiniApps.SpaghettiUI.ViewModels
             get { return nomeFila; }
             set { SetProperty(ref nomeFila, value); }
         }
+
+        public string VirtualHost
+        {
+            get { return virtualHost; }
+            set { SetProperty(ref virtualHost, value); }
+        }
+
         public string Servidor
         {
             get { return servidor; }
@@ -53,46 +63,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         async void ExecutePostarFilaCommandAsync(string tipo)
         {
-            var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
-            {
-                sbc.Host(Servidor, 5672, "alexandre", c =>
-                {
-                    c.Username(Usuario);
-                    c.Password(Senha);
-                    c.ConfigureBatchPublish(b =>
-                    {
-                    });
-                });
-
-
-                sbc.Message<AporteRbCLCommand>(config =>
-                {
-                    config.SetEntityName(AporteRbCLCommand.EntityName);
-                });
-
-                sbc.Message<AporteCcMeCommand>(config =>
-                {
-                    config.SetEntityName(AporteCcMeCommand.EntityName);
-                });
-
-                sbc.Message<SaqueCcMeCommand>(config =>
-                {
-                    config.SetEntityName(SaqueCcMeCommand.EntityName);
-                });
-
-                sbc.Message<SaqueRbClCommand>(config =>
-                {
-                    config.SetEntityName(SaqueRbClCommand.EntityName);
-                });
-
-                sbc.Message<ConsultaSaldoRbClCommand>(config =>
-                {
-                    config.SetEntityName(ConsultaSaldoRbClCommand.EntityName);
-                });
-
-            });
-
-            await bus.StartAsync(); // This is important!
+            
 
             //var numCtrlIF = "JDPI20out30110751841";
             var numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmssfff")}";// "JDPI20out30110751841";
@@ -225,6 +196,56 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 var response = await requestHandler.GetResponse<ConsultaSaldoRbClEvent>().ConfigureAwait(false);
             }
 
+        }
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
+            {
+                sbc.Host(Servidor, 5672, VirtualHost, c =>
+                {
+                    c.Username(Usuario);
+                    c.Password(Senha);
+                    c.ConfigureBatchPublish(b =>
+                    {
+                    });
+                });
+
+
+                sbc.Message<AporteRbCLCommand>(config =>
+                {
+                    config.SetEntityName(AporteRbCLCommand.EntityName);
+                });
+
+                sbc.Message<AporteCcMeCommand>(config =>
+                {
+                    config.SetEntityName(AporteCcMeCommand.EntityName);
+                });
+
+                sbc.Message<SaqueCcMeCommand>(config =>
+                {
+                    config.SetEntityName(SaqueCcMeCommand.EntityName);
+                });
+
+                sbc.Message<SaqueRbClCommand>(config =>
+                {
+                    config.SetEntityName(SaqueRbClCommand.EntityName);
+                });
+
+                sbc.Message<ConsultaSaldoRbClCommand>(config =>
+                {
+                    config.SetEntityName(ConsultaSaldoRbClCommand.EntityName);
+                });
+
+            });
+
+            await bus.StartAsync(); // This is important!
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext) => true;
+
+        public async void OnNavigatedFrom(NavigationContext navigationContext)
+        {
             await bus.StopAsync();
         }
     }

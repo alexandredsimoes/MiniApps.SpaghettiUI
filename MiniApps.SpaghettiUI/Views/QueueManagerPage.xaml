@@ -31,6 +31,9 @@
                 <TextBlock Text="Host"/>
                 <TextBox Text="{Binding Servidor, Mode=TwoWay}"/>
 
+                <TextBlock Text="Virtual Host"/>
+                <TextBox Text="{Binding VirtualHost, Mode=TwoWay}"/>
+
                 <TextBlock Text="Usuario"/>
                 <TextBox Text="{Binding Usuario, Mode=TwoWay}"/>
                 

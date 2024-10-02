@@ -10,11 +10,17 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Bogus;
+
+using ControlzEx.Behaviors;
+
 using MahApps.Metro.Controls;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+
 using MiniApps.SpaghettiUI.Constants;
 using MiniApps.SpaghettiUI.Core;
 using MiniApps.SpaghettiUI.Core.Contracts.Services;
@@ -22,12 +28,15 @@ using MiniApps.SpaghettiUI.Core.Models;
 using MiniApps.SpaghettiUI.Core.Services;
 using MiniApps.SpaghettiUI.Models;
 using MiniApps.SpaghettiUI.Services;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
+
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace MiniApps.SpaghettiUI.ViewModels
@@ -58,7 +67,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         public ProjetoDto Selected
         {
-            get { return _selected; }
+            get => _selected;
             set { SetProperty(ref _selected, value); RaisePropertyChanged(nameof(IsActive)); }
         }
         public ObservableCollection<ProjetoDto> Projetos { get; private set; } = new ObservableCollection<ProjetoDto>();
@@ -413,6 +422,16 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     var h = context.Request.Query.FirstOrDefault(x => x.Key == item.Value.Substring(item.Value.IndexOf("-") + 1));
                     if (h.Key != null)
                         result.Replace($"#{item.Value}#", h.Value);
+                    
+
+                }
+
+                if (item.Value.Contains("rota-"))
+                {
+                    var chave = item.Value.Substring(item.Value.IndexOf("-") + 1);
+                    var rota = context.Request.RouteValues.FirstOrDefault(x => x.Key.Contains(chave, StringComparison.InvariantCultureIgnoreCase));
+                    if (rota is { })
+                        result.Replace($"#{item.Value}#", rota.Value.ToString());
                 }
 
                 if (item.Value.Contains("header-"))
@@ -444,9 +463,15 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 {
                     result.Replace("#datenow#", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
+
+                if (item.Value.Contains("random_int"))
+                {
+                    result.Replace("#random_int#", faker.Random.UInt(min: 100).ToString());
+                }
+
                 if (item.Value.Contains("datenowutc"))
                 {
-                    result.Replace("#datenowutc#", DateTime.UtcNow.ToString());
+                    result.Replace("#datenowutc#", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
                 if (item.Value.Contains("guid"))
                 {

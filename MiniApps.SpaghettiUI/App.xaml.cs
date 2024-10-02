@@ -220,58 +220,42 @@ namespace MiniApps.SpaghettiUI
                         RespostaPadrao = respostaAporte,
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhGet,
-                        Endpoint = "/conta/api/v1/listar/aporte-retirada",
+                        Endpoint = "/jdspb/conta/api/v1/listar/aporte-retirada",
                         Respostas = new List<ProjetoItemResposta>()
                         {
                             new ProjetoItemResposta()
                             {
                                 Descricao = "Listagem de aportes e retiradas",
                                 CodigoHttp = 200,
-                                Resposta =  @"{
-	                                            ""dtHrResultado"": ""2021-12-15T17:10:05.025Z"",
+                                Resposta = @"{
+	                                            ""dtHrResultado"": ""2024-07-31T12:38:05.025Z"",
 	                                            ""resultado"": [
 		                                            {
-			                                            ""tpOperacao"": 1,
+			                                            ""tpOperacao"": 5,
 			                                            ""situacao"": 0,
-			                                            ""numCtrlSTR"": ""STR20211215000000001"",
-			                                            ""numCtrl"": ""c61f126d-efa1-4ff0-8"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:34:22""
+			                                            ""numCtrlSTR"": ""STR20240731000000901"",
+			                                            ""numCtrl"": ""JDPI24ABR17123915011"",
+			                                            ""dtHrSitBC"": ""2024-07-31T12:38:21"",
+			                                            ""valor"": 299.02
 		                                            },
 		                                            {
-			                                            ""tpOperacao"": 1,
+			                                            ""tpOperacao"": 4,
 			                                            ""situacao"": 0,
-			                                            ""numCtrlSTR"": ""STR20211215000000002"",
-			                                            ""numCtrl"": ""JDPI21DEZ15182615002"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+			                                            ""numCtrlSTR"": ""STR20240731000000902"",
+			                                            ""numCtrl"": ""JDPI24ABR17123915012"",
+			                                            ""dtHrSitBC"": ""2024-07-31T12:38:22"",
+			                                            ""valor"": 10.02
 		                                            },
 		                                            {
 			                                            ""tpOperacao"": 0,
 			                                            ""situacao"": 0,
-			                                            ""numCtrlSTR"": ""STR20211215000000003"",
-			                                            ""numCtrl"": ""JDPI21DEZ15182615003"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
-		                                            },
-		                                            {
-			                                            ""tpOperacao"": 4,
-			                                            ""situacao"": 1,
-			                                            ""numCtrl"": ""JDPI21DEZ15182615004"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
-		                                            },
-		                                            {
-			                                            ""tpOperacao"": 3,
-			                                            ""situacao"": 2,
-			                                            ""numCtrl"": ""JDPI21DEZ15182615005"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
-		                                            },
-		                                            {
-			                                            ""tpOperacao"": 4,
-			                                            ""situacao"": 0,
-			                                            ""numCtrlSTR"": ""STR20211215000000005"",
-			                                            ""numCtrl"": ""JDPI21DEZ15182615006"",
-			                                            ""dtHrSitBC"": ""2021-12-15T16:35:23""
+			                                            ""numCtrlSTR"": ""STR20240731000000903"",
+			                                            ""numCtrl"": ""JDPI23JUN22152515004"",
+			                                            ""dtHrSitBC"": ""2024-07-31T15:24:23"",
+			                                            ""valor"": 9.99
 		                                            }
 	                                            ]
-                                            }"
+                                            }" 
                             },
                         }
                     },
@@ -301,21 +285,22 @@ namespace MiniApps.SpaghettiUI
 		                              //          ""valor"":10000,
 	                               //         }
                                 //        } ",
-                                Resposta =  @"{
+                                Resposta =  @$"{{
 	                                        ""idRequisicao"":""#query-idRequisicao#"",
 	                                        ""tpRequisicao"":#query-tpRequisicao#,
-	                                        ""aporteRBCL"": {
+	                                        ""aporteRBCL"": {{
 		                                        ""dtHrSituacao"":""#datenow#"",
                                                 ""dtHrSitBC"" : ""#datenowutc#"",
 		                                        ""situacao"":0,
+                                                ""numCtrlStr"": ""JDPI{DateTime.Now:yyMMddHHmmssfff}"",
 		                                        ""descSituacao"":"""",
 		                                        ""numCtrlIF"":""#query-idRequisicao#"",
 		                                        ""ispbIF"":32997490,		                                        
 		                                        ""valor"":50000.25,
                                                 ""sitLancSTR"":1,
                                                 ""dtMovimento"":""#datenow#""
-	                                        }
-                                        } ",
+	                                        }}
+                                        }} ",
                             },
                             new ProjetoItemResposta()
                             {
@@ -886,6 +871,593 @@ namespace MiniApps.SpaghettiUI
                             //    }
                             //}
                         }
+                    }
+                },
+                new Projeto()
+                {
+                    ExibirLog = true,
+                    Nome = "Integrador MATERA",
+                    PortaPadrao = 6529,
+                    PortaPadraoHttps = 6528,
+                    DataCriacao = DateTime.Now,
+                    Items = new List<ProjetoItem>()
+                    {
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Matera - Criação de lançamento em conta corrente" ,
+                            Endpoint ="/v2/contas/{agencia}/{conta}/lancamentos",
+                            RespostaPadrao = @"{
+                              ""data"": {
+                                ""subSistema"": ""SDCONTA2"",
+                                ""nomeUsuario"": ""SDBANCO"",
+                                ""loteEntrada"": 6697,
+                                ""lancamentos"": [
+                                  {
+                                    ""idLancamento"": #random_int#,
+                                    ""dataLancamento"": ""#datenow#"",
+                                    ""historico"": 92,
+                                    ""documento"": #random_int#,
+                                    ""valor"": #json-lancamentos[0].valor#,
+                                    ""complementoHistorico"": ""#json-lancamentos[0].complementoHistorico#"",
+                                    ""agenciaGeradora"": 1,
+                                    ""tipoLimite"": ""SALDO_MAIS_LIMITE"",
+                                    ""referenciaMovimento"": ""#json-lancamentos[0].referenciaMovimento#"",
+                                    ""exibeLancamentoAgrupado"": true,
+                                    ""enviaNotificacao"": true,
+                                    ""validaSaldo"": ""VALIDA"",
+                                    ""atualizaValorLote"": true,
+                                    ""detalhes"": ""#json-lancamentos[0].detalhes#"",
+                                    ""idSistemaExterno"": ""#json-lancamentos[0].idSistemaExterno#"",
+                                    ""transactionId"": ""#json-lancamentos[0].transactionId#"",
+                                    ""dadosDepositante"": {
+                                      ""agenciaDepositante"": 1,
+                                      ""bancoDepositante"": 1,
+                                      ""numContaDepositante"": 1234,
+                                      ""cpfCnpjDepositante"": 39715479073,
+                                      ""nomeDepositante"": ""JOAO"",
+                                      ""ispbIfDepositante"": ""12345678""
+                                    }
+                                  }
+                                ],
+                                ""saldo"": {
+                                  ""data"": ""#datenow#"",
+                                  ""saldoDisponivel"": 33734.71,
+                                  ""saldoVinculado"": 0,
+                                  ""saldoBloqueado"": 10,
+                                  ""limiteCreditoDisponivel"": 0,
+                                  ""saldoContabil"": 33744.71,
+                                  ""saldoInvestimento"": 33734.71
+                                },
+                                ""classificacaoCategoriaContaSPI"": ""CACC"",
+                                ""cpfCnpjTitular"": 77072927077,
+                                ""tipoPessoa"": ""FISICA""
+                              }
+                            }",
+                            TipoConteudo  = "application/json",
+                            Ativo = true,
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhPost,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Autenticação" ,
+                            Endpoint ="/user",
+                            RespostaPadrao = "{" + Environment.NewLine +
+                                            "    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
+                                            "    \"ExpiresIn\": 1234558," + Environment.NewLine +
+                                            "    \"TokenType\": \"bearer\"," + Environment.NewLine +
+                                            "    \"Scope\": \"read write\"," + Environment.NewLine +
+                                            "    \"Id\": 5555," + Environment.NewLine +
+                                            "    \"UserName\": \"jdpi\"," + Environment.NewLine +
+                                            "    \"NrInst\": 1406," + Environment.NewLine +
+                                            "    \"NrAgen\": 1," + Environment.NewLine +
+                                            "    \"NrAccess\": 25" + Environment.NewLine +
+                                            "}",
+                            TipoConteudo  = "application/json"  ,
+                            RespostaHeader = "auth=2222222" ,
+                            Ativo = true,
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhGet,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Matera - Consulta de saldos" ,
+                            Endpoint ="/v2/contas/{agencia}/{conta}/saldos",
+                            RespostaPadrao = @"{
+                              ""data"": ""#datenow#"",
+                              ""saldoDisponivel"": 1550.75,
+                              ""saldoVinculado"": 400,
+                              ""saldoBloqueado"": 256.93,
+                              ""saldoContabil"": 2207.68,
+                              ""limiteCreditoDisponivel"": 50,
+                              ""saldoInvestimento"": 2550.75,
+                              ""saldoAuxilioEmergencial"": 600,
+                              ""saldoDisponivelParaMovimentacao"": 3150.75,
+                              ""limiteCreditoContratado"": 50
+                            }",
+                            TipoConteudo  = "application/json"  ,
+                            RespostaHeader = "auth=2222222" ,
+                            Ativo = true,
+                        },
+                        new ProjetoItem()
+                        {
+                            Metodo = MetodoHttp.MhGet,
+                            CodigoHttpPadrao = 200,
+                            Descricao = "Matera - Consulta de conta" ,
+                            Endpoint ="/v2/contas",
+                            
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    Descricao = "Validação Suceso",
+                                    TipoConteudo = "application/json",
+                                    Resposta = @"{
+                                                  ""agencia"": ""#query-agenciaContaDebitoLancamento#"",
+                                                  ""numConta"": ""#query-numContaDebitoLancamento#"",
+                                                  ""dataCadastro"": ""#datenow#"",
+                                                  ""situacao"": ""F"",
+                                                  ""tipoCc"": 1,
+                                                  ""tipoCcDescricao"": ""Conta Corrente"",
+                                                  ""tipoAssociacao"": ""string"",
+                                                  ""contaDebitoLancamento"": {
+                                                    ""agencia"": #query-agenciaContaDebitoLancamento#,
+                                                    ""numConta"": #query-numContaDebitoLancamento#
+                                                  },
+                                                  ""cliente"": {
+                                                    ""idCliente"": 0,
+                                                    ""nome"": ""string"",
+                                                    ""tipoPessoa"": ""string"",
+                                                    ""cpfCnpj"": 0,
+                                                    ""email"": ""user@example.com"",
+                                                    ""dataCadastro"": ""2023-11-01""
+                                                  },
+                                                  ""categoria"": {
+                                                    ""idCategoria"": ""string"",
+                                                    ""descricao"": ""string""
+                                                  },
+                                                  ""informacoesContrato"": {
+                                                    ""limiteCredito"": 0,
+                                                    ""taxaMensal"": 0,
+                                                    ""taxaAnual"": 0,
+                                                    ""CETmensal"": 0,
+                                                    ""CETAnual"": 0
+                                                  },
+                                                  ""periodoEncargos"": ""string"",
+                                                  ""diaDoMes"": 0,
+                                                  ""codigoIban"": ""string""
+                                                }" ,
+                                },
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 500,
+                                    Descricao = "Erro na validação de conta",
+                                    Resposta = @"{""Mensagem"": ""Erro geral""}",
+                                    TipoConteudo = "application/json"
+                                }
+                            },
+                            TipoConteudo  = "application/json"  ,
+                            RespostaHeader = "auth=2222222" ,
+                            Ativo = true,
+                        },
+                        //new ProjetoItem()
+                        //{
+                        //    Metodo = MetodoHttp.MhPost,
+                        //    CodigoHttpPadrao = 200,
+                        //    Descricao = "Efetivação de crédito" ,
+                        //    Endpoint ="/sistema-gestor-auth/jdpi/spi/api/v2/credito",
+                        //    RespostaPadrao = "{\"IdReqJdPi\": \"\", \"IdCreditoSgct\": \"\", \"DtHrCreditoSgct\": \"\"}",
+                        //    TipoConteudo  = "application/json" ,
+                        //    Ativo = true,
+                        //},
+                        //new ProjetoItem()
+                        //{   Metodo = MetodoHttp.MhPost,
+                        //    CodigoHttpPadrao = 200,
+                        //    Descricao = "Devolução recebida",
+                        //    TipoConteudo = "application/json",
+                        //    RespostaPadrao = @"{""IdReqJdPi"": ""a"", ""IdCreditoSgct"": ""a"", ""DtHrCreditoSgct"": ""a""}",
+                        //    Ativo = true,
+                        //    Endpoint = "/sistema-gestor-auth/jdpi/spi/api/v2/devolucao"
+                        //},                                                                                               
+                        new ProjetoItem()
+                        {
+                            Descricao = "Consulta",
+                            Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
+                            CodigoHttpPadrao = 200,
+                            TipoConteudo = "application/json",
+                            Metodo = MetodoHttp.MhPost,
+                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
+                            Ativo = true,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                                    ""ConsultaSaldo"": [ {""vlSaldo"": #random_currency# }]
+                                                }"
+                                },
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 400,
+                                    //TipoConteudo= "application/json",                                    
+                                    Condicao = "#json-nrInst#=0",
+                                    Resposta = @"-10 - Número de instituição não encontrada."
+                                }
+                            }
+                        },
+                        
+                    }
+                },
+                new Projeto()
+                {
+                    ExibirLog = true,
+                    Nome = "SPI - INTEGRADOR",
+                    PortaPadrao = 6529,
+                    PortaPadraoHttps = 6528,
+                    DataCriacao = DateTime.Now, 
+                    Items = new List<ProjetoItem>()
+                    {                                                                                               
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/od",
+                            Descricao = "JDPI - Ordem de devolução",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+                                        ""IdReqJdPi"": ""#guid#"",
+                                        ""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
+                            Descricao = "JDPI - Consulta Ordem de devolução SPI",
+                            Metodo = MetodoHttp.MhGet,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    Descricao = "Consulta com sucesso",
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqJdPiConsultada"" : ""#query-idReqDevEnvJdPi#"",
+                                        
+                                        ""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+                                        ""EndToEndIdDevolucao"": ""#json-endToEndIdDevolucao#"",
+                                        ""ValorDevolucao"": ""9.99"",
+                                        ""CodigoDevolucao"": """",
+                                        ""MotivoDevolucao"": """",
+                                        ""InfEntreClientes"": ""Engano, foi mal"",
+
+                                        ""DtHrReqJdPi"": ""#datenowutc#"",
+                                        ""DtHrSituacao"": ""#datenowutc#"",
+                                        ""StJdPi"": ""9"", //0 - Em processamento, 9 - Sucesso
+                                        ""StJdPiProc"": ""9"",
+
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/op",
+                            Descricao = "JDPI - Ordem de pagamento",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+                                        ""IdReqJdPi"": ""01010101-0ae3-4daf-910c-1f1d8c657846"",
+                                        ""EndToEndId"": ""#json-endToEndId#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+                            Descricao = "JDPI - Consulta Ordem de pagamento",
+                            Metodo = MetodoHttp.MhGet,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                /*new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    //Condicao = "#json-idReqSistemaCliente=82F995C4-7487-4363-9406-A1DE2A9636D1#",
+                                    Resposta =@"{
+                                                    ""idReqJdPiConsultada"": ""#rota-IdRespostaJdPiApi#"",
+                                                    ""idReqSistemaCliente"": ""82F995C4-7487-4363-9406-A1DE2A9636D1"",
+                                                    ""dtHrReqJdPi"": ""2024-04-17T15:34:33.540Z"",
+                                                    ""dtHrSituacao"": ""2024-04-17T15:34:52.179Z"",
+                                                    ""stJdPi"": -1,
+                                                    ""stJdPiProc"": 20,
+                                                    ""codigoErro"": ""AC03"",
+                                                    ""descCodigoErro"": ""Pagamento rejeitado pelo PSP"",
+                                                    ""endToEndId"": ""E5911813320240417153433540944977"",
+                                                    ""tpIniciacao"": 0,
+                                                    ""pagador"": {
+                                                        ""ispb"": 59118133,
+                                                        ""tpPessoa"": 1,
+                                                        ""cpfCnpj"": 43350314000127,
+                                                        ""nome"": ""Thamires Rabelo"",
+                                                        ""nrAgencia"": ""19"",
+                                                        ""tpConta"": 0,
+                                                        ""nrConta"": ""99999996""
+                                                    },
+                                                    ""recebedor"": {
+                                                        ""ispb"": 36586946,
+                                                        ""tpPessoa"": 1,
+                                                        ""cpfCnpj"": 4358798000107,
+                                                        ""nome"": ""Fulano Recebedor"",
+                                                        ""nrAgencia"": ""5555"",
+                                                        ""tpConta"": 0,
+                                                        ""nrConta"": ""9999999""
+                                                    },
+                                                    ""prioridadePagamento"": 0,
+                                                    ""tpPrioridadePagamento"": 0,
+                                                    ""finalidade"": 0,
+                                                    ""valor"": 11.11,
+                                                    ""vlrDetalhe"": []
+                                                }"
+
+                                },*/
+                                new ProjetoItemResposta()
+                                {
+                                    //Condicao = "header-erro=0",
+                                    CodigoHttp = 200,
+
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                                    ""idReqJdPiConsultada"": ""{#rota-IdRespostaJdPiApi#}"",
+                                                    ""idReqSistemaCliente"": ""82F995C4-7487-4363-9406-A1DE2A9636D1"",
+                                                    ""dtHrReqJdPi"": ""2024-04-17T15:34:33.540Z"",
+                                                    ""dtHrSituacao"": ""2024-04-17T15:34:52.179Z"",
+                                                    ""stJdPi"": 9,
+                                                    ""stJdPiProc"": 9,                                                    
+                                                    ""endToEndId"": ""E5911813320240417153433540944977"",
+                                                    ""tpIniciacao"": 0,
+                                                    ""pagador"": {
+                                                        ""ispb"": 59118133,
+                                                        ""tpPessoa"": 1,
+                                                        ""cpfCnpj"": 43350314000127,
+                                                        ""nome"": ""Thamires Rabelo"",
+                                                        ""nrAgencia"": ""19"",
+                                                        ""tpConta"": 0,
+                                                        ""nrConta"": ""99999996""
+                                                    },
+                                                    ""recebedor"": {
+                                                        ""ispb"": 36586946,
+                                                        ""tpPessoa"": 1,
+                                                        ""cpfCnpj"": 4358798000107,
+                                                        ""nome"": ""Fulano Recebedor"",
+                                                        ""nrAgencia"": ""5555"",
+                                                        ""tpConta"": 0,
+                                                        ""nrConta"": ""9999999""
+                                                    },
+                                                    ""prioridadePagamento"": 0,
+                                                    ""tpPrioridadePagamento"": 0,
+                                                    ""finalidade"": 0,
+                                                    ""valor"": 11.11,
+                                                    ""vlrDetalhe"": []
+                                                }"
+                                }
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/connect/token",
+                            Descricao = "JDPI - Autenticação",
+                            RespostaPadrao = "{" + Environment.NewLine +
+                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+                                             "    \"expires_in\": 1234558," + Environment.NewLine +
+                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
+                                             "    \"scope\": \"read write\"," + Environment.NewLine +
+                                             "}",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200
+                        },                        
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/credito-pagamento/validacao",
+                            Descricao = "JDPI - Registrar Validação de Conta/Cliente/Ordem de Crédito - ASYNC",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{                                                                                
+                                        ""IdEndToEndIdl"": ""#json-endToEndId#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 500,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{                                                                                
+                                        ""Mensagem"": ""Erro no servidor"",                                        
+                                    }",
+                                },
+                            }
+
+                        },
+                    }
+                },
+                new Projeto()
+                {
+                    ExibirLog = true,
+                    Nome = "SPI - JDPI",
+                    PortaPadrao = 6530,
+                    PortaPadraoHttps = 6531,
+                    DataCriacao = DateTime.Now,
+                    Items = new List<ProjetoItem>()
+                    {
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/od",
+                            Descricao = "JDPI - Ordem de devolução",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+                                        ""IdReqJdPi"": ""#guid#"",
+                                        ""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
+                            Descricao = "JDPI - Consulta Ordem de devolução SPI",
+                            Metodo = MetodoHttp.MhGet,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    Descricao = "Consulta com sucesso",
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqJdPiConsultada"" : ""#query-idReqDevEnvJdPi#"",
+                                        
+                                        ""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+                                        ""EndToEndIdDevolucao"": ""#json-endToEndIdDevolucao#"",
+                                        ""ValorDevolucao"": ""9.99"",
+                                        ""CodigoDevolucao"": """",
+                                        ""MotivoDevolucao"": """",
+                                        ""InfEntreClientes"": ""Engano, foi mal"",
+
+                                        ""DtHrReqJdPi"": ""#datenowutc#"",
+                                        ""DtHrSituacao"": ""#datenowutc#"",
+                                        ""StJdPi"": ""9"", //0 - Em processamento, 9 - Sucesso
+                                        ""StJdPiProc"": ""9"",
+
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/op",
+                            Descricao = "JDPI - Ordem de pagamento",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 200,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+                                        ""IdReqJdPi"": ""01010101-0ae3-4daf-910c-1f1d8c657846"",
+                                        ""EndToEndId"": ""#json-endToEndId#"",
+                                        ""DtHrReqJdPi"": ""#datenowutc#""
+                                    }",
+                                },
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+                            Descricao = "JDPI - Consulta Ordem de pagamento",
+                            Metodo = MetodoHttp.MhGet,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200,
+                            Respostas = new List<ProjetoItemResposta>()
+                            {
+                                new ProjetoItemResposta()
+                                {
+                                    CodigoHttp = 400,
+                                    TipoConteudo= "application/json",
+                                    Resposta = @"{
+                                        ""StJdPi"" : -1,
+                                        ""stJdPiProc"" : 9
+                                        ""codigoErro"": ""JDPISPIINT002"",
+                                        ""descCodigoErro"": ""AC03 - Pagamento rejeitado pelo PSP"",       
+                                    }",
+                                },
+                                //new ProjetoItemResposta()
+                                //{
+                                //    Condicao = "",
+                                //    CodigoHttp = 404,
+                                    
+                                //    TipoConteudo= "application/json",
+                                //    Resposta = @"{
+                                //                    ""codigo"": ""404"",
+                                //                    ""mensagem"": ""Ordem de pagamento b354e181-0ae3-4daf-910c-1f1d8c657846 não encontrada e/ou processada.""
+                                //                }"
+                                //}
+                            }
+
+                        },
+                        new ProjetoItem()
+                        {
+                            Endpoint = "/jdpi/connect/token",
+                            Descricao = "JDPI - Autenticação",
+                            RespostaPadrao = "{" + Environment.NewLine +
+                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+                                             "    \"expires_in\": 1234558," + Environment.NewLine +
+                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
+                                             "    \"scope\": \"read write\"," + Environment.NewLine +
+                                             "}",
+                            Metodo = MetodoHttp.MhPost,
+                            TipoConteudo = "application/json",
+                            CodigoHttpPadrao = 200
+                        },
                     }
                 }
             );
