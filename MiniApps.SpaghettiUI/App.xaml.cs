@@ -122,7 +122,7 @@ namespace MiniApps.SpaghettiUI
             //""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
             var projetoId = Guid.NewGuid();
             var respostaAporte = @"{
-	                                            ""idRequisicao"":""#json-numCtrlIf#"",
+	                                            ""idRequisicao"":""#json-numCtrlPSPI#"",
 	                                            ""dtHrRequisicao"":""#datenowutc#"",
                                             }";
 
@@ -379,8 +379,8 @@ namespace MiniApps.SpaghettiUI
 	                                            ""tpRequisicao"":#query-tpRequisicao#,
 	                                            ""saqueRBCL"": {
 		                                            ""dtHrSituacao"":""#datenow#"",
-		                                            ""situacao"":3,
-		                                            ""descSituacao"":""EGEN0008 - ISPB Destinatário Não Informado; EGEN1001 - ISPB Inválido; EGEN0005 - ISPB Emissor Inválido;"",
+		                                            ""situacao"":0,
+		                                            ""descSituacao"":"""",
 		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
 		                                            ""ispbPSPI"":32997490,		                                            
 		                                            ""valor"":2000,
@@ -395,17 +395,15 @@ namespace MiniApps.SpaghettiUI
 	                               //             ""saqueRBCL"": {
 		                              //              ""dtHrSituacao"":""#datenow#"",
 		                              //              ""situacao"":3,
-		                              //              ""descSituacao"":""ERRO BACEN"",
+		                              //              ""descSituacao"":""EGEN0008 - ISPB Destinatário Não Informado; EGEN1001 - ISPB Inválido; EGEN0005 - ISPB Emissor Inválido;"",
 		                              //              ""numCtrlPSPI"":""#query-idRequisicao#"",
-		                              //              ""ispbPSPI"":32997490,
-		                              //              ""numCtrlSTR"":""STR2020333665889"",
-		                              //              ""sitLancSTR"":1,
+		                              //              ""ispbPSPI"":32997490,		                                            
 		                              //              ""valor"":2000,
 		                              //              ""dtHrSitBC"":""#datenow#"",
 		                              //              ""dtMovimento"":""#datenow#""
 	                               //             }
                                 //            }
-                                //            "
+                                //            "                               
                             },
                             new ProjetoItemResposta()
                             {
