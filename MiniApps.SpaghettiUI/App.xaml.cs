@@ -1235,7 +1235,7 @@ namespace MiniApps.SpaghettiUI
                                 {
                                     //Condicao = "header-erro=0",
                                     CodigoHttp = 200,
-
+                                    //stJdPi -1 ErroProcessamento, 0 Em processamento, 9 sucesso
                                     TipoConteudo= "application/json",
                                     Resposta = @"{
                                                     ""idReqJdPiConsultada"": ""{#rota-IdRespostaJdPiApi#}"",
@@ -1243,7 +1243,7 @@ namespace MiniApps.SpaghettiUI
                                                     ""dtHrReqJdPi"": ""2024-04-17T15:34:33.540Z"",
                                                     ""dtHrSituacao"": ""2024-04-17T15:34:52.179Z"",
                                                     ""stJdPi"": 9,
-                                                    ""stJdPiProc"": 9,                                                    
+                                                    ""stJdPiProc"": 9, 
                                                     ""endToEndId"": ""E5911813320240417153433540944977"",
                                                     ""tpIniciacao"": 0,
                                                     ""pagador"": {
