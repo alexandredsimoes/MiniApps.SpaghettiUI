@@ -14,6 +14,7 @@
              x:Name="TheControl">
     <UserControl.Resources>
         <converters:MetodoIndexConverter x:Key="MetodoIndexConverter"/>
+        <converters:MetodoToStringConverter x:Key="MetodoToStringConverter"/>
     </UserControl.Resources>
     <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
         <Grid.RowDefinitions>
@@ -76,7 +77,8 @@
                                         <behaviors:InvokeCommandAction Command="{Binding ElementName=TheControl, Path=DataContext.SelecionarRespostaCommand}" />
                                     </behaviors:EventTrigger>
                                 </behaviors:Interaction.Triggers>-->
-                                <TextBlock Text="{Binding Endpoint}" Style="{StaticResource SubtitleTextStyle}"/>
+                                <TextBlock Style="{StaticResource SubtitleTextStyle}"><Run Text="{Binding Metodo, Converter={StaticResource MetodoToStringConverter}}"/><Run Text=" "/><Run Text="{Binding Endpoint}" /></TextBlock>
+                                <!--<TextBlock Text="{Binding Endpoint}" Style="{StaticResource SubtitleTextStyle}"/>-->
                                 <TextBlock Text="{Binding Descricao}" Style="{StaticResource BaseTextBlockStyle}"/>
                             </StackPanel>
                             <Button Grid.Column="1" Content="Alterar" HorizontalAlignment="Center" VerticalAlignment="Center"

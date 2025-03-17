@@ -409,7 +409,7 @@ namespace MiniApps.SpaghettiUI
                             {
                                 Descricao = "Saque CCME com sucesso",
                                 Condicao = "#query-tpRequisicao#=4",
-                                CodigoHttp = 200,
+                                CodigoHttp = 204,
                                 Resposta = @"{
 	                                            ""idRequisicao"":""#query-idRequisicao#"",
 	                                            ""tpRequisicao"":#query-tpRequisicao#,

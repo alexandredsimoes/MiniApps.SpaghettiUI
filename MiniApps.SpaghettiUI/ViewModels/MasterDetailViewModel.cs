@@ -234,8 +234,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
             if (endpoint.Respostas?.Count > 0)
             {
 
-                var respostasComCondicoes = endpoint.Respostas.Where(x => x.Condicao != null);
-                if (respostasComCondicoes.Count() == 0)
+                var respostasComCondicoes = endpoint.Respostas.Where(x => x.Condicao != null).Count();
+                if (respostasComCondicoes == 0)
                 {
                     ProcessarHeaderResposta(context, endpoint);
                     var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
