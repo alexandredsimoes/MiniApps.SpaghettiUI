@@ -322,6 +322,28 @@ namespace MiniApps.SpaghettiUI
 	                                        }
                                         }",
                             },
+                            //new ProjetoItemResposta()
+                            //{
+                            //    Descricao = "Aporte CCME com sucesso",
+                            //    Condicao = "#query-tpRequisicao#=1",
+                            //    CodigoHttp = 200,
+                            //    Resposta =  @"{
+	                           //             ""idRequisicao"":""#query-idRequisicao#"",
+	                           //             ""tpRequisicao"":#query-tpRequisicao#,
+	                           //             ""aporteCCME"": {
+		                          //              ""dtHrSituacao"":""#datenow#"",
+		                          //              ""situacao"":0,
+		                          //              ""descSituacao"":"""",
+		                          //              ""numCtrlIEME"":""#query-idRequisicao#"",
+		                          //              ""ispbIEME"":32997490,
+		                          //              ""numCtrlSTR"":""STR20200124000000001"",
+		                          //              ""sitLancSTR"":1,
+		                          //              ""valor"":1000000,
+		                          //              ""dtHrSitBC"":""#datenow#"",
+		                          //              ""dtMovimento"":""#datenow#""
+	                           //             }
+                            //            }",
+                            //},
                             new ProjetoItemResposta()
                             {
                                 Descricao = "Aporte CCME com erro",
@@ -332,17 +354,13 @@ namespace MiniApps.SpaghettiUI
 	                                        ""tpRequisicao"":#query-tpRequisicao#,
 	                                        ""aporteCCME"": {
 		                                        ""dtHrSituacao"":""#datenow#"",
-		                                        ""situacao"":0,
-		                                        ""descSituacao"":"""",
-		                                        ""numCtrlIEME"":""#query-idRequisicao#"",
-		                                        ""ispbIEME"":32997490,
-		                                        ""numCtrlSTR"":""STR20200124000000001"",
-		                                        ""sitLancSTR"":1,
-		                                        ""valor"":1000000,
-		                                        ""dtHrSitBC"":""#datenow#"",
-		                                        ""dtMovimento"":""#datenow#""
+		                                        ""situacao"":3,
+		                                        ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
+		                                        ""numCtrlIeme"":""#query-idRequisicao#"",
+		                                        ""ispbIF"":32997490,		                                        
+		                                        ""valor"":10000,
 	                                        }
-                                        }",
+                                        } ",
                             },
                             new ProjetoItemResposta()
                             {

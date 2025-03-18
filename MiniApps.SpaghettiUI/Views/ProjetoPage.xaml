@@ -27,7 +27,7 @@
                 <Button HorizontalAlignment="Left" Command="{Binding RemoverCommand}" Margin="{StaticResource SmallLeftRightMargin}">REMOVER PROJETO</Button>
             </StackPanel>
 
-            <TextBlock Text="Detalhes do projeto" Style="{StaticResource SubtitleTextStyle}"/>
+            <TextBlock Text="Detalhess do projeto" Style="{StaticResource SubtitleTextStyle}"/>
             <TextBlock Text="Nome do projeto" Style="{StaticResource BodyTextStyle}"/>
             <TextBox Text="{Binding Selecionado.Nome, Mode=TwoWay}"/>
             <TextBlock Text="Porta padrão"  Style="{StaticResource BodyTextStyle}"/>
