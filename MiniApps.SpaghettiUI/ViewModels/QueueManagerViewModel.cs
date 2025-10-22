@@ -130,6 +130,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                                                      DateTime.Now);
 
             numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmss")}";// "JDPI20out30110751841";
+                        
             var saqueCcMe = new SaqueCcMeCommand()
             {
                 NumCtrlPSPI = numCtrlIF,

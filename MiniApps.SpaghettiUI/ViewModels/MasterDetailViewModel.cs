@@ -461,7 +461,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                 if (item.Value.Contains("datenow"))
                 {
-                    result.Replace("#datenow#", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                    result.Replace("#datenow#", DateTime.Now.ToString("o"));
                 }
 
                 if (item.Value.Contains("random_int"))
@@ -471,7 +471,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                 if (item.Value.Contains("datenowutc"))
                 {
-                    result.Replace("#datenowutc#", DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"));
+                    result.Replace("#datenowutc#", DateTime.UtcNow.ToString("o"));
                 }
                 if (item.Value.Contains("guid"))
                 {
