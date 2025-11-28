@@ -48,19 +48,19 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         public bool IsNavigationTarget(NavigationContext navigationContext) => true;
         public DelegateCommand AddEndpointCommand =>
-            _addEndpointCommand ?? (_addEndpointCommand = new DelegateCommand(ExecuteAddEndpointCommand));
+            _addEndpointCommand ??= new DelegateCommand(ExecuteAddEndpointCommand);
 
         public DelegateCommand<object> RemoveEndpointCommand =>
-            _removeEndpointCommand ?? (_removeEndpointCommand = new DelegateCommand<object>(ExecuteRemoveEndpointCommand));
+            _removeEndpointCommand ??= new DelegateCommand<object>(ExecuteRemoveEndpointCommand);
 
         public DelegateCommand SalvarCommand =>
-            _salvarCommand ?? (_salvarCommand = new DelegateCommand(ExecuteSalvarCommand));
+            _salvarCommand ??= new DelegateCommand(ExecuteSalvarCommand);
 
         public DelegateCommand RemoverCommand =>
-            _removerCommand ?? (_removerCommand = new DelegateCommand(ExecuteRemoverCommand));
+            _removerCommand ??= new DelegateCommand(ExecuteRemoverCommand);
 
         public DelegateCommand<ProjetoItemDto> SelecionarRespostaCommand =>
-            _selecionarRespostaCommand ?? (_selecionarRespostaCommand = new DelegateCommand<ProjetoItemDto>(ExecuteSelecionarRespostaCommand));
+            _selecionarRespostaCommand ??= new DelegateCommand<ProjetoItemDto>(ExecuteSelecionarRespostaCommand);
 
         private void ExecuteSelecionarRespostaCommand(ProjetoItemDto dto)
         {

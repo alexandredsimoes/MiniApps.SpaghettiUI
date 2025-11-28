@@ -234,7 +234,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
             if (endpoint.Respostas?.Count > 0)
             {
 
-                var respostasComCondicoes = endpoint.Respostas.Where(x => x.Condicao != null).Count();
+                var respostasComCondicoes = endpoint.Respostas.Count(x => x.Condicao != null);
                 if (respostasComCondicoes == 0)
                 {
                     ProcessarHeaderResposta(context, endpoint);
@@ -273,16 +273,17 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         }
                         else
                         {
+                            //Tentaremos no body (JSON)
+                            context.Request.EnableBuffering();
+                            using var reader = new StreamReader(context.Request.Body);
+                            var body = await reader.ReadToEndAsync();
+                            context.Request.Body.Position = 0;
+
                             var jsons = endpoint.Respostas
                                 .Where(x => x.Condicao?.Contains("#json-") ?? false)
                                 .ToList();
 
-
-                            //Tentaremos no body
-                            using var reader = new StreamReader(context.Request.Body);
-                            var body = await reader.ReadToEndAsync();
-
-                            if (!string.IsNullOrWhiteSpace(body))
+                            if (!string.IsNullOrWhiteSpace(body) && jsons is { Count: > 0 })
                             {
                                 JObject json = (JObject)JsonConvert.DeserializeObject(body);
                                 if (json != null)
@@ -301,6 +302,28 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                         }
                                     }
                                 }
+                            }
+                            else
+                            {
+                                var bodies = endpoint.Respostas
+                                    .Where(x => x.Condicao?.Contains("#body-") ?? false)
+                                    .ToList();
+                                var match2 = _regexParameters.Match(body);
+                                foreach (var dto in bodies)
+                                {
+                                    //tenta localizar no boddy
+                                    var match = _regexParameters.Match(dto.Condicao);
+                                    var token = match.Value.Substring(match.Value.IndexOf('-') + 1);
+                                    if (body.Contains(token, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        context.Response.StatusCode = dto.CodigoHttp;
+                                        context.Response.ContentType = dto.TipoConteudo;
+                                        await context.Response.WriteAsync(await ProcessarResposta(context, dto));
+                                        return;
+                                    }
+                                }
+
+
                             }
 
                             var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
@@ -416,13 +439,29 @@ namespace MiniApps.SpaghettiUI.ViewModels
             var matches = _regexParameters.Matches(respostaPadrao);
             foreach (Match item in matches)
             {
+                if (item.Value.Contains("body-"))
+                {
+                    var h = context.Request.Query.FirstOrDefault(x => x.Key == item.Value[(item.Value.IndexOf("-") + 1)..]);
+                    if (h.Key != null)
+                        result.Replace($"#{item.Value}#", h.Value);
+                }
+
+                if (item.Value.Contains("xml-"))
+                {
+                    var regexXml = new Regex($"<{item.Value[4..]}>(.*?)</{item.Value[4..]}>", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Singleline);
+                    var match = regexXml.Match(body);
+                    if (match.Success)
+                    {
+                        result.Replace($"#{item.Value}#", match.Groups[1].Value);
+                    }
+                }
 
                 if (item.Value.Contains("query-"))
                 {
                     var h = context.Request.Query.FirstOrDefault(x => x.Key == item.Value.Substring(item.Value.IndexOf("-") + 1));
                     if (h.Key != null)
                         result.Replace($"#{item.Value}#", h.Value);
-                    
+
 
                 }
 
@@ -473,11 +512,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
                 {
                     result.Replace("#datenowutc#", DateTime.UtcNow.ToString("o"));
                 }
+
                 if (item.Value.Contains("guid"))
                 {
                     result.Replace("#guid#", Guid.NewGuid().ToString());
                 }
-
 
                 if (item.Value.Contains("random_currency"))
                 {
