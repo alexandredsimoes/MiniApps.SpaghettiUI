@@ -63,7 +63,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
         async void ExecutePostarFilaCommandAsync(string tipo)
         {
-            
+                       
 
             //var numCtrlIF = "JDPI20out30110751841";
             var numCtrlIF = $"JDPI{DateTime.Now.ToString("yyMMddHHmmssfff")}";// "JDPI20out30110751841";

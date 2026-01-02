@@ -116,7 +116,7 @@
                         
                     </StackPanel>
                     <TextBlock Text="Log" Style="{StaticResource SubtitleTextStyle}"/>
-                    <TextBox BorderThickness="0" Text="{Binding ElementName=TheControl, Path=DataContext.Logs}" TextWrapping="Wrap" Height="Auto" IsReadOnly="True" 
+                    <TextBox BorderThickness="0" Text="{Binding Logs}" TextWrapping="Wrap" Height="Auto" IsReadOnly="True" 
                              HorizontalContentAlignment="Stretch" 
                              VerticalContentAlignment="Stretch">
                        

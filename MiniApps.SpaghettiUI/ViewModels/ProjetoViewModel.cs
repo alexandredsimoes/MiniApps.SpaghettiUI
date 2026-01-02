@@ -143,6 +143,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         CodigoHttp = x.CodigoHttp,
                         Condicao = x.Condicao,
                         Resposta = x.Resposta,
+                        Ativo = x.Ativo
                     }))
                 }))
             };
@@ -172,7 +173,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         CodigoHttp = x.CodigoHttp,
                         Condicao = x.Condicao,
                         Resposta = x.Resposta,
-                        Descricao = x.Descricao
+                        Descricao = x.Descricao,
+                        Ativo = x.Ativo
                     }))
                 }))
             };

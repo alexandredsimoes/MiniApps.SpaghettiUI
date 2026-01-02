@@ -33,201 +33,201 @@ using Unity;
 
 namespace MiniApps.SpaghettiUI
 {
-    // For more inforation about application lifecyle events see https://docs.microsoft.com/dotnet/framework/wpf/app-development/application-management-overview
-    // For docs about using Prism in WPF see https://prismlibrary.com/docs/wpf/introduction.html
+	// For more inforation about application lifecyle events see https://docs.microsoft.com/dotnet/framework/wpf/app-development/application-management-overview
+	// For docs about using Prism in WPF see https://prismlibrary.com/docs/wpf/introduction.html
 
-    // WPF UI elements use language en-US by default.
-    // If you need to support other cultures make sure you add converters and review dates and numbers in your UI to ensure everything adapts correctly.
-    // Tracking issue for improving this is https://github.com/dotnet/wpf/issues/1946
-    public partial class App : PrismApplication
-    {
-        private string[] _startUpArgs;
+	// WPF UI elements use language en-US by default.
+	// If you need to support other cultures make sure you add converters and review dates and numbers in your UI to ensure everything adapts correctly.
+	// Tracking issue for improving this is https://github.com/dotnet/wpf/issues/1946
+	public partial class App : PrismApplication
+	{
+		private string[] _startUpArgs;
 
-        public App()
-        {
-        }
+		public App()
+		{
+		}
 
-        protected override Window CreateShell()
-            => Container.Resolve<ShellWindow>();
+		protected override Window CreateShell()
+			=> Container.Resolve<ShellWindow>();
 
-        protected override async void OnInitialized()
-        {
-            var persistAndRestoreService = Container.Resolve<IPersistAndRestoreService>();
-            persistAndRestoreService.RestoreData();
+		protected override async void OnInitialized()
+		{
+			var persistAndRestoreService = Container.Resolve<IPersistAndRestoreService>();
+			persistAndRestoreService.RestoreData();
 
-            var themeSelectorService = Container.Resolve<IThemeSelectorService>();
-            themeSelectorService.SetTheme();
+			var themeSelectorService = Container.Resolve<IThemeSelectorService>();
+			themeSelectorService.SetTheme();
 
-            base.OnInitialized();
-            await Task.CompletedTask;
-        }
+			base.OnInitialized();
+			await Task.CompletedTask;
+		}
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            _startUpArgs = e.Args;
-            base.OnStartup(e);
-        }
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			_startUpArgs = e.Args;
+			base.OnStartup(e);
+		}
 
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            // Core Services
-            containerRegistry.Register<IFileService, FileService>();
+		protected override void RegisterTypes(IContainerRegistry containerRegistry)
+		{
+			// Core Services
+			containerRegistry.Register<IFileService, FileService>();
 
-            // App Services            
-            containerRegistry.Register<ISystemService, SystemService>();
-            containerRegistry.Register<IPersistAndRestoreService, PersistAndRestoreService>();
-            containerRegistry.Register<IThemeSelectorService, ThemeSelectorService>();
-            containerRegistry.Register<ISampleDataService, SampleDataService>();
-            containerRegistry.Register<IProjetoService, ProjetoService>();
+			// App Services            
+			containerRegistry.Register<ISystemService, SystemService>();
+			containerRegistry.Register<IPersistAndRestoreService, PersistAndRestoreService>();
+			containerRegistry.Register<IThemeSelectorService, ThemeSelectorService>();
+			containerRegistry.Register<ISampleDataService, SampleDataService>();
+			containerRegistry.Register<IProjetoService, ProjetoService>();
 
-            // Views
-            containerRegistry.RegisterForNavigation<QueueManagerPage, QueueManagerViewModel>(PageKeys.QueueManager);
-            containerRegistry.RegisterForNavigation<SettingsPage, SettingsViewModel>(PageKeys.Settings);
-            containerRegistry.RegisterForNavigation<MasterDetailPage, MasterDetailViewModel>(PageKeys.MasterDetail);
-            containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(PageKeys.Main);
-            containerRegistry.RegisterForNavigation<ShellWindow, ShellViewModel>();
-            containerRegistry.RegisterForNavigation<ProjetoPage, ProjetoViewModel>(PageKeys.Projeto);
-            containerRegistry.RegisterDialog<ProjetoItemDialogPage, ProjetoItemDialogPageViewModel>();
-            containerRegistry.RegisterDialog<ProjetoItemRespostaDialogPage, ProjetoItemRespostaDialogPageViewModel>();
-
-
-            //
-            containerRegistry.RegisterSingleton<AppState>();
-
-            // Configuration
-            var configuration = BuildConfiguration();
-            var appConfig = configuration
-                .GetSection(nameof(AppConfig))
-                .Get<AppConfig>();
-
-            // Register configurations to IoC
-            containerRegistry.RegisterInstance<IConfiguration>(configuration);
-            containerRegistry.RegisterInstance<AppConfig>(appConfig);
+			// Views
+			containerRegistry.RegisterForNavigation<QueueManagerPage, QueueManagerViewModel>(PageKeys.QueueManager);
+			containerRegistry.RegisterForNavigation<SettingsPage, SettingsViewModel>(PageKeys.Settings);
+			containerRegistry.RegisterForNavigation<MasterDetailPage, MasterDetailViewModel>(PageKeys.MasterDetail);
+			containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(PageKeys.Main);
+			containerRegistry.RegisterForNavigation<ShellWindow, ShellViewModel>();
+			containerRegistry.RegisterForNavigation<ProjetoPage, ProjetoViewModel>(PageKeys.Projeto);
+			containerRegistry.RegisterDialog<ProjetoItemDialogPage, ProjetoItemDialogPageViewModel>();
+			containerRegistry.RegisterDialog<ProjetoItemRespostaDialogPage, ProjetoItemRespostaDialogPageViewModel>();
 
 
-            containerRegistry.RegisterSingleton<IApplicationDbContext, ApplicationDbContext>();
+			//
+			containerRegistry.RegisterSingleton<AppState>();
+
+			// Configuration
+			var configuration = BuildConfiguration();
+			var appConfig = configuration
+				.GetSection(nameof(AppConfig))
+				.Get<AppConfig>();
+
+			// Register configurations to IoC
+			containerRegistry.RegisterInstance<IConfiguration>(configuration);
+			containerRegistry.RegisterInstance<AppConfig>(appConfig);
+
+
+			containerRegistry.RegisterSingleton<IApplicationDbContext, ApplicationDbContext>();
 
 
 
 #if DEBUG
 
-            var db = containerRegistry.GetContainer().Resolve<ApplicationDbContext>();
-            db.Database.EnsureDeleted();
-            db.Database.EnsureCreated();
-            //if (!db.Database.EnsureCreated())
-            //{
-            //    return;
-            //}
+			var db = containerRegistry.GetContainer().Resolve<ApplicationDbContext>();
+			db.Database.EnsureDeleted();
+			db.Database.EnsureCreated();
+			//if (!db.Database.EnsureCreated())
+			//{
+			//    return;
+			//}
 
-            //""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
-            var projetoId = Guid.NewGuid();
-            var respostaAporte = @"{
+			//""dtHrRequisicao"":""2020-01-23T22:10:05.025Z""
+			var projetoId = Guid.NewGuid();
+			var respostaAporte = @"{
 												""idRequisicao"":""#json-numCtrlPSPI#"",
 												""dtHrRequisicao"":""#datenowutc#""
 											}";
 
-            var respostConsulta = @"{
+			var respostConsulta = @"{
 												""idRequisicao"":""#json-NumCtrlIfLdl#"",
 												""dtHrRequisicao"":""#datenowutc#""
 											}";
-            db.Projetos.AddRange(
-                new Projeto()
-                {
-                    Id = projetoId,
-                    Nome = "Gestão Conta PI",
-                    PortaPadrao = 5082,
-                    PortaPadraoHttps = 5081,
-                    ExibirLog = true,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                {
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Consulta Saldo RB ou CL",
-                        RespostaPadrao = respostConsulta,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdspb/conta/api/v1/consultar-saldo/rbcl"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Aporte RB ou CL",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/aporte/rbcl"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Aporte CCME",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/aporte/ccme"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Aporte TPF",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/aporte/tpf"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Aporte Automatico",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/aporte/automatico"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Saque RbCl",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/saque/rbcl"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Saque CcMe",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/saque/ccme"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Saque Tpf",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhPost,
-                        Endpoint = "/jdpi/conta/api/v1/saque/tpf"
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Consulta Aportes/Retiradas",
-                        RespostaPadrao = respostaAporte,
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhGet,
-                        Endpoint = "/jdspb/conta/api/v1/listar/aporte-retirada",
-                        Respostas = new List<ProjetoItemResposta>()
-                        {
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Listagem de aportes e retiradas",
-                                CodigoHttp = 200,
-                                Resposta = @"{
+			db.Projetos.AddRange(
+				new Projeto()
+				{
+					Id = projetoId,
+					Nome = "Gestão Conta PI",
+					PortaPadrao = 5082,
+					PortaPadraoHttps = 5081,
+					ExibirLog = true,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+				{
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Consulta Saldo RB ou CL",
+						RespostaPadrao = respostConsulta,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdspb/conta/api/v1/consultar-saldo/rbcl"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Aporte RB ou CL",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/aporte/rbcl"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Aporte CCME",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/aporte/ccme"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Aporte TPF",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/aporte/tpf"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Aporte Automatico",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/aporte/automatico"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Saque RbCl",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/saque/rbcl"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Saque CcMe",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/saque/ccme"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Saque Tpf",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhPost,
+						Endpoint = "/jdpi/conta/api/v1/saque/tpf"
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Consulta Aportes/Retiradas",
+						RespostaPadrao = respostaAporte,
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhGet,
+						Endpoint = "/jdspb/conta/api/v1/listar/aporte-retirada",
+						Respostas = new List<ProjetoItemResposta>()
+						{
+							new ProjetoItemResposta()
+							{
+								Descricao = "Listagem de aportes e retiradas",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""dtHrResultado"": ""2024-07-31T12:38:05.025Z"",
 												""resultado"": [
 													{
@@ -256,58 +256,58 @@ namespace MiniApps.SpaghettiUI
 													}
 												]
 											}"
-                            },
-                        }
-                    },
-                    new ProjetoItem()
-                    {
-                        ProjetoId = projetoId,
-                        Descricao = "Consulta situação Aporte RCBL",
-                        CodigoHttpPadrao = 200,
-                        Metodo = MetodoHttp.MhGet,
-                        Endpoint = "/jdpi/conta/api/v1/consultarsitreq",
-                        Respostas = new List<ProjetoItemResposta>()
-                        {
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Aporte RBCL com sucesso",
-                                Condicao = "#query-tpRequisicao#=0",
-                                CodigoHttp = 200,
-								//Resposta =  @"{
-								   //         ""idRequisicao"":""#query-idRequisicao#"",
-								   //         ""tpRequisicao"":#query-tpRequisicao#,
-								   //         ""aporteRBCL"": {
-									  //          ""dtHrSituacao"":""#datenow#"",
-									  //          ""situacao"":3,
-									  //          ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
-									  //          ""numCtrlIF"":""#query-idRequisicao#"",
-									  //          ""ispbIF"":32997490,		                                        
-									  //          ""valor"":10000,
-								   //         }
-								//        } ",
-								Resposta =  @$"{{
-											""idRequisicao"":""#query-idRequisicao#"",
-											""tpRequisicao"":#query-tpRequisicao#,
-											""aporteRBCL"": {{
-												""dtHrSituacao"":""#datenow#"",
-												""dtHrSitBC"" : ""#datenowutc#"",
-												""situacao"":0,
-												""numCtrlStr"": ""JDPI{DateTime.Now:yyMMddHHmmssfff}"",
-												""descSituacao"":"""",
-												""numCtrlIF"":""#query-idRequisicao#"",
-												""ispbIF"":32997490,		                                        
-												""valor"":50000.25,
-												""sitLancSTR"":1,
-												""dtMovimento"":""#datenow#""
-											}}
-										}} ",
-                            },
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Consulta saldo RBCL",
-                                Condicao = "#query-tpRequisicao#=7",
-                                CodigoHttp = 200,
-                                Resposta =  @"{
+							},
+						}
+					},
+					new ProjetoItem()
+					{
+						ProjetoId = projetoId,
+						Descricao = "Consulta situação Aporte/Saque",
+						CodigoHttpPadrao = 200,
+						Metodo = MetodoHttp.MhGet,
+						Endpoint = "/jdpi/conta/api/v1/consultarsitreq",
+						Respostas = new List<ProjetoItemResposta>()
+						{
+							new ProjetoItemResposta()
+							{
+								Descricao = "Aporte RBCL com sucesso",
+								Condicao = "#query-tpRequisicao#=0",
+								CodigoHttp = 200,
+								Resposta =  @"{
+								            ""idRequisicao"":""#query-idRequisicao#"",
+								            ""tpRequisicao"":#query-tpRequisicao#,
+								            ""aporteRBCL"": {
+									            ""dtHrSituacao"":""#datenow#"",
+									            ""situacao"":3,
+									            ""descSituacao"":""EGEN0300 - Mensagem Fora do Horário"",
+									            ""numCtrlIF"":""#query-idRequisicao#"",
+									            ""ispbIF"":32997490,		                                        
+									            ""valor"":10000
+								            }
+								        } ",
+								//Resposta =  @$"{{
+								//			""idRequisicao"":""#query-idRequisicao#"",
+								//			""tpRequisicao"":#query-tpRequisicao#,
+								//			""aporteRBCL"": {{
+								//				""dtHrSituacao"":""#datenow#"",
+								//				""dtHrSitBC"" : ""#datenowutc#"",
+								//				""situacao"":0,
+								//				""numCtrlStr"": ""JDPI{DateTime.Now:yyMMddHHmmssfff}"",
+								//				""descSituacao"":"""",
+								//				""numCtrlIF"":""#query-idRequisicao#"",
+								//				""ispbIF"":32997490,		                                        
+								//				""valor"":50000.25,
+								//				""sitLancSTR"":1,
+								//				""dtMovimento"":""#datenow#""
+								//			}}
+								//		}} ",
+							},
+							new ProjetoItemResposta()
+							{
+								Descricao = "Consulta saldo RBCL",
+								Condicao = "#query-tpRequisicao#=7",
+								CodigoHttp = 200,
+								Resposta =  @"{
 											""idRequisicao"":""#query-idRequisicao#"",
 											""tpRequisicao"":#query-tpRequisicao#,
 											""consultaSaldoRBCL"": {
@@ -321,34 +321,35 @@ namespace MiniApps.SpaghettiUI
 												""dtMovimento"":""#datenow#""
 											}
 										}",
-                            },
-							//new ProjetoItemResposta()
-							//{
-							//    Descricao = "Aporte CCME com sucesso",
-							//    Condicao = "#query-tpRequisicao#=1",
-							//    CodigoHttp = 200,
-							//    Resposta =  @"{
-							   //             ""idRequisicao"":""#query-idRequisicao#"",
-							   //             ""tpRequisicao"":#query-tpRequisicao#,
-							   //             ""aporteCCME"": {
-								  //              ""dtHrSituacao"":""#datenow#"",
-								  //              ""situacao"":0,
-								  //              ""descSituacao"":"""",
-								  //              ""numCtrlIEME"":""#query-idRequisicao#"",
-								  //              ""ispbIEME"":32997490,
-								  //              ""numCtrlSTR"":""STR20200124000000001"",
-								  //              ""sitLancSTR"":1,
-								  //              ""valor"":1000000,
-								  //              ""dtHrSitBC"":""#datenow#"",
-								  //              ""dtMovimento"":""#datenow#""
-							   //             }
-							//            }",
-							//},
+							},
 							new ProjetoItemResposta()
-                            {
-                                Descricao = "Aporte CCME com erro",
-                                Condicao = "#query-tpRequisicao#=1",
-                                CodigoHttp = 200,
+							{
+								Descricao = "Aporte CCME com sucesso",
+								Condicao = "#query-tpRequisicao#=1",
+								CodigoHttp = 200,
+								Resposta =  @"{
+							                ""idRequisicao"":""#query-idRequisicao#"",
+							                ""tpRequisicao"":#query-tpRequisicao#,
+							                ""aporteCCME"": {
+								                ""dtHrSituacao"":""#datenow#"",
+								                ""situacao"":0,
+								                ""descSituacao"":"""",
+								                ""numCtrlIEME"":""#query-idRequisicao#"",
+								                ""ispbIEME"":32997490,
+								                ""numCtrlSTR"":""STR20200124000000001"",
+								                ""sitLancSTR"":1,
+								                ""valor"":1000000,
+								                ""dtHrSitBC"":""#datenow#"",
+								                ""dtMovimento"":""#datenow#""
+							                }
+							            }",
+							},
+							new ProjetoItemResposta()
+							{
+								Descricao = "Aporte CCME com erro",
+								Condicao = "#query-tpRequisicao#=1",
+								CodigoHttp = 200,
+                                Ativo = false,
                                 Resposta =  @"{
 											""idRequisicao"":""#query-idRequisicao#"",
 											""tpRequisicao"":#query-tpRequisicao#,
@@ -361,13 +362,13 @@ namespace MiniApps.SpaghettiUI
 												""valor"":10000
 											}
 										} ",
-                            },
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Aporte TPF com sucesso",
-                                Condicao = "#query-tpRequisicao#=2",
-                                CodigoHttp = 200,
-                                Resposta = @"{
+							},
+							new ProjetoItemResposta()
+							{
+								Descricao = "Aporte TPF com sucesso",
+								Condicao = "#query-tpRequisicao#=2",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""idRequisicao"":""#query-idRequisicao#"",
 												""tpRequisicao"":#query-tpRequisicao#,
 												""aporteTPF"": {
@@ -386,13 +387,13 @@ namespace MiniApps.SpaghettiUI
 												}
 											}
 											"
-                            },
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Saque RBCL com sucesso",
-                                Condicao = "#query-tpRequisicao#=3",
-                                CodigoHttp = 200,
-                                Resposta = @"{
+							},
+							new ProjetoItemResposta()
+							{
+								Descricao = "Saque RBCL com sucesso",
+								Condicao = "#query-tpRequisicao#=3",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""idRequisicao"":""#query-idRequisicao#"",
 												""tpRequisicao"":#query-tpRequisicao#,
 												""saqueRBCL"": {
@@ -423,12 +424,12 @@ namespace MiniApps.SpaghettiUI
 								//            }
 								//            "                               
 							},
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Saque CCME com sucesso",
-                                Condicao = "#query-tpRequisicao#=4",
-                                CodigoHttp = 204,
-                                Resposta = @"{
+							new ProjetoItemResposta()
+							{
+								Descricao = "Saque CCME com sucesso",
+								Condicao = "#query-tpRequisicao#=4",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""idRequisicao"":""#query-idRequisicao#"",
 												""tpRequisicao"":#query-tpRequisicao#,
 												""saqueCCME"": {
@@ -444,13 +445,13 @@ namespace MiniApps.SpaghettiUI
 												}
 											}
 											"
-                            } ,
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Saque TPF com sucesso",
-                                Condicao = "#query-tpRequisicao#=5",
-                                CodigoHttp = 200,
-                                Resposta = @"{
+							} ,
+							new ProjetoItemResposta()
+							{
+								Descricao = "Saque TPF com sucesso",
+								Condicao = "#query-tpRequisicao#=5",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""idRequisicao"":""#query-idRequisicao#"",
 												""tpRequisicao"":#query-tpRequisicao#,
 												""saqueTPF"": {
@@ -468,13 +469,13 @@ namespace MiniApps.SpaghettiUI
 												}
 											}
 											"
-                            },
-                            new ProjetoItemResposta()
-                            {
-                                Descricao = "Aporte automatico com sucesso",
-                                Condicao = "#query-tpRequisicao#=6",
-                                CodigoHttp = 200,
-                                Resposta = @"{
+							},
+							new ProjetoItemResposta()
+							{
+								Descricao = "Aporte automatico com sucesso",
+								Condicao = "#query-tpRequisicao#=6",
+								CodigoHttp = 200,
+								Resposta = @"{
 												""idRequisicao"":""#query-idRequisicao#"",
 												""tpRequisicao"":#query-tpRequisicao#,
 												""configAporteAuto"": {
@@ -492,89 +493,89 @@ namespace MiniApps.SpaghettiUI
 												}
 											}
 											"
-                            }
-                        }
-                    },
-                }
-                },
-                new Projeto()
-                {
-                    Nome = "Bacen Messages",
-                    PortaPadrao = 5013,
-                    PortaPadraoHttps = 5012,
-                    ExibirLog = true,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                {
-                    new ProjetoItem()
-                    {
-                        Metodo = MetodoHttp.MhGet,
-                        CodigoHttpPadrao = 200,
-                        Descricao = "Saida de mensagem do BACEN PIX" ,
-                        Endpoint ="/api/v1/out/{ispb}/stream/start",
-                        RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<Envelope xmlns=\"https://www.bcb.gov.br/pi/pacs.002/1.4\">\n    <AppHdr>\n        <Fr>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>00038166</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </Fr>\n        <To>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>4358798</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </To>\n        <BizMsgIdr>M99999010655f476b4435483f9578cf8</BizMsgIdr>\n        <MsgDefIdr>pacs.002.spi.1.4</MsgDefIdr>\n        <CreDt>2020-01-01T08:30:12.000Z</CreDt>\n        <Sgntr/>\n    </AppHdr>\n    <Document>\n        <FIToFIPmtStsRpt>\n            <GrpHdr>\n                <MsgId>M99999010655f476b4435483f9578cf8</MsgId>\n                <CreDtTm>2020-04-07T14:01:20.343Z</CreDtTm>\n            </GrpHdr>\n            <TxInfAndSts>\n                <OrgnlInstrId>E0435879820201119175707308958669</OrgnlInstrId>\n                <OrgnlEndToEndId>E0435879820201119175707308958669</OrgnlEndToEndId>\n                <TxSts>ACSP</TxSts>\n            </TxInfAndSts>\n        </FIToFIPmtStsRpt>\n    </Document>\n</Envelope>",
-                    },
-                    new ProjetoItem()
-                    {
-                        Metodo = MetodoHttp.MhPost,
-                        CodigoHttpPadrao = 201,
-                        Descricao = "Envio de mensagem para o BACEN PIX" ,
-                        Endpoint ="/api/v1/in/{ispb}/msgs",
-                        RespostaPadrao = "",
-                        RespostaHeader="PI-ResourceId=123456789"
-                    }
-                }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "Integrador SINQIA",
-                    PortaPadrao = 6529,
-                    PortaPadraoHttps = 6528,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Criação de lançamento em conta corrente" ,
-                            Endpoint ="/BJ08M01/BJ08M01/BJ08SS0103B/lancarValorCC",
-                            RespostaPadrao = "{\"nrSeqLct\":1,\"tpLanc\":1}",
-                            TipoConteudo  = "application/json",
-                            Ativo = true,
-                        },
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Criação de lançamento TEF/DOC" ,
-                            Endpoint ="/BJ08M01/BJ08M01/BJ08SS0101D/lancamentoTransferencia",
-                            RespostaPadrao = "{\"cdStatus\":1,\"dsMsg\":1, \"nmFav\": \"Teste\"}",
-                            TipoConteudo  = "application/json",
-                            Ativo = true,
-                        },
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Autenticação" ,
-                            Endpoint ="/BJ08M01/user",
-                            RespostaPadrao = "{" + Environment.NewLine +
-                                            "    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
-                                            "    \"ExpiresIn\": 1234558," + Environment.NewLine +
-                                            "    \"TokenType\": \"bearer\"," + Environment.NewLine +
-                                            "    \"Scope\": \"read write\"," + Environment.NewLine +
-                                            "    \"Id\": 5555," + Environment.NewLine +
-                                            "    \"UserName\": \"jdpi\"," + Environment.NewLine +
-                                            "    \"NrInst\": 1406," + Environment.NewLine +
-                                            "    \"NrAgen\": 1," + Environment.NewLine +
-                                            "    \"NrAccess\": 25" + Environment.NewLine +
-                                            "}",
-                            TipoConteudo  = "application/json"  ,
-                            RespostaHeader = "auth=2222222" ,
-                            Ativo = true,
-                        },
+							}
+						}
+					},
+				}
+				},
+				new Projeto()
+				{
+					Nome = "Bacen Messages",
+					PortaPadrao = 5013,
+					PortaPadraoHttps = 5012,
+					ExibirLog = true,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+				{
+					new ProjetoItem()
+					{
+						Metodo = MetodoHttp.MhGet,
+						CodigoHttpPadrao = 200,
+						Descricao = "Saida de mensagem do BACEN PIX" ,
+						Endpoint ="/api/v1/out/{ispb}/stream/start",
+						RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<Envelope xmlns=\"https://www.bcb.gov.br/pi/pacs.002/1.4\">\n    <AppHdr>\n        <Fr>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>00038166</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </Fr>\n        <To>\n            <FIId>\n                <FinInstnId>\n                    <Othr>\n                        <Id>4358798</Id>\n                    </Othr>\n                </FinInstnId>\n            </FIId>\n        </To>\n        <BizMsgIdr>M99999010655f476b4435483f9578cf8</BizMsgIdr>\n        <MsgDefIdr>pacs.002.spi.1.4</MsgDefIdr>\n        <CreDt>2020-01-01T08:30:12.000Z</CreDt>\n        <Sgntr/>\n    </AppHdr>\n    <Document>\n        <FIToFIPmtStsRpt>\n            <GrpHdr>\n                <MsgId>M99999010655f476b4435483f9578cf8</MsgId>\n                <CreDtTm>2020-04-07T14:01:20.343Z</CreDtTm>\n            </GrpHdr>\n            <TxInfAndSts>\n                <OrgnlInstrId>E0435879820201119175707308958669</OrgnlInstrId>\n                <OrgnlEndToEndId>E0435879820201119175707308958669</OrgnlEndToEndId>\n                <TxSts>ACSP</TxSts>\n            </TxInfAndSts>\n        </FIToFIPmtStsRpt>\n    </Document>\n</Envelope>",
+					},
+					new ProjetoItem()
+					{
+						Metodo = MetodoHttp.MhPost,
+						CodigoHttpPadrao = 201,
+						Descricao = "Envio de mensagem para o BACEN PIX" ,
+						Endpoint ="/api/v1/in/{ispb}/msgs",
+						RespostaPadrao = "",
+						RespostaHeader="PI-ResourceId=123456789"
+					}
+				}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "Integrador SINQIA",
+					PortaPadrao = 6529,
+					PortaPadraoHttps = 6528,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Criação de lançamento em conta corrente" ,
+							Endpoint ="/BJ08M01/BJ08M01/BJ08SS0103B/lancarValorCC",
+							RespostaPadrao = "{\"nrSeqLct\":1,\"tpLanc\":1}",
+							TipoConteudo  = "application/json",
+							Ativo = true,
+						},
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Criação de lançamento TEF/DOC" ,
+							Endpoint ="/BJ08M01/BJ08M01/BJ08SS0101D/lancamentoTransferencia",
+							RespostaPadrao = "{\"cdStatus\":1,\"dsMsg\":1, \"nmFav\": \"Teste\"}",
+							TipoConteudo  = "application/json",
+							Ativo = true,
+						},
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Autenticação" ,
+							Endpoint ="/BJ08M01/user",
+							RespostaPadrao = "{" + Environment.NewLine +
+											"    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
+											"    \"ExpiresIn\": 1234558," + Environment.NewLine +
+											"    \"TokenType\": \"bearer\"," + Environment.NewLine +
+											"    \"Scope\": \"read write\"," + Environment.NewLine +
+											"    \"Id\": 5555," + Environment.NewLine +
+											"    \"UserName\": \"jdpi\"," + Environment.NewLine +
+											"    \"NrInst\": 1406," + Environment.NewLine +
+											"    \"NrAgen\": 1," + Environment.NewLine +
+											"    \"NrAccess\": 25" + Environment.NewLine +
+											"}",
+							TipoConteudo  = "application/json"  ,
+							RespostaHeader = "auth=2222222" ,
+							Ativo = true,
+						},
 						//new ProjetoItem()
 						//{
 						//    Metodo = MetodoHttp.MhPost,
@@ -595,109 +596,109 @@ namespace MiniApps.SpaghettiUI
 						//    Endpoint = "/sistema-gestor-auth/jdpi/spi/api/v2/devolucao"
 						//},
 						new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op",
-                            Descricao = "JDPI - Ordem de pagamento",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						{
+							Endpoint = "/jdpi/spi/api/v2/op",
+							Descricao = "JDPI - Ordem de pagamento",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
 										""IdReqJdPi"": ""#guid#"",
 										""EndToEndId"": ""#json-endToEndId#"",
 										""DtHrReqJdPi"": ""#datenowutc#""
 									}",
-                                },
-                            }
+								},
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
-                            Descricao = "JDPI - Consulta Ordem de pagamento",
-                            Metodo = MetodoHttp.MhGet,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+							Descricao = "JDPI - Consulta Ordem de pagamento",
+							Metodo = MetodoHttp.MhGet,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 										""StJdPi"" : 9                                        
 									}",
-                                },
-                            }
+								},
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/connect/token",
-                            Descricao = "JDPI - Autenticação",
-                            RespostaPadrao = "{" + Environment.NewLine +
-                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
-                                             "    \"expires_in\": 1234558," + Environment.NewLine +
-                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
-                                             "    \"scope\": \"read write\"," + Environment.NewLine +
-                                             "}",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200
-                        },
-                        new ProjetoItem()
-                        {
-                            Descricao = "Consulta",
-                            Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
-                            CodigoHttpPadrao = 200,
-                            TipoConteudo = "application/json",
-                            Metodo = MetodoHttp.MhPost,
-                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
-                            Ativo = true,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/connect/token",
+							Descricao = "JDPI - Autenticação",
+							RespostaPadrao = "{" + Environment.NewLine +
+											 "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+											 "    \"expires_in\": 1234558," + Environment.NewLine +
+											 "    \"token_type\": \"bearer\"," + Environment.NewLine +
+											 "    \"scope\": \"read write\"," + Environment.NewLine +
+											 "}",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200
+						},
+						new ProjetoItem()
+						{
+							Descricao = "Consulta",
+							Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
+							CodigoHttpPadrao = 200,
+							TipoConteudo = "application/json",
+							Metodo = MetodoHttp.MhPost,
+							RespostaPadrao = "{\"saldo\": \"0.00\"}",
+							Ativo = true,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 													""ConsultaSaldo"": [ {""vlSaldo"": #random_currency# }]
 												}"
-                                },
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 400,
+								},
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 400,
 									//TipoConteudo= "application/json",                                    
 									Condicao = "#json-nrInst#=0",
-                                    Resposta = @"-10 - Número de instituição não encontrada."
-                                }
-                            }
-                        }
-                    }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "CIP",
-                    PortaPadrao = 6530,
-                    PortaPadraoHttps = 6531,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new()
-                        {
-                            Descricao = "Consulta Guia de Arrecadação - Sucesso",
-                            Endpoint = "/api/v1/guia-arrecadacao/consulta",
-                            CodigoHttpPadrao = 200,
-                            TipoConteudo = "application/json",
-                            Metodo = MetodoHttp.MhGet,
-                            RespostaPadrao = @"{
+									Resposta = @"-10 - Número de instituição não encontrada."
+								}
+							}
+						}
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "CIP",
+					PortaPadrao = 6530,
+					PortaPadraoHttps = 6531,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new()
+						{
+							Descricao = "Consulta Guia de Arrecadação - Sucesso",
+							Endpoint = "/api/v1/guia-arrecadacao/consulta",
+							CodigoHttpPadrao = 200,
+							TipoConteudo = "application/json",
+							Metodo = MetodoHttp.MhGet,
+							RespostaPadrao = @"{
 												  ""grpHdr"": {
 													""msgId"": ""20221107000000000030"",
 													""creDtTm"": ""2022-11-07T13:39:54"",
@@ -867,7 +868,7 @@ namespace MiniApps.SpaghettiUI
 													}
 												  ]
 												}",
-                            Ativo = true,
+							Ativo = true,
 							//Respostas = new List<ProjetoItemResposta>()
 							//{
 							//    new ProjetoItemResposta()
@@ -887,24 +888,24 @@ namespace MiniApps.SpaghettiUI
 							//    }
 							//}
 						}
-                    }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "Integrador MATERA",
-                    PortaPadrao = 6529,
-                    PortaPadraoHttps = 6528,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Matera - Criação de lançamento em conta corrente" ,
-                            Endpoint ="/v2/contas/{agencia}/{conta}/lancamentos",
-                            RespostaPadrao = @"{
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "Integrador MATERA",
+					PortaPadrao = 6529,
+					PortaPadraoHttps = 6528,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Matera - Criação de lançamento em conta corrente" ,
+							Endpoint ="/v2/contas/{agencia}/{conta}/lancamentos",
+							RespostaPadrao = @"{
 							  ""data"": {
 								""subSistema"": ""SDCONTA2"",
 								""nomeUsuario"": ""SDBANCO"",
@@ -951,37 +952,37 @@ namespace MiniApps.SpaghettiUI
 								""tipoPessoa"": ""FISICA""
 							  }
 							}",
-                            TipoConteudo  = "application/json",
-                            Ativo = true,
-                        },
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Autenticação" ,
-                            Endpoint ="/user",
-                            RespostaPadrao = "{" + Environment.NewLine +
-                                            "    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
-                                            "    \"ExpiresIn\": 1234558," + Environment.NewLine +
-                                            "    \"TokenType\": \"bearer\"," + Environment.NewLine +
-                                            "    \"Scope\": \"read write\"," + Environment.NewLine +
-                                            "    \"Id\": 5555," + Environment.NewLine +
-                                            "    \"UserName\": \"jdpi\"," + Environment.NewLine +
-                                            "    \"NrInst\": 1406," + Environment.NewLine +
-                                            "    \"NrAgen\": 1," + Environment.NewLine +
-                                            "    \"NrAccess\": 25" + Environment.NewLine +
-                                            "}",
-                            TipoConteudo  = "application/json"  ,
-                            RespostaHeader = "auth=2222222" ,
-                            Ativo = true,
-                        },
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhGet,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Matera - Consulta de saldos" ,
-                            Endpoint ="/v2/contas/{agencia}/{conta}/saldos",
-                            RespostaPadrao = @"{
+							TipoConteudo  = "application/json",
+							Ativo = true,
+						},
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Autenticação" ,
+							Endpoint ="/user",
+							RespostaPadrao = "{" + Environment.NewLine +
+											"    \"AccessToken\": \"dasdasd\"," + Environment.NewLine +
+											"    \"ExpiresIn\": 1234558," + Environment.NewLine +
+											"    \"TokenType\": \"bearer\"," + Environment.NewLine +
+											"    \"Scope\": \"read write\"," + Environment.NewLine +
+											"    \"Id\": 5555," + Environment.NewLine +
+											"    \"UserName\": \"jdpi\"," + Environment.NewLine +
+											"    \"NrInst\": 1406," + Environment.NewLine +
+											"    \"NrAgen\": 1," + Environment.NewLine +
+											"    \"NrAccess\": 25" + Environment.NewLine +
+											"}",
+							TipoConteudo  = "application/json"  ,
+							RespostaHeader = "auth=2222222" ,
+							Ativo = true,
+						},
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhGet,
+							CodigoHttpPadrao = 200,
+							Descricao = "Matera - Consulta de saldos" ,
+							Endpoint ="/v2/contas/{agencia}/{conta}/saldos",
+							RespostaPadrao = @"{
 							  ""data"": ""#datenow#"",
 							  ""saldoDisponivel"": 1550.75,
 							  ""saldoVinculado"": 400,
@@ -993,25 +994,25 @@ namespace MiniApps.SpaghettiUI
 							  ""saldoDisponivelParaMovimentacao"": 3150.75,
 							  ""limiteCreditoContratado"": 50
 							}",
-                            TipoConteudo  = "application/json"  ,
-                            RespostaHeader = "auth=2222222" ,
-                            Ativo = true,
-                        },
-                        new ProjetoItem()
-                        {
-                            Metodo = MetodoHttp.MhGet,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Matera - Consulta de conta" ,
-                            Endpoint ="/v2/contas",
+							TipoConteudo  = "application/json"  ,
+							RespostaHeader = "auth=2222222" ,
+							Ativo = true,
+						},
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhGet,
+							CodigoHttpPadrao = 200,
+							Descricao = "Matera - Consulta de conta" ,
+							Endpoint ="/v2/contas",
 
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    Descricao = "Validação Suceso",
-                                    TipoConteudo = "application/json",
-                                    Resposta = @"{
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									Descricao = "Validação Suceso",
+									TipoConteudo = "application/json",
+									Resposta = @"{
 												  ""agencia"": ""#query-agenciaContaDebitoLancamento#"",
 												  ""numConta"": ""#query-numContaDebitoLancamento#"",
 												  ""dataCadastro"": ""#datenow#"",
@@ -1046,19 +1047,19 @@ namespace MiniApps.SpaghettiUI
 												  ""diaDoMes"": 0,
 												  ""codigoIban"": ""string""
 												}" ,
-                                },
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 500,
-                                    Descricao = "Erro na validação de conta",
-                                    Resposta = @"{""Mensagem"": ""Erro geral""}",
-                                    TipoConteudo = "application/json"
-                                }
-                            },
-                            TipoConteudo  = "application/json"  ,
-                            RespostaHeader = "auth=2222222" ,
-                            Ativo = true,
-                        },
+								},
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 500,
+									Descricao = "Erro na validação de conta",
+									Resposta = @"{""Mensagem"": ""Erro geral""}",
+									TipoConteudo = "application/json"
+								}
+							},
+							TipoConteudo  = "application/json"  ,
+							RespostaHeader = "auth=2222222" ,
+							Ativo = true,
+						},
 						//new ProjetoItem()
 						//{
 						//    Metodo = MetodoHttp.MhPost,
@@ -1079,83 +1080,83 @@ namespace MiniApps.SpaghettiUI
 						//    Endpoint = "/sistema-gestor-auth/jdpi/spi/api/v2/devolucao"
 						//},                                                                                               
 						new ProjetoItem()
-                        {
-                            Descricao = "Consulta",
-                            Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
-                            CodigoHttpPadrao = 200,
-                            TipoConteudo = "application/json",
-                            Metodo = MetodoHttp.MhPost,
-                            RespostaPadrao = "{\"saldo\": \"0.00\"}",
-                            Ativo = true,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						{
+							Descricao = "Consulta",
+							Endpoint = "/BJ08M01/BJ08M01/BJ08SS0101B/consultaSaldo",
+							CodigoHttpPadrao = 200,
+							TipoConteudo = "application/json",
+							Metodo = MetodoHttp.MhPost,
+							RespostaPadrao = "{\"saldo\": \"0.00\"}",
+							Ativo = true,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 													""ConsultaSaldo"": [ {""vlSaldo"": #random_currency# }]
 												}"
-                                },
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 400,
+								},
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 400,
 									//TipoConteudo= "application/json",                                    
 									Condicao = "#json-nrInst#=0",
-                                    Resposta = @"-10 - Número de instituição não encontrada."
-                                }
-                            }
-                        },
+									Resposta = @"-10 - Número de instituição não encontrada."
+								}
+							}
+						},
 
-                    }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "SPI - INTEGRADOR",
-                    PortaPadrao = 6529,
-                    PortaPadraoHttps = 6528,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/od",
-                            Descricao = "JDPI - Ordem de devolução",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "SPI - JDPI",
+					PortaPadrao = 6530,
+					PortaPadraoHttps = 6531,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/od",
+							Descricao = "JDPI - Ordem de devolução",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
 										""IdReqJdPi"": ""#guid#"",
 										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
 										""DtHrReqJdPi"": ""#datenowutc#""
 									}",
-                                },
-                            }
+								},
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
-                            Descricao = "JDPI - Consulta Ordem de devolução SPI",
-                            Metodo = MetodoHttp.MhGet,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    Descricao = "Consulta com sucesso",
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
+							Descricao = "JDPI - Consulta Ordem de devolução SPI",
+							Metodo = MetodoHttp.MhGet,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									Descricao = "Consulta com sucesso",
+									TipoConteudo= "application/json",
+									Resposta = @"{
 										""IdReqJdPiConsultada"" : ""#query-idReqDevEnvJdPi#"",
 										
 										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
@@ -1171,42 +1172,207 @@ namespace MiniApps.SpaghettiUI
 										""StJdPiProc"": ""9"",
 
 									}",
-                                },
-                            }
+								},
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op",
-                            Descricao = "JDPI - Ordem de pagamento",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/op",
+							Descricao = "JDPI - Ordem de pagamento",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
 										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
 										""IdReqJdPi"": ""01010101-0ae3-4daf-910c-1f1d8c657846"",
 										""EndToEndId"": ""#json-endToEndId#"",
 										""DtHrReqJdPi"": ""#datenowutc#""
 									}",
-                                },
-                            }
+								},
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
-                            Descricao = "JDPI - Consulta Ordem de pagamento",
-                            Metodo = MetodoHttp.MhGet,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+							Descricao = "JDPI - Consulta Ordem de pagamento",
+							Metodo = MetodoHttp.MhGet,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 400,
+									TipoConteudo= "application/json",
+									Resposta = @"{
+										""StJdPi"" : -1,
+										""stJdPiProc"" : 9
+										""codigoErro"": ""JDPISPIINT002"",
+										""descCodigoErro"": ""AC03 - Pagamento rejeitado pelo PSP"",       
+									}",
+								},
+								//new ProjetoItemResposta()
+								//{
+								//    Condicao = "",
+								//    CodigoHttp = 404,
+									
+								//    TipoConteudo= "application/json",
+								//    Resposta = @"{
+								//                    ""codigo"": ""404"",
+								//                    ""mensagem"": ""Ordem de pagamento b354e181-0ae3-4daf-910c-1f1d8c657846 não encontrada e/ou processada.""
+								//                }"
+								//}
+							}
+
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/connect/token",
+							Descricao = "JDPI - Autenticação",
+							RespostaPadrao = "{" + Environment.NewLine +
+											 "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+											 "    \"expires_in\": 1234558," + Environment.NewLine +
+											 "    \"token_type\": \"bearer\"," + Environment.NewLine +
+											 "    \"scope\": \"read write\"," + Environment.NewLine +
+											 "}",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200
+						},
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "SGCT",
+					PortaPadrao = 6566,
+					PortaPadraoHttps = 6567,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Ativo = true,
+							Endpoint = "",
+							Descricao = "Resposta a consulta do SGCT",
+							RespostaPadrao = @"{
+												""IdOperacaoSgct"": ""#json-idReqJdPi#"",
+												""DtHrOperacaoSgct"": ""#datenowutc#"",
+												""ElapsedMilliseconds"" : ""120"",
+												""StatusCode"" : ""200""
+												}",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200
+						}
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "SPI - INTEGRADOR",
+					PortaPadrao = 6529,
+					PortaPadraoHttps = 6528,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/od",
+							Descricao = "JDPI - Ordem de devolução",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
+										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+										""IdReqJdPi"": ""#guid#"",
+										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+										""DtHrReqJdPi"": ""#datenowutc#""
+									}",
+								},
+							}
+
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
+							Descricao = "JDPI - Consulta Ordem de devolução SPI",
+							Metodo = MetodoHttp.MhGet,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									Descricao = "Consulta com sucesso",
+									TipoConteudo= "application/json",
+									Resposta = @"{
+										""IdReqJdPiConsultada"" : ""#query-idReqDevEnvJdPi#"",
+										
+										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
+										""EndToEndIdDevolucao"": ""#json-endToEndIdDevolucao#"",
+										""ValorDevolucao"": ""9.99"",
+										""CodigoDevolucao"": """",
+										""MotivoDevolucao"": """",
+										""InfEntreClientes"": ""Engano, foi mal"",
+
+										""DtHrReqJdPi"": ""#datenowutc#"",
+										""DtHrSituacao"": ""#datenowutc#"",
+										""StJdPi"": ""9"", //0 - Em processamento, 9 - Sucesso
+										""StJdPiProc"": ""9"",
+
+									}",
+								},
+							}
+
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/op",
+							Descricao = "JDPI - Ordem de pagamento",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{
+										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
+										""IdReqJdPi"": ""01010101-0ae3-4daf-910c-1f1d8c657846"",
+										""EndToEndId"": ""#json-endToEndId#"",
+										""DtHrReqJdPi"": ""#datenowutc#""
+									}",
+								},
+							}
+
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
+							Descricao = "JDPI - Consulta Ordem de pagamento",
+							Metodo = MetodoHttp.MhGet,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
 								/*new ProjetoItemResposta()
 								{
 									CodigoHttp = 200,
@@ -1250,12 +1416,12 @@ namespace MiniApps.SpaghettiUI
 
 								},*/
 								new ProjetoItemResposta()
-                                {
+								{
 									//Condicao = "header-erro=0",
 									CodigoHttp = 200,
 									//stJdPi -1 ErroProcessamento, 0 Em processamento, 9 sucesso
 									TipoConteudo= "application/json",
-                                    Resposta = @"{
+									Resposta = @"{
 													""idReqJdPiConsultada"": ""{#rota-IdRespostaJdPiApi#}"",
 													""idReqSistemaCliente"": ""82F995C4-7487-4363-9406-A1DE2A9636D1"",
 													""dtHrReqJdPi"": ""#datenowutc#"",
@@ -1289,291 +1455,188 @@ namespace MiniApps.SpaghettiUI
 													""valor"": 11.11,
 													""vlrDetalhe"": []
 												}"
-                                }
-                            }
+								}
+							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/connect/token",
-                            Descricao = "JDPI - Autenticação",
-                            RespostaPadrao = "{" + Environment.NewLine +
-                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
-                                             "    \"expires_in\": 1234558," + Environment.NewLine +
-                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
-                                             "    \"scope\": \"read write\"," + Environment.NewLine +
-                                             "}",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/credito-pagamento/validacao",
-                            Descricao = "JDPI - Registrar Validação de Conta/Cliente/Ordem de Crédito - ASYNC",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{                                                                                
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/connect/token",
+							Descricao = "JDPI - Autenticação",
+							RespostaPadrao = "{" + Environment.NewLine +
+											 "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
+											 "    \"expires_in\": 1234558," + Environment.NewLine +
+											 "    \"token_type\": \"bearer\"," + Environment.NewLine +
+											 "    \"scope\": \"read write\"," + Environment.NewLine +
+											 "}",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200
+						},
+						new ProjetoItem()
+						{
+							Endpoint = "/jdpi/spi/api/v2/credito-pagamento/validacao",
+							Descricao = "JDPI - Registrar Validação de Conta/Cliente/Ordem de Crédito - ASYNC",
+							Metodo = MetodoHttp.MhPost,
+							TipoConteudo = "application/json",
+							CodigoHttpPadrao = 200,
+							Respostas = new List<ProjetoItemResposta>()
+							{
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 200,
+									TipoConteudo= "application/json",
+									Resposta = @"{                                                                                
 										""IdEndToEndIdl"": ""#json-endToEndId#"",
 										""DtHrReqJdPi"": ""#datenowutc#""
 									}",
-                                },
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 500,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{                                                                                
+								},
+								new ProjetoItemResposta()
+								{
+									CodigoHttp = 500,
+									TipoConteudo= "application/json",
+									Resposta = @"{                                                                                
 										""Mensagem"": ""Erro no servidor"",                                        
 									}",
-                                },
-                            }
-
-                        },
-                    }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "SPI - JDPI",
-                    PortaPadrao = 6530,
-                    PortaPadraoHttps = 6531,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/od",
-                            Descricao = "JDPI - Ordem de devolução",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
-										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
-										""IdReqJdPi"": ""#guid#"",
-										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
-										""DtHrReqJdPi"": ""#datenowutc#""
-									}",
-                                },
-                            }
-
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/od/{idReqDevEnvJdPi}",
-                            Descricao = "JDPI - Consulta Ordem de devolução SPI",
-                            Metodo = MetodoHttp.MhGet,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    Descricao = "Consulta com sucesso",
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
-										""IdReqJdPiConsultada"" : ""#query-idReqDevEnvJdPi#"",
-										
-										""EndToEndIdOriginal"": ""#json-endToEndIdOriginal#"",
-										""EndToEndIdDevolucao"": ""#json-endToEndIdDevolucao#"",
-										""ValorDevolucao"": ""9.99"",
-										""CodigoDevolucao"": """",
-										""MotivoDevolucao"": """",
-										""InfEntreClientes"": ""Engano, foi mal"",
-
-										""DtHrReqJdPi"": ""#datenowutc#"",
-										""DtHrSituacao"": ""#datenowutc#"",
-										""StJdPi"": ""9"", //0 - Em processamento, 9 - Sucesso
-										""StJdPiProc"": ""9"",
-
-									}",
-                                },
-                            }
-
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op",
-                            Descricao = "JDPI - Ordem de pagamento",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 200,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
-										""IdReqSistemaCliente"" : ""#json-idReqSistemaCliente#"",
-										""IdReqJdPi"": ""01010101-0ae3-4daf-910c-1f1d8c657846"",
-										""EndToEndId"": ""#json-endToEndId#"",
-										""DtHrReqJdPi"": ""#datenowutc#""
-									}",
-                                },
-                            }
-
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/spi/api/v2/op/{IdRespostaJdPiApi}",
-                            Descricao = "JDPI - Consulta Ordem de pagamento",
-                            Metodo = MetodoHttp.MhGet,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200,
-                            Respostas = new List<ProjetoItemResposta>()
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    CodigoHttp = 400,
-                                    TipoConteudo= "application/json",
-                                    Resposta = @"{
-										""StJdPi"" : -1,
-										""stJdPiProc"" : 9
-										""codigoErro"": ""JDPISPIINT002"",
-										""descCodigoErro"": ""AC03 - Pagamento rejeitado pelo PSP"",       
-									}",
-                                },
-								//new ProjetoItemResposta()
-								//{
-								//    Condicao = "",
-								//    CodigoHttp = 404,
-									
-								//    TipoConteudo= "application/json",
-								//    Resposta = @"{
-								//                    ""codigo"": ""404"",
-								//                    ""mensagem"": ""Ordem de pagamento b354e181-0ae3-4daf-910c-1f1d8c657846 não encontrada e/ou processada.""
-								//                }"
-								//}
+								},
 							}
 
-                        },
-                        new ProjetoItem()
-                        {
-                            Endpoint = "/jdpi/connect/token",
-                            Descricao = "JDPI - Autenticação",
-                            RespostaPadrao = "{" + Environment.NewLine +
-                                             "    \"access_token\": \"dasdasd\"," + Environment.NewLine +
-                                             "    \"expires_in\": 1234558," + Environment.NewLine +
-                                             "    \"token_type\": \"bearer\"," + Environment.NewLine +
-                                             "    \"scope\": \"read write\"," + Environment.NewLine +
-                                             "}",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200
-                        },
-                    }
-                },
-                new Projeto()
+						},
+					}
+				},
+				new Projeto()
+				{
+					ExibirLog = true,
+					Nome = "Integrador AutBank",
+					PortaPadrao = 6539,
+					PortaPadraoHttps = 6538,
+					DataCriacao = DateTime.Now,
+					Items = new List<ProjetoItem>()
+					{
+						new ProjetoItem()
+						{
+							Metodo = MetodoHttp.MhPost,
+							CodigoHttpPadrao = 200,
+							Descricao = "Servico SOAP" ,
+							Endpoint = "",
+							//RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><consultaSaldoConta24X7Response xmlns=\"http://autbank.com.br\"><consultaSaldoConta24X7Return><cpmf>0</cpmf><limite>10000.00</limite><mensagemErro xsi:nil=\"true\"/><nome xsi:nil=\"true\"/><nroErro>0</nroErro><saldoBloq>0</saldoBloq><saldoDisp>10000.00</saldoDisp><saldoTotal>10000</saldoTotal><valorBloq>0</valorBloq></consultaSaldoConta24X7Return></consultaSaldoConta24X7Response></soapenv:Body></soapenv:Envelope>",
+							TipoConteudo  = "text/xml; charset=utf-8",
+							Ativo = true,
+							Respostas = new List<ProjetoItemResposta>(new []
+							{
+								new ProjetoItemResposta()
+								{
+									TipoConteudo  = "text/xml; charset=utf-8",
+									CodigoHttp = 200,
+									Descricao = "Consulta de saldo",
+									Condicao  = "#body-consultaSaldoConta24X7#",
+									Resposta  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><consultaSaldoConta24X7Response xmlns=\"http://autbank.com.br\"><consultaSaldoConta24X7Return><cpmf>0</cpmf><limite>10000.00</limite><mensagemErro xsi:nil=\"true\"/><nome xsi:nil=\"true\"/><nroErro>0</nroErro><saldoBloq>0</saldoBloq><saldoDisp>10000.00</saldoDisp><saldoTotal>10000</saldoTotal><valorBloq>0</valorBloq></consultaSaldoConta24X7Return></consultaSaldoConta24X7Response></soapenv:Body></soapenv:Envelope>",
+								},
+								new ProjetoItemResposta()
+								{
+									TipoConteudo  = "text/xml; charset=utf-8",
+									CodigoHttp = 200,
+									Descricao = "Bloqueio de valor intradia com chave idempotencia",
+									Condicao  = "#body-bloqueioValorIntradiaChaveIdempotencia24x7_v2#",
+									Resposta =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><bloqueioValorIntradiaChaveIdempotencia24x7_v2Response xmlns=\"http://autbank.com.br\"><bloqueioValorIntradiaChaveIdempotencia24x7_v2Return><chaveBloqueio>#xml-chaveBloqueioEntrada#</chaveBloqueio></bloqueioValorIntradiaChaveIdempotencia24x7_v2Return></bloqueioValorIntradiaChaveIdempotencia24x7_v2Response></soapenv:Body></soapenv:Envelope>"
+								},
+								new ProjetoItemResposta()
+								{
+									TipoConteudo  = "text/xml; charset=utf-8",
+									CodigoHttp = 200,
+									Descricao = "Desbloqueio de valor intradia com chave idempotencia",
+									Condicao  = "#body-desbloqueioValorIntradiaChaveComDebitoContaIdempotencia24x7_v2#",
+									Resposta = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine + 
+												"<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + Environment.NewLine + 
+												"  <s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" />" + Environment.NewLine + 
+												"  <soapenv:Body>" + Environment.NewLine + 
+												"    <desbloqueioValorIntradiaChaveComDebitoContaIdempotencia24x7_v2Response xmlns=\"http://autbank.com.br\">" + Environment.NewLine + 
+												"      <desbloqueioValorIntradiaChaveComDebitoContaIdempotencia24x7_v2Return>" + Environment.NewLine + 
+												"        <mensagemErro />" + Environment.NewLine + 
+												"        <nroErro>0</nroErro>" + Environment.NewLine + 
+												"        <nroMovimento>123456</nroMovimento>" + Environment.NewLine + 
+												"      </desbloqueioValorIntradiaChaveComDebitoContaIdempotencia24x7_v2Return>" + Environment.NewLine + 
+												"    </desbloqueioValorIntradiaChaveComDebitoContaIdempotencia24x7_v2Response>" + Environment.NewLine + 
+												"  </soapenv:Body>" + Environment.NewLine + 
+												"</soapenv:Envelope>"
+								},
+								new ProjetoItemResposta()
+								{
+									TipoConteudo  = "text/xml; charset=utf-8",
+									CodigoHttp = 200,
+									Descricao = "Entrada Movimento 24x7",
+									Condicao  = "#body-entradaMovto24x7Idempotencia_v4#",
+									Resposta = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + Environment.NewLine +
+											   "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" + Environment.NewLine +
+											   "  <s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" />" + Environment.NewLine +
+											   "  <soapenv:Body>" + Environment.NewLine +
+											   "    <entradaMovto24x7Idempotencia_v4Response xmlns=\"http://autbank.com.br\">" + Environment.NewLine +
+											   "      <entradaMovto24x7Idempotencia_v4Return>" + Environment.NewLine +
+                                               "        <mensagemErro></mensagemErro>" + Environment.NewLine +
+                                               "        <nroErro></nroErro>" + Environment.NewLine +
+                                               "        <nroMovimento>123456</nroMovimento>" + Environment.NewLine +
+                                               "      </entradaMovto24x7Idempotencia_v4Return>" + Environment.NewLine +
+											   "    </entradaMovto24x7Idempotencia_v4Response>" + Environment.NewLine +
+											   "  </soapenv:Body>" + Environment.NewLine +
+											   "</soapenv:Envelope>"
+								}
+							})
+						}
+					}
+				},
+				new Projeto()
                 {
                     ExibirLog = true,
-                    Nome = "SGCT",
-                    PortaPadrao = 6566,
-                    PortaPadraoHttps = 6567,
+                    Nome = "Lançamento Service GRPC",
+                    PortaPadrao = 5004,
+                    PortaPadraoHttps = 5005,
                     DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
                     {
-                        new ProjetoItem()
-                        {
-                            Ativo = true,
-                            Endpoint = "",
-                            Descricao = "Resposta a consulta do SGCT",
-                            RespostaPadrao = @"{
-												""IdOperacaoSgct"": ""#json-idReqJdPi#"",
-												""DtHrOperacaoSgct"": ""#datenowutc#"",
-												""ElapsedMilliseconds"" : ""120"",
-												""StatusCode"" : ""200""
-												}",
-                            Metodo = MetodoHttp.MhPost,
-                            TipoConteudo = "application/json",
-                            CodigoHttpPadrao = 200
-                        }
-                    }
-                },
-                new Projeto()
-                {
-                    ExibirLog = true,
-                    Nome = "Integrador AutBank",
-                    PortaPadrao = 6539,
-                    PortaPadraoHttps = 6538,
-                    DataCriacao = DateTime.Now,
-                    Items = new List<ProjetoItem>()
-                    {
-                        new ProjetoItem()
+						new ProjetoItem()
                         {
                             Metodo = MetodoHttp.MhPost,
-                            CodigoHttpPadrao = 200,
-                            Descricao = "Consulta de saldo" ,
-                            Endpoint = "",
-                            //RespostaPadrao = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><consultaSaldoConta24X7Response xmlns=\"http://autbank.com.br\"><consultaSaldoConta24X7Return><cpmf>0</cpmf><limite>10000.00</limite><mensagemErro xsi:nil=\"true\"/><nome xsi:nil=\"true\"/><nroErro>0</nroErro><saldoBloq>0</saldoBloq><saldoDisp>10000.00</saldoDisp><saldoTotal>10000</saldoTotal><valorBloq>0</valorBloq></consultaSaldoConta24X7Return></consultaSaldoConta24X7Response></soapenv:Body></soapenv:Envelope>",
-                            TipoConteudo  = "text/xml; charset=utf-8",
+                            CodigoHttpPadrao = 0,
+                            Descricao = "Servico GRPC" ,
+                            Endpoint = "/LancamentoPckg.LancamentoServiceGrpc/Aporte",
+                            RespostaPadrao ="""{"efetivado": "true"}""" ,
+                            TipoConteudo  = "application/grpc",
                             Ativo = true,
-                            Respostas = new List<ProjetoItemResposta>(new []
-                            {
-                                new ProjetoItemResposta()
-                                {
-                                    TipoConteudo  = "text/xml; charset=utf-8",
-                                    CodigoHttp = 200,
-                                    Descricao = "Consulta de saldo",
-                                    Condicao  = "#body-consultaSaldoConta24X7#",
-                                    Resposta  = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><consultaSaldoConta24X7Response xmlns=\"http://autbank.com.br\"><consultaSaldoConta24X7Return><cpmf>0</cpmf><limite>10000.00</limite><mensagemErro xsi:nil=\"true\"/><nome xsi:nil=\"true\"/><nroErro>0</nroErro><saldoBloq>0</saldoBloq><saldoDisp>10000.00</saldoDisp><saldoTotal>10000</saldoTotal><valorBloq>0</valorBloq></consultaSaldoConta24X7Return></consultaSaldoConta24X7Response></soapenv:Body></soapenv:Envelope>",
-                                },
-                                new ProjetoItemResposta()
-                                {
-                                    TipoConteudo  = "text/xml; charset=utf-8",
-                                    CodigoHttp = 200,
-                                    Descricao = "Bloqueio de valor intradia com chave idempotencia",
-                                    Condicao  = "#body-bloqueioValorIntradiaChaveIdempotencia24x7_v2#",
-                                    Resposta =  "<?xml version=\"1.0\" encoding=\"UTF-8\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><s:Header xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"/><soapenv:Body><bloqueioValorIntradiaChaveIdempotencia24x7_v2Response xmlns=\"http://autbank.com.br\"><bloqueioValorIntradiaChaveIdempotencia24x7_v2Return><chaveBloqueio>#xml-chaveBloqueioEntrada#</chaveBloqueio></bloqueioValorIntradiaChaveIdempotencia24x7_v2Return></bloqueioValorIntradiaChaveIdempotencia24x7_v2Response></soapenv:Body></soapenv:Envelope>"
-                                }
-                            })
                         }
                     }
+
                 }
-            );
-            db.SaveChanges();
+			);
+			db.SaveChanges();
 #endif
-        }
+		}
 
-        private IConfiguration BuildConfiguration()
-        {
-            var appLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            return new ConfigurationBuilder()
-                .SetBasePath(appLocation)
-                .AddJsonFile("appsettings.json")
-                .AddCommandLine(_startUpArgs)
-                .Build();
-        }
+		private IConfiguration BuildConfiguration()
+		{
+			var appLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			return new ConfigurationBuilder()
+				.SetBasePath(appLocation)
+				.AddJsonFile("appsettings.json")
+				.AddCommandLine(_startUpArgs)
+				.Build();
+		}
 
-        private void OnExit(object sender, ExitEventArgs e)
-        {
-            var appState = Container.Resolve<AppState>();
-            foreach (var item in appState.Applications)
-            {
-                item.Item2.StopAsync().ConfigureAwait(false);
-                item.Item2.Dispose();
-            }
-            var persistAndRestoreService = Container.Resolve<IPersistAndRestoreService>();
-            persistAndRestoreService.PersistData();
-        }
+		private void OnExit(object sender, ExitEventArgs e)
+		{
+			var appState = Container.Resolve<AppState>();
+			foreach (var item in appState.Applications)
+			{
+				item.Item2.StopAsync().ConfigureAwait(false);
+				item.Item2.Dispose();
+			}
+			var persistAndRestoreService = Container.Resolve<IPersistAndRestoreService>();
+			persistAndRestoreService.PersistData();
+		}
 
-        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            // TODO WTS: Please log and handle the exception as appropriate to your scenario
-            // For more info see https://docs.microsoft.com/dotnet/api/system.windows.application.dispatcherunhandledexception?view=netcore-3.0
-        }
-    }
+		private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+		{
+			// TODO WTS: Please log and handle the exception as appropriate to your scenario
+			// For more info see https://docs.microsoft.com/dotnet/api/system.windows.application.dispatcherunhandledexception?view=netcore-3.0
+		}
+	}
 }

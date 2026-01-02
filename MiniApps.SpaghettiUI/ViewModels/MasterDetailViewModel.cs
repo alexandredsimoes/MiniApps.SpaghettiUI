@@ -132,6 +132,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                         Resposta = x.Resposta,
                         TipoConteudo = x.TipoConteudo,
                         Descricao = x.Descricao,
+                        Ativo = x.Ativo
                     }))
                 }))
             };
@@ -145,7 +146,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
         }
 
 
-        public string Logs
+        public string Logs2
         {
             get { return _logs; }
             set { SetProperty(ref _logs, value); }
@@ -234,11 +235,11 @@ namespace MiniApps.SpaghettiUI.ViewModels
             if (endpoint.Respostas?.Count > 0)
             {
 
-                var respostasComCondicoes = endpoint.Respostas.Count(x => x.Condicao != null);
+                var respostasComCondicoes = endpoint.Respostas.Count(x => x.Condicao != null && x.Ativo);
                 if (respostasComCondicoes == 0)
                 {
                     ProcessarHeaderResposta(context, endpoint);
-                    var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                    var resposta = endpoint.Respostas.OrderBy(x => Guid.NewGuid()).FirstOrDefault(x=>x.Ativo);
                     context.Response.StatusCode = resposta.CodigoHttp;
                     context.Response.ContentType = endpoint.TipoConteudo;
                     await context.Response.WriteAsync(await ProcessarResposta(context, resposta));
@@ -252,7 +253,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
 
                     //Condicoes
                     //#query-tpRequisicao#=6
-                    var resposta = endpoint.Respostas.Where(x => query.Contains(x.Condicao)).FirstOrDefault();
+                    var resposta = endpoint.Respostas.FirstOrDefault(x => query.Contains(x.Condicao) && x.Ativo);
 
                     //Achamos na query
                     if (resposta != null)
@@ -264,7 +265,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     {
                         //Tentaremos no header
                         var header = context.Request.Headers.Select(x => $"#header-{x.Key}#={x.Value}").ToList();
-                        var respostaHeader = endpoint.Respostas.Where(x => header.Contains(x.Condicao)).FirstOrDefault();
+                        var respostaHeader = endpoint.Respostas.FirstOrDefault(x => header.Contains(x.Condicao) && x.Ativo);
 
                         if (respostaHeader != null)
                         {
@@ -280,6 +281,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                             context.Request.Body.Position = 0;
 
                             var jsons = endpoint.Respostas
+                                .Where(x => x.Ativo)
                                 .Where(x => x.Condicao?.Contains("#json-") ?? false)
                                 .ToList();
 
@@ -306,6 +308,7 @@ namespace MiniApps.SpaghettiUI.ViewModels
                             else
                             {
                                 var bodies = endpoint.Respostas
+                                    .Where(x=>x.Ativo)
                                     .Where(x => x.Condicao?.Contains("#body-") ?? false)
                                     .ToList();
                                 var match2 = _regexParameters.Match(body);
@@ -322,11 +325,9 @@ namespace MiniApps.SpaghettiUI.ViewModels
                                         return;
                                     }
                                 }
-
-
                             }
 
-                            var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                            var respostaSemCondicoes = endpoint.Respostas.Where(x => x.Condicao == null && x.Ativo).OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                             if (respostaSemCondicoes != null)
                             {
                                 context.Response.StatusCode = respostaSemCondicoes.CodigoHttp;
@@ -406,7 +407,8 @@ namespace MiniApps.SpaghettiUI.ViewModels
                     sb.AppendLine("---------------------------------------------");
                 }
 
-                Logs += sb.ToString();
+                endpoint.Projeto.Logs += sb.ToString();
+                //Logs += sb.ToString();
             }
 
             static void ProcessarHeaderResposta(HttpContext context, ProjetoItemDto endpoint)
