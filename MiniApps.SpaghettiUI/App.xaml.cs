@@ -123,12 +123,12 @@ namespace MiniApps.SpaghettiUI
             var projetoId = Guid.NewGuid();
             var respostaAporte = @"{
 	                                            ""idRequisicao"":""#json-numCtrlPSPI#"",
-	                                            ""dtHrRequisicao"":""#datenowutc#"",
+	                                            ""dtHrRequisicao"":""#datenowutc#""
                                             }";
 
             var respostConsulta = @"{
 	                                            ""idRequisicao"":""#json-NumCtrlIfLdl#"",
-	                                            ""dtHrRequisicao"":""#datenowutc#"",
+	                                            ""dtHrRequisicao"":""#datenowutc#""
                                             }";
             db.Projetos.AddRange(
                 new Projeto()
@@ -217,7 +217,6 @@ namespace MiniApps.SpaghettiUI
                     {
                         ProjetoId = projetoId,
                         Descricao = "Consulta Aportes/Retiradas",
-                        RespostaPadrao = respostaAporte,
                         CodigoHttpPadrao = 200,
                         Metodo = MetodoHttp.MhGet,
                         Endpoint = "/jdspb/conta/api/v1/listar/aporte-retirada",
@@ -255,7 +254,7 @@ namespace MiniApps.SpaghettiUI
 			                                            ""valor"": 9.99
 		                                            }
 	                                            ]
-                                            }" 
+                                            }"
                             },
                         }
                     },
@@ -374,21 +373,38 @@ namespace MiniApps.SpaghettiUI
                                 Descricao = "Saque RBCL com sucesso",
                                 Condicao = "#query-tpRequisicao#=3",
                                 CodigoHttp = 200,
-                                Resposta = @"{
-	                                            ""idRequisicao"":""#query-idRequisicao#"",
-	                                            ""tpRequisicao"":#query-tpRequisicao#,
-	                                            ""saqueRBCL"": {
-		                                            ""dtHrSituacao"":""#datenow#"",
-		                                            ""situacao"":0,
-		                                            ""descSituacao"":"""",
-		                                            ""numCtrlPSPI"":""#query-idRequisicao#"",
-		                                            ""ispbPSPI"":32997490,		                                            
-		                                            ""valor"":2000,
-		                                            ""dtHrSitBC"":""#datenow#"",
-		                                            ""dtMovimento"":""#datenow#""
-	                                            }
-                                            }
-                                            "
+                                Resposta = @"
+                                {
+	                                ""idRequisicao"": ""JDPI26JUL06184332537"",
+	                                ""tpRequisicao"": 3,
+	                                ""saqueRBCL"": {
+		                                ""dtHrSituacao"": ""2026-07-06T15:43:34.427"",
+		                                ""situacao"": 0,
+		                                ""numCtrlPSPI"": ""JDPI26JUL06184332537"",
+		                                ""ispbPSPI"": 31880826,
+		                                ""numCtrlSTR"": ""STR20260706034762860"",
+		                                ""sitLancSTR"": 1,
+		                                ""valor"": 1000000.0
+	                                }
+                                }                                
+                                ",
+                                //Resposta = @"{
+	                               //             ""idRequisicao"":""#query-idRequisicao#"",
+	                               //             ""tpRequisicao"":#query-tpRequisicao#,
+	                               //             ""saqueRBCL"": {
+		                              //              ""dtHrSituacao"":""2026-07-06T15:43:34.427"",
+		                              //              ""situacao"":0,
+		                              //              ""descSituacao"":"""",
+		                              //              ""numCtrlPSPI"":""#query-idRequisicao#"",
+		                              //              ""ispbPSPI"":31880826,		                                            
+                                //                    ""numCtrlSTR"": ""STR20260706034762860"",
+	                               //                 ""sitLancSTR"": 1,
+		                              //              ""valor"":2000,
+		                              //              ""dtHrSitBC"":""#datenow#"",
+		                              //              ""dtMovimento"":""#datenow#""
+	                               //             }
+                                //            }
+                                //            "
                                 //Resposta = @"{
 	                               //             ""idRequisicao"":""#query-idRequisicao#"",
 	                               //             ""tpRequisicao"":#query-tpRequisicao#,
@@ -985,7 +1001,7 @@ namespace MiniApps.SpaghettiUI
                             CodigoHttpPadrao = 200,
                             Descricao = "Matera - Consulta de conta" ,
                             Endpoint ="/v2/contas",
-                            
+
                             Respostas = new List<ProjetoItemResposta>()
                             {
                                 new ProjetoItemResposta()
@@ -1088,7 +1104,7 @@ namespace MiniApps.SpaghettiUI
                                 }
                             }
                         },
-                        
+
                     }
                 },
                 new Projeto()
@@ -1097,9 +1113,9 @@ namespace MiniApps.SpaghettiUI
                     Nome = "SPI - INTEGRADOR",
                     PortaPadrao = 6529,
                     PortaPadraoHttps = 6528,
-                    DataCriacao = DateTime.Now, 
+                    DataCriacao = DateTime.Now,
                     Items = new List<ProjetoItem>()
-                    {                                                                                               
+                    {
                         new ProjetoItem()
                         {
                             Endpoint = "/jdpi/spi/api/v2/od",
@@ -1287,7 +1303,7 @@ namespace MiniApps.SpaghettiUI
                             Metodo = MetodoHttp.MhPost,
                             TipoConteudo = "application/json",
                             CodigoHttpPadrao = 200
-                        },                        
+                        },
                         new ProjetoItem()
                         {
                             Endpoint = "/jdpi/spi/api/v2/credito-pagamento/validacao",
